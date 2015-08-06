@@ -1,16 +1,7 @@
-Weekly Schedule
-
-Fri, Sat, Mon, Tue, Wed = normal schedule
-Sunday: regular start time, but stop at 2:30
-Thurs = Schedule to be discussed on Wed
-
-Monday: Charlotte leaves at 6:00 pm
-
 #Mission Statement
 By providing real-time data, we help reading teachers give each student the attention he/she deserves.
 
-
-User Stories - No judgement
+User Stories
 BEFORE LESSON
 - teacher can sign up, create a class, enter students
 - teacher can login and logout
@@ -45,13 +36,6 @@ AFTER LESSON
 
 
 
-
-
-
-
-
-
-User Stories for MVP 
 Technology use descisions
 Setting Benchmarks (best-case scenario)
 Design schema for DB
