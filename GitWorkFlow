@@ -1,0 +1,11 @@
+A general flow:
+1. git add/stash and commit all you changes.
+2. git co master
+3. pull origin master
+4. git co [branch]
+5. git merge master
+6. resolve any merge conflicts by going to the file **If you didn't write it, make sure and pull over other humans to discuss the conflict **
+7. git push origin [branch]
+8. Make a pull request
+9. Flag Adam to review the pull request before/after the next standup
+10. before working during each work period, pull origin master and merge with branch
