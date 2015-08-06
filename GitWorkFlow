@@ -1,5 +1,5 @@
 A general flow:
-1. Check out a branch that is named for the feature
+1. Check out a branch that is named for the feature + initials
 2. Do all of your work, including adding tests
 3. Run all the tests
 4. git add/stash and commit all you changes.
