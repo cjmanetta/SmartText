@@ -1,7 +1,7 @@
 #Mission Statement
 By providing real-time data, we help reading teachers give each student the attention he/she deserves.
 
-User Stories
+#User Stories
 
 BEFORE LESSON
 - teacher can sign up, create a class, enter students
@@ -37,9 +37,18 @@ AFTER LESSON
 
 
 
-Technology use descisions
+#Technology
+- Database: MongoDB with Mongoose
+- Framework: Express on Node
+- Front-End: React, HTML5, CSS, and SASS
+- Other: _Underscore.js, jQuery, webpack, socket.io
+
 
 Setting Benchmarks (best-case scenario)
 
 Design schema for DB
+
+
+
+
 
