@@ -38,6 +38,8 @@ AFTER LESSON
 
 
 Technology use descisions
+
 Setting Benchmarks (best-case scenario)
+
 Design schema for DB
 
