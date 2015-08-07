@@ -8,7 +8,7 @@ var teacherSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Klass'
 	}]
-	lessons: [LessonSchema]
+	lessons: [lessonSchema]
 })
 
 model.exports = mongoose.model('Teacher', teacherSchema);
