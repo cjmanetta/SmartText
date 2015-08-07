@@ -29,7 +29,6 @@ router.route('/')
 	var last_name = req.body.last_name
 	var username = req.body.username
 	var password = req.body.password
-	console.log('inside post')
 
 	Teacher.create({
 		first_name: first_name,
@@ -81,15 +80,13 @@ router.route('/:id')
 	})
 })
 .delete(function(req, res){
-	Teacher.findById(req.params.id, function(err, teacher){
-		Teacher.remove(function(err, teacher){
-			if (err) {
-				return console.error(err)
-			} else {
-				console.log('deleted: ' + teacher)
-				res.redirect('/teachers')
-			}
-		})
+	Teacher.remove({_id: req.params.id}, function(err, teacher){
+		if (err) {
+			return console.error(err)
+		} else {
+			console.log('deleted: ' + teacher)
+			res.redirect('/teachers')
+		}
 	})
 })
 
