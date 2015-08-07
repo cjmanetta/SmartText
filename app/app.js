@@ -1,5 +1,6 @@
 import React from "react";
 import Body from "./components/Body";
+import _ from "underscore";
 
 //functions defined in the global scope to be used in many components
 var call = function(action, method, data){
