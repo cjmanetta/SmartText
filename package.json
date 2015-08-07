@@ -1,0 +1,37 @@
+{
+  "name": "smart_text",
+  "version": "1.0.0",
+  "description": "empowering teacher by giving them realtime data so that they can give students the attention that they deserve",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amjacobowitz/SmartText.git"
+  },
+  "keywords": [
+    "reading",
+    "education",
+    "teacher",
+    "realtime"
+  ],
+  "author": "aaron jacobowitz, adam cooper, charlotte manetta, nicholas toulouse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amjacobowitz/SmartText/issues"
+  },
+  "homepage": "https://github.com/amjacobowitz/SmartText#readme",
+  "devDependencies": {
+    "babel-loader": "^5.3.2",
+    "file-loader": "^0.8.4",
+    "react-hot-loader": "^1.2.8",
+    "webpack": "^1.11.0",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "babel-core": "^5.8.21",
+    "react": "^0.13.3"
+  }
+}
