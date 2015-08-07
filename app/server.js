@@ -14,6 +14,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //need to include react and jsx as view engine.
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs')
+
 var server = app.listen(port, function(){
 	var host = server.address().address;
 	var port = server.address().port;
