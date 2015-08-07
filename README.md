@@ -44,11 +44,6 @@ AFTER LESSON
 - Other: _Underscore.js, jQuery, webpack, socket.io
 
 
-Setting Benchmarks (best-case scenario)
-
-Design schema for DB
-
-
 
 
 
