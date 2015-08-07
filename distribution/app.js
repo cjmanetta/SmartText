@@ -44,19 +44,52 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* REACT HOT LOADER */"use strict";
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	if (false) {
+	  (function () {
+	    var ReactHotAPI = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"),
+	        RootInstanceProvider = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/RootInstanceProvider.js"),
+	        ReactMount = require("react/lib/ReactMount"),
+	        React = require("react");module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () {
+	      return RootInstanceProvider.getRootInstances(ReactMount);
+	    }, React);
+	  })();
+	}(function () {
 
-	var _react = __webpack_require__(1);
+	  "use strict";
 
-	var _react2 = _interopRequireDefault(_react);
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : { "default": obj };
+	  }
 
-	var _greeting = __webpack_require__(157);
+	  var _react = __webpack_require__(1);
 
-	var _greeting2 = _interopRequireDefault(_greeting);
+	  var _react2 = _interopRequireDefault(_react);
 
-	_react2["default"].render(_react2["default"].createElement(_greeting2["default"], { name: "World" }), document.body);
+	  var _greeting = __webpack_require__(157);
+
+	  var _greeting2 = _interopRequireDefault(_greeting);
+
+	  /* REACT HOT LOADER */
+	}).call(undefined);if (false) {
+	  (function () {
+	    module.hot.dispose(function (data) {
+	      data.makeHot = module.makeHot;
+	    });if (module.exports && module.makeHot) {
+	      var makeExportsHot = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/makeExportsHot.js"),
+	          foundReactClasses = false;if (makeExportsHot(module, require("react"))) {
+	        foundReactClasses = true;
+	      }var shouldAcceptModule = true && foundReactClasses;if (shouldAcceptModule) {
+	        module.hot.accept(function (err) {
+	          if (err) {
+	            console.error("Cannot not apply hot update to " + "app.js" + ": " + err.message);
+	          }
+	        });
+	      }
+	    }
+	  })();
+	}
 
 /***/ },
 /* 1 */
@@ -20437,32 +20470,63 @@
 /* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* REACT HOT LOADER */"use strict";
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	if (false) {
+	  (function () {
+	    var ReactHotAPI = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"),
+	        RootInstanceProvider = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/RootInstanceProvider.js"),
+	        ReactMount = require("react/lib/ReactMount"),
+	        React = require("react");module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () {
+	      return RootInstanceProvider.getRootInstances(ReactMount);
+	    }, React);
+	  })();
+	}(function () {
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	  "use strict";
 
-	var _react = __webpack_require__(1);
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
 
-	var _react2 = _interopRequireDefault(_react);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "greeting",
-
-	  render: function render() {
-	    return _react2["default"].createElement(
-	      "div",
-	      { className: "greeting" },
-	      "Hello, ",
-	      this.props.name,
-	      "!"
-	    );
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : { "default": obj };
 	  }
-	});
-	module.exports = exports["default"];
+
+	  var _react = __webpack_require__(1);
+
+	  var _react2 = _interopRequireDefault(_react);
+
+	  exports["default"] = _react2["default"].createClass({
+	    displayName: "greeting",
+
+	    render: function render() {
+	      return _react2["default"].createElement("div", { className: "greeting" }, _react2["default"].createElement("h3", null, "Hello, there ", this.props.name, "!"));
+	    }
+	  });
+
+	  _react2["default"].render(_react2["default"].createElement(Greeting, { name: "World" }), document.body);
+	  module.exports = exports["default"];
+
+	  /* REACT HOT LOADER */
+	}).call(undefined);if (false) {
+	  (function () {
+	    module.hot.dispose(function (data) {
+	      data.makeHot = module.makeHot;
+	    });if (module.exports && module.makeHot) {
+	      var makeExportsHot = require("/Users/amjacobowitz/Desktop/SmartText/node_modules/react-hot-loader/makeExportsHot.js"),
+	          foundReactClasses = false;if (makeExportsHot(module, require("react"))) {
+	        foundReactClasses = true;
+	      }var shouldAcceptModule = true && foundReactClasses;if (shouldAcceptModule) {
+	        module.hot.accept(function (err) {
+	          if (err) {
+	            console.error("Cannot not apply hot update to " + "greeting.js" + ": " + err.message);
+	          }
+	        });
+	      }
+	    }
+	  })();
+	}
 
 /***/ }
 /******/ ]);
