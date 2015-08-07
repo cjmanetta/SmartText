@@ -4,8 +4,14 @@ export default React.createClass({
   render: function() {
     return (
       <div className="greeting">
-        <h3>Hello, {this.props.name}!</h3>
+        <h3>Hello, there {this.props.name}!</h3>
       </div>
     );
   },
 });
+
+
+React.render(
+  <Greeting name="World"/>,
+  document.body
+);
