@@ -13,17 +13,12 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ["babel-loader"],
+        loaders: ["react-hot", "babel-loader"],
       },
       {
         test: /\.html$/,
         loader: "file?name=[name].[ext]",
       },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: ["react-hot", "babel-loader"],
-      }
     ]
   }
 };
