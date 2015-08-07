@@ -8,8 +8,8 @@ import Footer from "./Footer"
 export default React.createClass({
   render: function() {
     return (
-      <div className="greeting">
-        <h3>Hello, there!</h3>
+      <div className="container">
+        <h3>Hello, Screw the browser!</h3>
         <Footer />
       </div>
     );
