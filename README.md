@@ -39,9 +39,9 @@ AFTER LESSON
 
 #Technology
 - Database: MongoDB with Mongoose
-- Framework: Express on Node
+- Framework: Express/Webpack on Node
 - Front-End: React, HTML5, CSS, and SASS
-- Other: _Underscore.js, jQuery, webpack, socket.io
+- Other: _Underscore.js, jQuery, socket.io
 
 
 
