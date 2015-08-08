@@ -11,7 +11,7 @@ var Student = require('../models/student').Student
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
   if (req.body && typeof req.body === 'object' && '_method' in req.body){
-    var method = req.body_method
+    var method = req.body._method
     delete req.body._method
     return method
   }
@@ -21,20 +21,18 @@ router.route('/')
 .get(function(req, res) {
   Student.find({}, function(err, students){
     res.render('./students/index', { students: students })
+    res.render('./students/index')
   });
 })
-
 .post(function(req, res){
-  var firstname = req.body.firstname
+  var first_name = req.body.first_name
   var last_initial = req.body.last_initial
   var username = req.body.username
-  var today = new Date();
 
   Student.create({
     username: username,
-    firstname: firstname,
-    last_initial: last_initial,
-    date: today
+    first_name: first_name,
+    last_initial: last_initial
     }, function(err, student){
     if (err){
       console.log('error!!!')
@@ -58,22 +56,20 @@ router.get('/:id/edit', function(req, res){
 router.route('/:id')
 .put(function(req,res){
 
-  var firstname = req.body.firstname
+  var first_name = req.body.first_name
   var last_initial = req.body.last_initial
   var username = req.body.username
-  var today = new Date();
 
 Student.findById(req.params.id, function(err, student){
   Student.update({
     username: username,
-    firstname: firstname,
-    last_initial: last_initial,
-    date: today
+    first_name: first_name,
+    last_initial: last_initial
   }, function(err, student){
     if (err){
       return console.error(err)
     } else {
-      console.log('edited: ' + teacher)
+      console.log('edited: ' + student)
       res.redirect('/students')
     }
   })

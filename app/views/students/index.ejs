@@ -4,9 +4,7 @@
 
 <% for (var i=0; i < students.length; i++){ %>
 
-  <%= "" + students[i].username %>
-  <br>
-  <%= students[i].firstname + " " + students[i].last_initial + "\'s login name: " + students[i].username %>
+  <%= students[i].first_name + " " + students[i].last_initial + "\'s login name: " + students[i].username %>
   <br>
 
   <form action="/students/<%= students[i]._id %>" method="post">
