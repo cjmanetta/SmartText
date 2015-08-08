@@ -26,7 +26,6 @@ var SignUp = React.createClass({
     });
 
     request.done(function(serverData){
-      debugger
       signUp.transitionTo('teachers', {id: serverData.teacher._id}, serverData);
     });
 
@@ -35,7 +34,6 @@ var SignUp = React.createClass({
     });
   },
   render: function() {
-    debugger
     return (
       <form id="signUp" action="/teachers" method="post" onSubmit={this.handleSubmit}>
         <div className="form-group">
