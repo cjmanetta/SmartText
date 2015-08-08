@@ -61,25 +61,28 @@ router.route('/:id')
   })
 })
 
-.put(function(req,res){
-
-  var first_name = req.body.first_name
-  var last_initial = req.body.last_initial
-  var username = req.body.username
-
+.put(function(req, res){
   Student.findById(req.params.id, function(err, student){
-    Student.update({
-      username: username,
-      first_name: first_name,
-      last_initial: last_initial
-    }, function(err, student){
-      if (err){
-        return console.error(err)
-      } else {
-        console.log('edited: ' + student)
-        res.redirect('/students')
-      }
-    })
+    if (err) {
+      return console.error(err)
+    } else {
+      student.first_name = req.body.first_name;
+      student.last_name = req.body.last_name;
+      student.username = req.body.username;
+      student.password = req.body.password;
+
+      student.save(function(err, student){
+        console.log('edited: ' + student);
+        res.format({
+          'text/html': function(){
+            res.redirect('/students')
+          },
+          'application/json': function(){
+            res.send({student: student})
+          }
+        })
+      })
+    }
   })
 })
 
