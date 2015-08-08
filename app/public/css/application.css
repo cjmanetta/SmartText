@@ -88,3 +88,16 @@ body {
 .highlight{
   background-color: yellow;
 }
+
+.scrol{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.h350px{
+  height: 350px;
+}
+
+.fs14px{
+  font-size: 14px;
+}
