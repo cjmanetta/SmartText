@@ -1,6 +1,6 @@
-import React from "react";
+var React = require("react");
 
-export default React.createClass({
+var Footer = React.createClass({
   render: function() {
     return (
       <div id="footer" className="bg-g h100 tac pt30px cr">
@@ -9,3 +9,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = Footer;

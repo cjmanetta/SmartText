@@ -1,7 +1,7 @@
-import React from "react";
+var React = require("react");
 import RightBar from './RightBar';
 
-export default React.createClass({
+var TeacherView = React.createClass({
   render: function() {
     return (
       <div className="container">
@@ -11,3 +11,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = TeacherView;
