@@ -66,9 +66,9 @@ router.route('/')
 router.get('/new', function(req, res){
 	res.format({
 		'text/html': function(){
-			res.render('./teachers/new');		
+			res.render('./teachers/new');
 		}
-	})	
+	})
 })
 
 router.get('/:id/edit', function(req, res){
