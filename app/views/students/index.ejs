@@ -1,0 +1,17 @@
+<h1>Students</h1>
+
+<a href="/students/new">Add a student</a>
+
+<% for (var i=0; i < students.length; i++){ %>
+
+  <%= "" + students[i].username %>
+  <br>
+  <%= students[i].firstname + " " + students[i].last_initial + "\'s login name: " + students[i].username %>
+  <br>
+
+  <form action="/students/<%= students[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/students/<%= students[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
