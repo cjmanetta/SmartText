@@ -59,27 +59,16 @@ var TeacherView = React.createClass({
     });
   },
   render: function() {
-<<<<<<< HEAD
     var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
     var student = {_id: "24", first_name: "robert", username: "robertb", password: "1234"}
-=======
-    // map over the studentarray (this.state.students)
 
-    // pass in as props all the info that will display in
-    // each tile
-
->>>>>>> master
     return (
 
       <div className="container">
         <Header teacher={teacher} student={student} />
         <h3>Teacher View Component</h3>
-<<<<<<< HEAD
         <RouteHandler />
-=======
         <StudentTile student={this.state.students[0]}  lesson={this.state.lesson} />
-
->>>>>>> master
         <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="start" labelTwo="stop"/>
       </div>
     );
