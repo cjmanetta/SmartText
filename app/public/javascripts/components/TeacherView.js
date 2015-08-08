@@ -1,5 +1,11 @@
 var React = require("react");
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
+
+var Header = require("./Header");
 var RightBar = require('./RightBar');
+
+//Sockets
 var StudentTile = require('./StudentTile');
 var socket = io.connect('http://localhost:8080');
 
@@ -23,7 +29,7 @@ var TeacherView = React.createClass({
     $('#studentText').html(textFromStudent);
   },
   addStudent: function(studentData){
-    // not sure where to call addStudent yet, but 
+    // not sure where to call addStudent yet, but
     // probably somewhere in the login component
    var students =  this.state.students;
    students.push(studentData)
@@ -47,16 +53,16 @@ var TeacherView = React.createClass({
     });
   },
   render: function() {
-    // map over the studentarray (this.state.students)
+    var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+    var student = {_id: "24", first_name: "robert", username: "robertb", password: "1234"}
 
-    // pass in as props all the info that will display in 
-    // each tile
-    
     return (
-      <div className="container">
-        <h3>Teacher View Component</h3>
-        <StudentTile student={this.state.students[0]}  lesson={this.state.lesson} />
 
+      <div className="container">
+        <Header teacher={teacher} student={student} />
+        <h3>Teacher View Component</h3>
+        <RouteHandler />
+        <StudentTile student={this.state.students[0]}  lesson={this.state.lesson} />
         <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="start" labelTwo="stop"/>
       </div>
     );

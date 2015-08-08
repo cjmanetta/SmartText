@@ -47,15 +47,27 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+<<<<<<< HEAD
 	var StudentView = __webpack_require__(157);
 	var TeacherView = __webpack_require__(161);
 	var Home = __webpack_require__(163);
 	var _ = __webpack_require__(205);
 	var Router = __webpack_require__(166);
+=======
+	var _ = __webpack_require__(157);
+	var Router = __webpack_require__(158);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 	var Route = Router.Route;
 	var DefaultRoute = Router.DefaultRoute;
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
+
+	var StudentView = __webpack_require__(197);
+	var TeacherView = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/TeacherView\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var StudentPanel = __webpack_require__(202);
+	var LessonPanel = __webpack_require__(203);
+	var Grid = __webpack_require__(204);
+	var Home = __webpack_require__(205);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -83,7 +95,13 @@
 	  { handler: App },
 	  React.createElement(Route, { path: "/", name: "home", handler: Home }),
 	  React.createElement(Route, { path: "/students", name: "students", handler: StudentView }),
-	  React.createElement(Route, { path: "/teachers", name: "teachers", handler: TeacherView })
+	  React.createElement(
+	    Route,
+	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
+	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
+	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
+	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid })
+	  )
 	);
 
 	//Top Level app component that manages whole app state
@@ -20481,150 +20499,148 @@
 /* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
+	//     http://underscorejs.org
+	//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	//     Underscore may be freely distributed under the MIT license.
 
-	var React = __webpack_require__(1);
-	var RightBar = __webpack_require__(158);
-	var MainText = __webpack_require__(160);
-	var socket = io.connect('http://localhost:8080');
+	(function() {
 
-	var StudentView = React.createClass({
-	  displayName: 'StudentView',
+	  // Baseline setup
+	  // --------------
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      lesson: { prompt: "", text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' }
+	  // Establish the root object, `window` in the browser, or `exports` on the server.
+	  var root = this;
+
+	  // Save the previous value of the `_` variable.
+	  var previousUnderscore = root._;
+
+	  // Save bytes in the minified (but not gzipped) version:
+	  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+
+	  // Create quick reference variables for speed access to core prototypes.
+	  var
+	    push             = ArrayProto.push,
+	    slice            = ArrayProto.slice,
+	    toString         = ObjProto.toString,
+	    hasOwnProperty   = ObjProto.hasOwnProperty;
+
+	  // All **ECMAScript 5** native function implementations that we hope to use
+	  // are declared here.
+	  var
+	    nativeIsArray      = Array.isArray,
+	    nativeKeys         = Object.keys,
+	    nativeBind         = FuncProto.bind,
+	    nativeCreate       = Object.create;
+
+	  // Naked function reference for surrogate-prototype-swapping.
+	  var Ctor = function(){};
+
+	  // Create a safe reference to the Underscore object for use below.
+	  var _ = function(obj) {
+	    if (obj instanceof _) return obj;
+	    if (!(this instanceof _)) return new _(obj);
+	    this._wrapped = obj;
+	  };
+
+	  // Export the Underscore object for **Node.js**, with
+	  // backwards-compatibility for the old `require()` API. If we're in
+	  // the browser, add `_` as a global object.
+	  if (true) {
+	    if (typeof module !== 'undefined' && module.exports) {
+	      exports = module.exports = _;
+	    }
+	    exports._ = _;
+	  } else {
+	    root._ = _;
+	  }
+
+	  // Current version.
+	  _.VERSION = '1.8.3';
+
+	  // Internal function that returns an efficient (for current engines) version
+	  // of the passed-in callback, to be repeatedly applied in other Underscore
+	  // functions.
+	  var optimizeCb = function(func, context, argCount) {
+	    if (context === void 0) return func;
+	    switch (argCount == null ? 3 : argCount) {
+	      case 1: return function(value) {
+	        return func.call(context, value);
+	      };
+	      case 2: return function(value, other) {
+	        return func.call(context, value, other);
+	      };
+	      case 3: return function(value, index, collection) {
+	        return func.call(context, value, index, collection);
+	      };
+	      case 4: return function(accumulator, value, index, collection) {
+	        return func.call(context, accumulator, value, index, collection);
+	      };
+	    }
+	    return function() {
+	      return func.apply(context, arguments);
 	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.getLesson();
-	  },
-	  handleSelect: function handleSelect(selection) {
-	    // var socket = io('/teacher')
+	  };
 
-	    var selectedRange = selection.getRangeAt(0);
-	    var selectedText = selectedRange.extractContents();
-	    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-	    selectedRange.insertNode(highlightSpan[0]);
+	  // A mostly-internal function to generate callbacks that can be applied
+	  // to each element in a collection, returning the desired result — either
+	  // identity, an arbitrary callback, a property matcher, or a property accessor.
+	  var cb = function(value, context, argCount) {
+	    if (value == null) return _.identity;
+	    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
+	    if (_.isObject(value)) return _.matcher(value);
+	    return _.property(value);
+	  };
+	  _.iteratee = function(value, context) {
+	    return cb(value, context, Infinity);
+	  };
 
-	    // I need to add the clear selection functionality here
-	    console.log($('#mainText').html());
-	    var highlightedText = $('#mainText').html();
-	    socket.emit('select', {
-	      user: this.state.user,
-	      selection: highlightedText
-	    });
-	  },
-	  getLesson: function getLesson() {
-	    //here is where the api call would happen
-	    //to recieve the lesson which is active
-	    //for that class
+	  // An internal function for creating assigner functions.
+	  var createAssigner = function(keysFunc, undefinedOnly) {
+	    return function(obj) {
+	      var length = arguments.length;
+	      if (length < 2 || obj == null) return obj;
+	      for (var index = 1; index < length; index++) {
+	        var source = arguments[index],
+	            keys = keysFunc(source),
+	            l = keys.length;
+	        for (var i = 0; i < l; i++) {
+	          var key = keys[i];
+	          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+	        }
+	      }
+	      return obj;
+	    };
+	  };
 
-	    //stubbed for right now
-	    var newLesson = { prompt: "BEGINNING Please look at the text and highlight the best example of a character showing caring.", text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" };
+	  // An internal function for creating a new object that inherits from another.
+	  var baseCreate = function(prototype) {
+	    if (!_.isObject(prototype)) return {};
+	    if (nativeCreate) return nativeCreate(prototype);
+	    Ctor.prototype = prototype;
+	    var result = new Ctor;
+	    Ctor.prototype = null;
+	    return result;
+	  };
 
-	    this.setState({
-	      lesson: newLesson
-	    });
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { className: 'container' },
-	      React.createElement(
-	        'h1',
-	        null,
-	        'Student View'
-	      ),
-	      React.createElement(MainText, { lesson: this.state.lesson, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { lesson: this.state.lesson, user: this.state.user, actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: 'clear', labelTwo: 'submit' })
-	    );
-	  }
-	});
+	  var property = function(key) {
+	    return function(obj) {
+	      return obj == null ? void 0 : obj[key];
+	    };
+	  };
 
-	module.exports = StudentView;
+	  // Helper for collection methods to determine whether a collection
+	  // should be iterated as an array or as an object
+	  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+	  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+	  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+	  var getLength = property('length');
+	  var isArrayLike = function(collection) {
+	    var length = getLength(collection);
+	    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+	  };
 
-/***/ },
-/* 158 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var QuestionBox = __webpack_require__(159);
-
-	var RightBar = React.createClass({
-	  displayName: "RightBar",
-
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      { id: "rightBar", className: "pf w20 bcp tal t0 r0 h100 p15px" },
-	      React.createElement(
-	        "div",
-	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { question: this.props.lesson.prompt }),
-	        React.createElement(
-	          "div",
-	          { className: "button-group pa b0 r0" },
-	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionOne },
-	            this.props.labelOne
-	          ),
-	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionTwo },
-	            this.props.labelTwo
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = RightBar;
-
-/***/ },
-/* 159 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	var QuestionBox = React.createClass({
-	  displayName: "QuestionBox",
-
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      { id: "questionBox", className: "p15px db bcy mt10" },
-	      React.createElement(
-	        "h3",
-	        null,
-	        "Question:"
-	      ),
-	      React.createElement(
-	        "p",
-	        null,
-	        this.props.question
-	      )
-	    );
-	  }
-	});
-
-	module.exports = QuestionBox;
-
-/***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
+<<<<<<< HEAD
 	var MainText = React.createClass({
 	  displayName: "MainText",
 
@@ -20973,6 +20989,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+=======
+	  // Collection Functions
+	  // --------------------
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -21682,15 +21702,22 @@
 	    if (Array.isArray(obj)) {
 	        var compacted = [];
 
+<<<<<<< HEAD
 	        for (var i = 0, il = obj.length; i < il; ++i) {
 	            if (typeof obj[i] !== 'undefined') {
 	                compacted.push(obj[i]);
 	            }
 	        }
+=======
+/***/ },
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	        return compacted;
 	    }
 
+<<<<<<< HEAD
 	    var keys = Object.keys(obj);
 	    for (i = 0, il = keys.length; i < il; ++i) {
 	        var key = keys[i];
@@ -21722,6 +21749,40 @@
 
 /***/ },
 /* 176 */
+=======
+	exports.DefaultRoute = __webpack_require__(159);
+	exports.Link = __webpack_require__(172);
+	exports.NotFoundRoute = __webpack_require__(173);
+	exports.Redirect = __webpack_require__(174);
+	exports.Route = __webpack_require__(171);
+	exports.ActiveHandler = __webpack_require__(169);
+	exports.RouteHandler = exports.ActiveHandler;
+
+	exports.HashLocation = __webpack_require__(175);
+	exports.HistoryLocation = __webpack_require__(178);
+	exports.RefreshLocation = __webpack_require__(179);
+	exports.StaticLocation = __webpack_require__(180);
+	exports.TestLocation = __webpack_require__(181);
+
+	exports.ImitateBrowserBehavior = __webpack_require__(182);
+	exports.ScrollToTopBehavior = __webpack_require__(183);
+
+	exports.History = __webpack_require__(177);
+	exports.Navigation = __webpack_require__(184);
+	exports.State = __webpack_require__(185);
+
+	exports.createRoute = __webpack_require__(161).createRoute;
+	exports.createDefaultRoute = __webpack_require__(161).createDefaultRoute;
+	exports.createNotFoundRoute = __webpack_require__(161).createNotFoundRoute;
+	exports.createRedirect = __webpack_require__(161).createRedirect;
+	exports.createRoutesFromReactChildren = __webpack_require__(186);
+
+	exports.create = __webpack_require__(187);
+	exports.run = __webpack_require__(196);
+
+/***/ },
+/* 159 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
@@ -21729,7 +21790,13 @@
 	var Utils = __webpack_require__(175);
 
 
+<<<<<<< HEAD
 	// Declare internals
+=======
+	var PropTypes = __webpack_require__(160);
+	var RouteHandler = __webpack_require__(169);
+	var Route = __webpack_require__(171);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	var internals = {
 	    delimiter: '&',
@@ -21772,13 +21839,25 @@
 	};
 
 
+<<<<<<< HEAD
 	internals.parseObject = function (chain, val, options) {
+=======
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    if (!chain.length) {
 	        return val;
 	    }
 
+<<<<<<< HEAD
 	    var root = chain.shift();
+=======
+	var assign = __webpack_require__(13);
+	var ReactPropTypes = __webpack_require__(1).PropTypes;
+	var Route = __webpack_require__(161);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    var obj = {};
 	    if (root === '[]') {
@@ -21813,7 +21892,13 @@
 	        return;
 	    }
 
+<<<<<<< HEAD
 	    // The regex chunks
+=======
+/***/ },
+/* 161 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    var parent = /^([^\[\]]*)/;
 	    var child = /(\[[^\[\]]*\])/g;
@@ -21822,7 +21907,14 @@
 
 	    var segment = parent.exec(key);
 
+<<<<<<< HEAD
 	    // Don't allow them to overwrite object prototype properties
+=======
+	var assign = __webpack_require__(13);
+	var invariant = __webpack_require__(7);
+	var warning = __webpack_require__(15);
+	var PathUtils = __webpack_require__(162);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    if (Object.prototype.hasOwnProperty(segment[1])) {
 	        return;
@@ -22001,12 +22093,22 @@
 	module.exports = RouteHandler;
 
 /***/ },
+<<<<<<< HEAD
 /* 178 */
+=======
+/* 162 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+=======
+	var invariant = __webpack_require__(7);
+	var assign = __webpack_require__(163);
+	var qs = __webpack_require__(164);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -22140,8 +22242,13 @@
 	module.exports = Route;
 
 /***/ },
+<<<<<<< HEAD
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
+=======
+/* 163 */
+/***/ function(module, exports) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	'use strict';
 
@@ -22151,6 +22258,7 @@
 
 	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
+<<<<<<< HEAD
 	var React = __webpack_require__(1);
 	var assign = __webpack_require__(13);
 	var PropTypes = __webpack_require__(168);
@@ -22158,11 +22266,19 @@
 	function isLeftClickEvent(event) {
 	  return event.button === 0;
 	}
+=======
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(165);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	function isModifiedEvent(event) {
 	  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 	}
 
+<<<<<<< HEAD
 	/**
 	 * <Link> components are used to create an <a> element that links to a route.
 	 * When that route is active, the link gets an "active" class name (or the
@@ -22181,15 +22297,25 @@
 	 *
 	 *   <Link to="showPost" params={{ postID: "123" }} query={{ show:true }}/>
 	 */
+=======
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	var Link = (function (_React$Component) {
 	  function Link() {
 	    _classCallCheck(this, Link);
 
+<<<<<<< HEAD
 	    if (_React$Component != null) {
 	      _React$Component.apply(this, arguments);
 	    }
 	  }
+=======
+	var Stringify = __webpack_require__(166);
+	var Parse = __webpack_require__(168);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  _inherits(Link, _React$Component);
 
@@ -22212,6 +22338,7 @@
 	  }, {
 	    key: 'getHref',
 
+<<<<<<< HEAD
 	    /**
 	     * Returns the value of the "href" attribute to use on the DOM element.
 	     */
@@ -22220,6 +22347,11 @@
 	    }
 	  }, {
 	    key: 'getClassName',
+=======
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    /**
 	     * Returns the value of the "class" attribute to use on the DOM element, which contains
@@ -22228,7 +22360,11 @@
 	    value: function getClassName() {
 	      var className = this.props.className;
 
+<<<<<<< HEAD
 	      if (this.getActiveState()) className += ' ' + this.props.activeClassName;
+=======
+	var Utils = __webpack_require__(167);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	      return className;
 	    }
@@ -22312,8 +22448,14 @@
 
 	  _inherits(NotFoundRoute, _Route);
 
+<<<<<<< HEAD
 	  return NotFoundRoute;
 	})(Route);
+=======
+/***/ },
+/* 167 */
+/***/ function(module, exports) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	// TODO: Include these in the above class definition
 	// once we can use ES7 property initializers.
@@ -22497,15 +22639,24 @@
 	module.exports = HashLocation;
 
 /***/ },
+<<<<<<< HEAD
 /* 184 */
 /***/ function(module, exports) {
+=======
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Actions that modify the URL.
 	 */
 	'use strict';
 
+<<<<<<< HEAD
 	var LocationActions = {
+=======
+	var Utils = __webpack_require__(167);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  /**
 	   * Indicates a new location is being pushed to the history stack.
@@ -22689,7 +22840,11 @@
 	module.exports = RefreshLocation;
 
 /***/ },
+<<<<<<< HEAD
 /* 188 */
+=======
+/* 169 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22698,7 +22853,16 @@
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+<<<<<<< HEAD
 	var invariant = __webpack_require__(7);
+=======
+	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+	var React = __webpack_require__(1);
+	var ContextWrapper = __webpack_require__(170);
+	var assign = __webpack_require__(13);
+	var PropTypes = __webpack_require__(160);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	function throwCannotModify() {
 	  invariant(false, 'You cannot modify a static location');
@@ -22743,7 +22907,11 @@
 	module.exports = StaticLocation;
 
 /***/ },
+<<<<<<< HEAD
 /* 189 */
+=======
+/* 170 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22774,6 +22942,7 @@
 	    get: function () {
 	      return false;
 	    }
+<<<<<<< HEAD
 	  }, {
 	    key: '_updateHistoryLength',
 	    value: function _updateHistoryLength() {
@@ -22786,6 +22955,18 @@
 	        path: this.getCurrentPath(),
 	        type: type
 	      };
+=======
+	  }]);
+
+	  return ContextWrapper;
+	})(React.Component);
+
+	module.exports = ContextWrapper;
+
+/***/ },
+/* 171 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	      for (var i = 0, len = this.listeners.length; i < len; ++i) this.listeners[i].call(this, change);
 	    }
@@ -22839,6 +23020,7 @@
 	  return TestLocation;
 	})();
 
+<<<<<<< HEAD
 	module.exports = TestLocation;
 
 /***/ },
@@ -22848,6 +23030,12 @@
 	'use strict';
 
 	var LocationActions = __webpack_require__(184);
+=======
+	var React = __webpack_require__(1);
+	var invariant = __webpack_require__(7);
+	var PropTypes = __webpack_require__(160);
+	var RouteHandler = __webpack_require__(169);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * A scroll behavior that attempts to imitate the default behavior
@@ -22896,12 +23084,28 @@
 	module.exports = ScrollToTopBehavior;
 
 /***/ },
+<<<<<<< HEAD
 /* 192 */
+=======
+/* 172 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var PropTypes = __webpack_require__(168);
+=======
+	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+	var React = __webpack_require__(1);
+	var assign = __webpack_require__(13);
+	var PropTypes = __webpack_require__(160);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * A mixin for components that modify the URL.
@@ -22971,12 +23175,26 @@
 	module.exports = Navigation;
 
 /***/ },
+<<<<<<< HEAD
 /* 193 */
+=======
+/* 173 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var PropTypes = __webpack_require__(168);
+=======
+	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+	var PropTypes = __webpack_require__(160);
+	var RouteHandler = __webpack_require__(169);
+	var Route = __webpack_require__(171);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * A mixin for components that need to know the path, routes, URL
@@ -23050,12 +23268,17 @@
 	module.exports = State;
 
 /***/ },
+<<<<<<< HEAD
 /* 194 */
+=======
+/* 174 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W084 */
 	'use strict';
 
+<<<<<<< HEAD
 	var React = __webpack_require__(1);
 	var assign = __webpack_require__(13);
 	var warning = __webpack_require__(15);
@@ -23063,6 +23286,14 @@
 	var NotFoundRoute = __webpack_require__(181);
 	var Redirect = __webpack_require__(182);
 	var Route = __webpack_require__(169);
+=======
+	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+	var PropTypes = __webpack_require__(160);
+	var Route = __webpack_require__(171);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	function checkPropTypes(componentName, propTypes, props) {
 	  componentName = componentName || 'UnknownComponent';
@@ -23088,14 +23319,21 @@
 	  return options;
 	}
 
+<<<<<<< HEAD
 	function createRouteFromReactElement(element) {
 	  if (!React.isValidElement(element)) {
 	    return;
 	  }var type = element.type;
 	  var props = assign({}, type.defaultProps, element.props);
+=======
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  if (type.propTypes) checkPropTypes(type.displayName, type.propTypes, props);
 
+<<<<<<< HEAD
 	  if (type === DefaultRoute) {
 	    return Route.createDefaultRoute(createRouteOptions(props));
 	  }if (type === NotFoundRoute) {
@@ -23106,6 +23344,17 @@
 	    if (props.children) createRoutesFromReactChildren(props.children);
 	  });
 	}
+=======
+	var LocationActions = __webpack_require__(176);
+	var History = __webpack_require__(177);
+
+	var _listeners = [];
+	var _isListening = false;
+	var _actionType;
+
+	function notifyChange(type) {
+	  if (type === LocationActions.PUSH) History.length += 1;
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Creates and returns an array of routes created from the given
@@ -23227,11 +23476,17 @@
 	  }return true;
 	}
 
+<<<<<<< HEAD
 	function queryIsActive(activeQuery, query) {
 	  for (var property in query) if (String(activeQuery[property]) !== String(query[property])) {
 	    return false;
 	  }return true;
 	}
+=======
+/***/ },
+/* 176 */
+/***/ function(module, exports) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Creates and returns a new router using the given options. A router
@@ -23278,7 +23533,13 @@
 
 	  var Router = React.createClass({
 
+<<<<<<< HEAD
 	    displayName: 'Router',
+=======
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    statics: {
 
@@ -23317,6 +23578,7 @@
 	        Router.refresh();
 	      },
 
+<<<<<<< HEAD
 	      /**
 	       * Performs a match of the given path against this router and returns an object
 	       * with the { routes, params, pathname, query } that match. Returns null if no
@@ -23325,6 +23587,11 @@
 	      match: function match(path) {
 	        return Match.findMatch(Router.routes, path);
 	      },
+=======
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	      /**
 	       * Returns an absolute URL path created from the given route
@@ -23337,7 +23604,12 @@
 	        } else {
 	          var route = to instanceof Route ? to : Router.namedRoutes[to];
 
+<<<<<<< HEAD
 	          invariant(route instanceof Route, 'Cannot find a route named "%s"', to);
+=======
+	var LocationActions = __webpack_require__(176);
+	var History = __webpack_require__(177);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	          path = route.path;
 	        }
@@ -23454,15 +23726,26 @@
 
 	        warning(match != null, 'No route matches path "%s". Make sure you have <Route path="%s"> somewhere in your routes', path, path);
 
+<<<<<<< HEAD
 	        if (match == null) match = {};
+=======
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	        var prevRoutes = state.routes || [];
 	        var prevParams = state.params || {};
 	        var prevQuery = state.query || {};
 
+<<<<<<< HEAD
 	        var nextRoutes = match.routes || [];
 	        var nextParams = match.params || {};
 	        var nextQuery = match.query || {};
+=======
+	var HistoryLocation = __webpack_require__(178);
+	var History = __webpack_require__(177);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	        var fromRoutes, toRoutes;
 	        if (prevRoutes.length) {
@@ -23512,7 +23795,13 @@
 	        dispatchHandler = function (error, transition, newState) {
 	          if (error) Router.handleError(error);
 
+<<<<<<< HEAD
 	          if (pendingTransition !== transition) return;
+=======
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	          pendingTransition = null;
 
@@ -23562,12 +23851,18 @@
 	        mountedComponents[routeDepth] = component;
 	      },
 
+<<<<<<< HEAD
 	      /**
 	       * Returns the current URL path + query string.
 	       */
 	      getCurrentPath: function getCurrentPath() {
 	        return state.path;
 	      },
+=======
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	      /**
 	       * Returns the current URL path without the query string.
@@ -23590,12 +23885,18 @@
 	        return state.query;
 	      },
 
+<<<<<<< HEAD
 	      /**
 	       * Returns an array of the currently active routes.
 	       */
 	      getCurrentRoutes: function getCurrentRoutes() {
 	        return state.routes;
 	      },
+=======
+	var invariant = __webpack_require__(7);
+	var LocationActions = __webpack_require__(176);
+	var History = __webpack_require__(177);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	      /**
 	       * Returns true if the given route, params, and query are active.
@@ -23656,11 +23957,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
+<<<<<<< HEAD
 /* 196 */
+=======
+/* 182 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var invariant = __webpack_require__(7);
 	var canUseDOM = __webpack_require__(51).canUseDOM;
 	var getWindowScrollPosition = __webpack_require__(197);
@@ -23682,6 +23988,9 @@
 	    return route.ignoreScrollBehavior;
 	  });
 	}
+=======
+	var LocationActions = __webpack_require__(176);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Provides the router with the ability to manage window scroll position
@@ -23715,9 +24024,15 @@
 	    invariant(this.constructor.getScrollBehavior() == null || canUseDOM, 'Cannot use scroll behavior without a DOM');
 	  },
 
+<<<<<<< HEAD
 	  componentDidMount: function componentDidMount() {
 	    this._updateScroll();
 	  },
+=======
+/***/ },
+/* 183 */
+/***/ function(module, exports) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 	    this._updateScroll(prevState);
@@ -23736,13 +24051,21 @@
 	module.exports = ScrollHistory;
 
 /***/ },
+<<<<<<< HEAD
 /* 197 */
+=======
+/* 184 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var invariant = __webpack_require__(7);
 	var canUseDOM = __webpack_require__(51).canUseDOM;
+=======
+	var PropTypes = __webpack_require__(160);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Returns the current scroll position of the window as { x, y }.
@@ -23777,15 +24100,23 @@
 	module.exports = isReactChildren;
 
 /***/ },
+<<<<<<< HEAD
 /* 199 */
+=======
+/* 185 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W058 */
 
 	'use strict';
 
+<<<<<<< HEAD
 	var Cancellation = __webpack_require__(200);
 	var Redirect = __webpack_require__(201);
+=======
+	var PropTypes = __webpack_require__(160);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * Encapsulates a transition to a given path.
@@ -23857,6 +24188,7 @@
 	module.exports = Transition;
 
 /***/ },
+<<<<<<< HEAD
 /* 200 */
 /***/ function(module, exports) {
 
@@ -23889,11 +24221,24 @@
 
 /***/ },
 /* 202 */
+=======
+/* 186 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+=======
+	var React = __webpack_require__(1);
+	var assign = __webpack_require__(13);
+	var warning = __webpack_require__(15);
+	var DefaultRoute = __webpack_require__(159);
+	var NotFoundRoute = __webpack_require__(173);
+	var Redirect = __webpack_require__(174);
+	var Route = __webpack_require__(161);
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -23989,12 +24334,46 @@
 	module.exports = supportsHistory;
 
 /***/ },
+<<<<<<< HEAD
 /* 204 */
+=======
+/* 187 */
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+<<<<<<< HEAD
 	var createRouter = __webpack_require__(195);
+=======
+	var React = __webpack_require__(1);
+	var warning = __webpack_require__(15);
+	var invariant = __webpack_require__(7);
+	var canUseDOM = __webpack_require__(51).canUseDOM;
+	var LocationActions = __webpack_require__(176);
+	var ImitateBrowserBehavior = __webpack_require__(182);
+	var HashLocation = __webpack_require__(175);
+	var HistoryLocation = __webpack_require__(178);
+	var RefreshLocation = __webpack_require__(179);
+	var StaticLocation = __webpack_require__(180);
+	var ScrollHistory = __webpack_require__(188);
+	var createRoutesFromReactChildren = __webpack_require__(186);
+	var isReactChildren = __webpack_require__(190);
+	var Transition = __webpack_require__(191);
+	var PropTypes = __webpack_require__(160);
+	var Redirect = __webpack_require__(193);
+	var History = __webpack_require__(177);
+	var Cancellation = __webpack_require__(192);
+	var Match = __webpack_require__(194);
+	var Route = __webpack_require__(161);
+	var supportsHistory = __webpack_require__(195);
+	var PathUtils = __webpack_require__(162);
+
+	/**
+	 * The default location for new routers.
+	 */
+	var DEFAULT_LOCATION = canUseDOM ? HashLocation : '/';
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	/**
 	 * A high-level convenience method that creates, configures, and
@@ -24859,6 +25238,7 @@
 	    };
 	  };
 
+<<<<<<< HEAD
 	  // Returns a function, that, as long as it continues to be invoked, will not
 	  // be triggered. The function will be called after it stops being called for
 	  // N milliseconds. If `immediate` is passed, trigger the function on the
@@ -24963,6 +25343,292 @@
 	    // Constructor is a special case.
 	    var prop = 'constructor';
 	    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+=======
+	    },
+
+	    mixins: [ScrollHistory],
+
+	    propTypes: {
+	      children: PropTypes.falsy
+	    },
+
+	    childContextTypes: {
+	      routeDepth: PropTypes.number.isRequired,
+	      router: PropTypes.router.isRequired
+	    },
+
+	    getChildContext: function getChildContext() {
+	      return {
+	        routeDepth: 1,
+	        router: Router
+	      };
+	    },
+
+	    getInitialState: function getInitialState() {
+	      return state = nextState;
+	    },
+
+	    componentWillReceiveProps: function componentWillReceiveProps() {
+	      this.setState(state = nextState);
+	    },
+
+	    componentWillUnmount: function componentWillUnmount() {
+	      Router.stop();
+	    },
+
+	    render: function render() {
+	      var route = Router.getRouteAtDepth(0);
+	      return route ? React.createElement(route.handler, this.props) : null;
+	    }
+
+	  });
+
+	  Router.clearAllRoutes();
+
+	  if (options.routes) Router.addRoutes(options.routes);
+
+	  return Router;
+	}
+
+	module.exports = createRouter;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var invariant = __webpack_require__(7);
+	var canUseDOM = __webpack_require__(51).canUseDOM;
+	var getWindowScrollPosition = __webpack_require__(189);
+
+	function shouldUpdateScroll(state, prevState) {
+	  if (!prevState) {
+	    return true;
+	  } // Don't update scroll position when only the query has changed.
+	  if (state.pathname === prevState.pathname) {
+	    return false;
+	  }var routes = state.routes;
+	  var prevRoutes = prevState.routes;
+
+	  var sharedAncestorRoutes = routes.filter(function (route) {
+	    return prevRoutes.indexOf(route) !== -1;
+	  });
+
+	  return !sharedAncestorRoutes.some(function (route) {
+	    return route.ignoreScrollBehavior;
+	  });
+	}
+
+	/**
+	 * Provides the router with the ability to manage window scroll position
+	 * according to its scroll behavior.
+	 */
+	var ScrollHistory = {
+
+	  statics: {
+
+	    /**
+	     * Records curent scroll position as the last known position for the given URL path.
+	     */
+	    recordScrollPosition: function recordScrollPosition(path) {
+	      if (!this.scrollHistory) this.scrollHistory = {};
+
+	      this.scrollHistory[path] = getWindowScrollPosition();
+	    },
+
+	    /**
+	     * Returns the last known scroll position for the given URL path.
+	     */
+	    getScrollPosition: function getScrollPosition(path) {
+	      if (!this.scrollHistory) this.scrollHistory = {};
+
+	      return this.scrollHistory[path] || null;
+	    }
+
+	  },
+
+	  componentWillMount: function componentWillMount() {
+	    invariant(this.constructor.getScrollBehavior() == null || canUseDOM, 'Cannot use scroll behavior without a DOM');
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this._updateScroll();
+	  },
+
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    this._updateScroll(prevState);
+	  },
+
+	  _updateScroll: function _updateScroll(prevState) {
+	    if (!shouldUpdateScroll(this.state, prevState)) {
+	      return;
+	    }var scrollBehavior = this.constructor.getScrollBehavior();
+
+	    if (scrollBehavior) scrollBehavior.updateScrollPosition(this.constructor.getScrollPosition(this.state.path), this.state.action);
+	  }
+
+	};
+
+	module.exports = ScrollHistory;
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var invariant = __webpack_require__(7);
+	var canUseDOM = __webpack_require__(51).canUseDOM;
+
+	/**
+	 * Returns the current scroll position of the window as { x, y }.
+	 */
+	function getWindowScrollPosition() {
+	  invariant(canUseDOM, 'Cannot get current scroll position without a DOM');
+
+	  return {
+	    x: window.pageXOffset || document.documentElement.scrollLeft,
+	    y: window.pageYOffset || document.documentElement.scrollTop
+	  };
+	}
+
+	module.exports = getWindowScrollPosition;
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	function isValidChild(object) {
+	  return object == null || React.isValidElement(object);
+	}
+
+	function isReactChildren(object) {
+	  return isValidChild(object) || Array.isArray(object) && object.every(isValidChild);
+	}
+
+	module.exports = isReactChildren;
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* jshint -W058 */
+
+	'use strict';
+
+	var Cancellation = __webpack_require__(192);
+	var Redirect = __webpack_require__(193);
+
+	/**
+	 * Encapsulates a transition to a given path.
+	 *
+	 * The willTransitionTo and willTransitionFrom handlers receive
+	 * an instance of this class as their first argument.
+	 */
+	function Transition(path, retry) {
+	  this.path = path;
+	  this.abortReason = null;
+	  // TODO: Change this to router.retryTransition(transition)
+	  this.retry = retry.bind(this);
+	}
+
+	Transition.prototype.abort = function (reason) {
+	  if (this.abortReason == null) this.abortReason = reason || 'ABORT';
+	};
+
+	Transition.prototype.redirect = function (to, params, query) {
+	  this.abort(new Redirect(to, params, query));
+	};
+
+	Transition.prototype.cancel = function () {
+	  this.abort(new Cancellation());
+	};
+
+	Transition.from = function (transition, routes, components, callback) {
+	  routes.reduce(function (callback, route, index) {
+	    return function (error) {
+	      if (error || transition.abortReason) {
+	        callback(error);
+	      } else if (route.onLeave) {
+	        try {
+	          route.onLeave(transition, components[index], callback);
+
+	          // If there is no callback in the argument list, call it automatically.
+	          if (route.onLeave.length < 3) callback();
+	        } catch (e) {
+	          callback(e);
+	        }
+	      } else {
+	        callback();
+	      }
+	    };
+	  }, callback)();
+	};
+
+	Transition.to = function (transition, routes, params, query, callback) {
+	  routes.reduceRight(function (callback, route) {
+	    return function (error) {
+	      if (error || transition.abortReason) {
+	        callback(error);
+	      } else if (route.onEnter) {
+	        try {
+	          route.onEnter(transition, params, query, callback);
+
+	          // If there is no callback in the argument list, call it automatically.
+	          if (route.onEnter.length < 4) callback();
+	        } catch (e) {
+	          callback(e);
+	        }
+	      } else {
+	        callback();
+	      }
+	    };
+	  }, callback)();
+	};
+
+	module.exports = Transition;
+
+/***/ },
+/* 192 */
+/***/ function(module, exports) {
+
+	/**
+	 * Represents a cancellation caused by navigating away
+	 * before the previous transition has fully resolved.
+	 */
+	"use strict";
+
+	function Cancellation() {}
+
+	module.exports = Cancellation;
+
+/***/ },
+/* 193 */
+/***/ function(module, exports) {
+
+	/**
+	 * Encapsulates a redirect to the given route.
+	 */
+	"use strict";
+
+	function Redirect(to, params, query) {
+	  this.to = to;
+	  this.params = params;
+	  this.query = query;
+	}
+
+	module.exports = Redirect;
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    while (nonEnumIdx--) {
 	      prop = nonEnumerableProps[nonEnumIdx];
@@ -24972,6 +25638,7 @@
 	    }
 	  }
 
+<<<<<<< HEAD
 	  // Retrieve the names of an object's own properties.
 	  // Delegates to **ECMAScript 5**'s native `Object.keys`
 	  _.keys = function(obj) {
@@ -25138,6 +25805,157 @@
 	    }
 	    return true;
 	  };
+=======
+	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	/* jshint -W084 */
+	var PathUtils = __webpack_require__(162);
+
+	function deepSearch(route, pathname, query) {
+	  // Check the subtree first to find the most deeply-nested match.
+	  var childRoutes = route.childRoutes;
+	  if (childRoutes) {
+	    var match, childRoute;
+	    for (var i = 0, len = childRoutes.length; i < len; ++i) {
+	      childRoute = childRoutes[i];
+
+	      if (childRoute.isDefault || childRoute.isNotFound) continue; // Check these in order later.
+
+	      if (match = deepSearch(childRoute, pathname, query)) {
+	        // A route in the subtree matched! Add this route and we're done.
+	        match.routes.unshift(route);
+	        return match;
+	      }
+	    }
+	  }
+
+	  // No child routes matched; try the default route.
+	  var defaultRoute = route.defaultRoute;
+	  if (defaultRoute && (params = PathUtils.extractParams(defaultRoute.path, pathname))) {
+	    return new Match(pathname, params, query, [route, defaultRoute]);
+	  } // Does the "not found" route match?
+	  var notFoundRoute = route.notFoundRoute;
+	  if (notFoundRoute && (params = PathUtils.extractParams(notFoundRoute.path, pathname))) {
+	    return new Match(pathname, params, query, [route, notFoundRoute]);
+	  } // Last attempt: check this route.
+	  var params = PathUtils.extractParams(route.path, pathname);
+	  if (params) {
+	    return new Match(pathname, params, query, [route]);
+	  }return null;
+	}
+
+	var Match = (function () {
+	  function Match(pathname, params, query, routes) {
+	    _classCallCheck(this, Match);
+
+	    this.pathname = pathname;
+	    this.params = params;
+	    this.query = query;
+	    this.routes = routes;
+	  }
+
+	  _createClass(Match, null, [{
+	    key: 'findMatch',
+
+	    /**
+	     * Attempts to match depth-first a route in the given route's
+	     * subtree against the given path and returns the match if it
+	     * succeeds, null if no match can be made.
+	     */
+	    value: function findMatch(routes, path) {
+	      var pathname = PathUtils.withoutQuery(path);
+	      var query = PathUtils.extractQuery(path);
+	      var match = null;
+
+	      for (var i = 0, len = routes.length; match == null && i < len; ++i) match = deepSearch(routes[i], pathname, query);
+
+	      return match;
+	    }
+	  }]);
+
+	  return Match;
+	})();
+
+	module.exports = Match;
+
+/***/ },
+/* 195 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	function supportsHistory() {
+	  /*! taken from modernizr
+	   * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
+	   * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+	   * changed to avoid false negatives for Windows Phones: https://github.com/rackt/react-router/issues/586
+	   */
+	  var ua = navigator.userAgent;
+	  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) {
+	    return false;
+	  }
+	  return window.history && 'pushState' in window.history;
+	}
+
+	module.exports = supportsHistory;
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var createRouter = __webpack_require__(187);
+
+	/**
+	 * A high-level convenience method that creates, configures, and
+	 * runs a router in one shot. The method signature is:
+	 *
+	 *   Router.run(routes[, location ], callback);
+	 *
+	 * Using `window.location.hash` to manage the URL, you could do:
+	 *
+	 *   Router.run(routes, function (Handler) {
+	 *     React.render(<Handler/>, document.body);
+	 *   });
+	 * 
+	 * Using HTML5 history and a custom "cursor" prop:
+	 * 
+	 *   Router.run(routes, Router.HistoryLocation, function (Handler) {
+	 *     React.render(<Handler cursor={cursor}/>, document.body);
+	 *   });
+	 *
+	 * Returns the newly created router.
+	 *
+	 * Note: If you need to specify further options for your router such
+	 * as error/abort handling or custom scroll behavior, use Router.create
+	 * instead.
+	 *
+	 *   var router = Router.create(options);
+	 *   router.run(function (Handler) {
+	 *     // ...
+	 *   });
+	 */
+	function runRouter(routes, location, callback) {
+	  if (typeof location === 'function') {
+	    callback = location;
+	    location = null;
+	  }
+
+	  var router = createRouter({
+	    routes: routes,
+	    location: location
+	  });
+
+	  router.run(callback);
+
+	  return router;
+	}
+
+	module.exports = runRouter;
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 
 	  // Internal recursive comparison function for `isEqual`.
@@ -25175,6 +25993,7 @@
 	        return +a === +b;
 	    }
 
+<<<<<<< HEAD
 	    var areArrays = className === '[object Array]';
 	    if (!areArrays) {
 	      if (typeof a != 'object' || typeof b != 'object') return false;
@@ -25205,6 +26024,69 @@
 	    // Add the first object to the stack of traversed objects.
 	    aStack.push(a);
 	    bStack.push(b);
+=======
+	var React = __webpack_require__(1);
+	var RightBar = __webpack_require__(198);
+	var MainText = __webpack_require__(200);
+	var socket = io.connect('http://localhost:8080');
+
+	var StudentView = React.createClass({
+	  displayName: 'StudentView',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      lesson: { prompt: "", text: "", author: "", title: "" },
+	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' }
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getLesson();
+	  },
+	  handleSelect: function handleSelect(selection) {
+	    // var socket = io('/teacher')
+
+	    var selectedRange = selection.getRangeAt(0);
+	    var selectedText = selectedRange.extractContents();
+	    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+	    selectedRange.insertNode(highlightSpan[0]);
+
+	    // I need to add the clear selection functionality here
+	    console.log($('#mainText').html());
+	    var highlightedText = $('#mainText').html();
+	    socket.emit('select', {
+	      user: this.state.user,
+	      selection: highlightedText
+	    });
+	  },
+	  getLesson: function getLesson() {
+	    //here is where the api call would happen
+	    //to recieve the lesson which is active
+	    //for that class
+
+	    //stubbed for right now
+	    var newLesson = { prompt: "BEGINNING Please look at the text and highlight the best example of a character showing caring.", text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" };
+
+	    this.setState({
+	      lesson: newLesson
+	    });
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'container' },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Student View'
+	      ),
+	      React.createElement(MainText, { lesson: this.state.lesson, selectText: this.handleSelect }),
+	      React.createElement(RightBar, { lesson: this.state.lesson, user: this.state.user, actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: 'clear', labelTwo: 'submit' })
+	    );
+	  }
+	});
+
+	module.exports = StudentView;
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	    // Recursively compare objects and arrays.
 	    if (areArrays) {
@@ -25233,6 +26115,7 @@
 	    return true;
 	  };
 
+<<<<<<< HEAD
 	  // Perform a deep comparison to check if two objects are equal.
 	  _.isEqual = function(a, b) {
 	    return eq(a, b);
@@ -25262,6 +26145,44 @@
 	    var type = typeof obj;
 	    return type === 'function' || type === 'object' && !!obj;
 	  };
+=======
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var QuestionBox = __webpack_require__(199);
+
+	var RightBar = React.createClass({
+	  displayName: "RightBar",
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { id: "rightBar", className: "pf w20 bcp tal t0 r0 h100 p15px" },
+	      React.createElement(
+	        "div",
+	        { className: "pr db h90" },
+	        React.createElement(QuestionBox, { question: this.props.lesson.prompt }),
+	        React.createElement(
+	          "div",
+	          { className: "button-group pa b0 r0" },
+	          React.createElement(
+	            "button",
+	            { onClick: this.props.actionOne },
+	            this.props.labelOne
+	          ),
+	          React.createElement(
+	            "button",
+	            { onClick: this.props.actionTwo },
+	            this.props.labelTwo
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = RightBar;
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
 	  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
@@ -25270,6 +26191,7 @@
 	    };
 	  });
 
+<<<<<<< HEAD
 	  // Define a fallback version of the method in browsers (ahem, IE < 9), where
 	  // there isn't any inspectable "Arguments" type.
 	  if (!_.isArguments(arguments)) {
@@ -25534,6 +26456,263 @@
 	  var result = function(instance, obj) {
 	    return instance._chain ? _(obj).chain() : obj;
 	  };
+=======
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var QuestionBox = React.createClass({
+	  displayName: "QuestionBox",
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { id: "questionBox", className: "p15px db bcy mt10" },
+	      React.createElement(
+	        "h3",
+	        null,
+	        "Question:"
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.question
+	      )
+	    );
+	  }
+	});
+
+	module.exports = QuestionBox;
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var MainText = React.createClass({
+	  displayName: "MainText",
+
+	  componentDidMount: function componentDidMount() {
+	    document.addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  handleMouseUp: function handleMouseUp() {
+	    var selection = window.getSelection();
+	    if (selection.isCollapsed === false) {
+	      this.props.selectText(selection);
+	    }
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { id: "mainText", className: "w60 p15px ml5" },
+	      React.createElement(
+	        "h3",
+	        null,
+	        this.props.lesson.title
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.lesson.author
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.lesson.text
+	      )
+	    );
+	  }
+	});
+
+	module.exports = MainText;
+
+/***/ },
+/* 201 */,
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var StudentPanel = React.createClass({
+	  displayName: "StudentPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Student Panel"
+	    );
+	  }
+	});
+
+	module.exports = StudentPanel;
+
+/***/ },
+/* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Lesson Panel"
+	    );
+	  }
+	});
+
+	module.exports = LessonPanel;
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Grid = React.createClass({
+	  displayName: "Grid",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Grid"
+	    );
+	  }
+	});
+
+	module.exports = Grid;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	//below this import follow this syntax to add
+	//a new component. Save it in this file with capital
+	//file names to show that it is a react file
+	var Header = __webpack_require__(206);
+	var SignUp = __webpack_require__(207);
+
+	var Body = React.createClass({
+	  displayName: "Body",
+
+	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    return React.createElement(
+	      "div",
+	      { id: "main", className: "container" },
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(SignUp, null)
+	    );
+	  }
+	});
+
+	module.exports = Body;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = React.createClass({
+	  displayName: "Header",
+
+	  mixins: [Router.Navigation, Router.State],
+	  render: function render() {
+	    var teacher = this.props.teacher;
+	    var student = this.props.student;
+	    var content = null;
+	    var buttons = null;
+
+	    if (teacher) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        teacher.first_name,
+	        " ",
+	        teacher.last_name
+	      );
+	      buttons = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: "studentPanel", params: { id: "1" } },
+	          "student panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "lessonPanel", params: { id: "1" } },
+	          "lesson panel"
+	        )
+	      );
+	    } else if (student) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        student.first_name
+	      );
+	      buttons = React.createElement(
+	        "a",
+	        { className: "navbar-btn navbar-right", href: "#" },
+	        "studenty things"
+	      );
+	    } else {
+	      content = null;
+	    }
+
+	    return(
+	      //add full navbar components brand buttons etc
+	      React.createElement(
+	        "nav",
+	        { className: "navbar navbar-default navbar-fixed-top" },
+	        React.createElement(
+	          "div",
+	          { className: "container-fluid" },
+	          React.createElement(
+	            "a",
+	            { className: "navbar-brand", href: "#" },
+	            "SmartText"
+	          ),
+	          content,
+	          buttons
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 	  // Add your own custom functions to the Underscore object.
 	  _.mixin = function(obj) {
@@ -25547,6 +26726,7 @@
 	    });
 	  };
 
+<<<<<<< HEAD
 	  // Add all of the Underscore functions to the wrapper object.
 	  _.mixin(_);
 
@@ -25596,6 +26776,96 @@
 	  }
 	}.call(this));
 
+=======
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+
+	var SignUp = React.createClass({
+	  displayName: 'SignUp',
+
+	  mixins: [Router.Navigation, Router.State],
+	  handleSubmit: function handleSubmit(event) {
+
+	    event.preventDefault();
+	    var signUp = this;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    var username = $("#username").val();
+	    var first_name = $("#first_name").val();
+	    var last_name = $("#last_name").val();
+	    var password = $("#password").val();
+	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
+
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      signUp.transitionTo('teachers', { id: serverData.teacher._id }, serverData);
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log(serverData);
+	    });
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'form',
+	      { id: 'signUp', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'first_name' },
+	          'First Name'
+	        ),
+	        React.createElement('input', { type: 'text', className: 'form-control', name: 'first_name', id: 'first_name', placeholder: 'Suzy' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'last_name' },
+	          'Last Name'
+	        ),
+	        React.createElement('input', { type: 'text', className: 'form-control', name: 'last_name', id: 'last_name', placeholder: 'Que' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'username' },
+	          'Username'
+	        ),
+	        React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'password' },
+	          'Password'
+	        ),
+	        React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'submit', className: 'btn btn-default' },
+	        'Submit'
+	      )
+	    );
+	  }
+	});
+
+	module.exports = SignUp;
+>>>>>>> 823f65013d3d637b03322e5361fadd45048f3d1a
 
 /***/ }
 /******/ ]);
