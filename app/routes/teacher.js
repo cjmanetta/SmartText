@@ -1,8 +1,7 @@
 var express = require('express');
-//not sure if webpack.router works
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
-mongoose.connect('mongodb://localhost/test')
+mongoose.createConnection('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
@@ -21,9 +20,21 @@ router.use(methodOverride(function(req, res){
 router.route('/')
 .get(function(req, res) {
 	Teacher.find({}, function(err, teachers){
-  	res.render('./teachers/index', { teachers: teachers })
+		if (err){
+			return console.error(err);
+		} else {
+			res.format({
+				'text/html': function(){
+	  			res.render('./teachers/index', { teachers: teachers })
+				},
+				'application/json': function(){
+					res.send({teachers: teachers})
+				}
+			})
+		}
   });
 })
+
 .post(function(req, res){
 	var first_name = req.body.first_name
 	var last_name = req.body.last_name
@@ -36,26 +47,64 @@ router.route('/')
 		username: username,
 		password: password
 		}, function(err, teacher){
-		if (err) {
-			console.log('error!!!')
-		} else {
-			console.log('post created: ' + teacher)
-			res.redirect('/teachers')
-		}
+			if (err) {
+				return console.error(err);
+			} else {
+				console.log('post created: ' + teacher)
+				res.format({
+					'text/html': function(){
+		  			res.redirect('/teachers')
+					},
+					'application/json': function(){
+						res.send({teacher: teacher})
+					}
+				})
+			}
 	})
 })
 
 router.get('/new', function(req, res){
-	res.render('./teachers/new')
+	res.format({
+		'text/html': function(){
+			res.render('./teachers/new');		
+		}
+	})	
 })
 
 router.get('/:id/edit', function(req, res){
 	Teacher.findById(req.params.id, function(err, teacher){
-	res.render('./teachers/edit', {teacher: teacher})
-})
+		if (err){
+			return console.error(err);
+		} else {
+			res.format({
+				'text/html': function(){
+					res.render('./teachers/edit', {teacher: teacher})
+				},
+				'application/json': function(){
+					res.send({teacher: teacher})
+				}
+			})
+		}
+	})
 })
 
 router.route('/:id')
+.get(function(req, res){
+	Teacher.findById(req.params.id, function(err, teacher){
+		if (err){
+			return console.error(err);
+		} else {
+			res.format({
+				'text/html': function(){
+					res.render('./teachers/show', {teacher: teacher})
+				},
+				'application/json': function(){
+					res.send({teacher: teacher})
+				}
+			})
+		}
+	})
+})
 .put(function(req, res){
 
 	var first_name = req.body.first_name
@@ -73,8 +122,15 @@ router.route('/:id')
 			if (err) {
 				return console.error(err)
 			} else {
-				console.log('edited: ' + teacher)
-				res.redirect('/teachers')
+				console.log('edited: ' + teacher);
+				res.format({
+					'text/html': function(){
+						res.redirect('/teachers')
+					},
+					'application/json': function(){
+						res.send({teacher: teacher})
+					}
+				})
 			}
 		})
 	})
@@ -85,7 +141,14 @@ router.route('/:id')
 			return console.error(err)
 		} else {
 			console.log('deleted: ' + teacher)
-			res.redirect('/teachers')
+			res.format({
+				'text/html': function(){
+					res.redirect('/teachers')
+				},
+				'application/json': function(){
+					res.sendStatus(200)
+				}
+			})
 		}
 	})
 })
