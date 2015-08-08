@@ -1,5 +1,6 @@
 var React = require("react");
 var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = React.createClass({
   mixins: [
@@ -14,7 +15,11 @@ var Header = React.createClass({
 
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
-      buttons = <a className="navbar-btn navbar-right" href="#">teachery things</a>
+      buttons = <div>
+      <Link to="studentPanel" params={{id: "1"}}>student panel</Link>
+      <Link to="lessonPanel" params={{id: "1"}}>lesson panel</Link>
+      </div>
+
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
       buttons = <a className="navbar-btn navbar-right" href="#">studenty things</a>

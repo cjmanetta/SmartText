@@ -56,10 +56,10 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(204);
-	var Home = __webpack_require__(205);
+	var StudentPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
+	var Grid = __webpack_require__(205);
+	var Home = __webpack_require__(206);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -25341,6 +25341,8 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+	var Header = __webpack_require__(202);
+
 	var TeacherView = React.createClass({
 	  displayName: 'TeacherView',
 
@@ -25361,9 +25363,12 @@
 	    //turn off listeners by calling off function
 	  },
 	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 	    return React.createElement(
 	      'div',
 	      { className: 'container' },
+	      React.createElement(Header, { teacher: teacher, student: student }),
 	      React.createElement(
 	        'h3',
 	        null,
@@ -25384,103 +25389,11 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var StudentPanel = React.createClass({
-	  displayName: "StudentPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Student Panel"
-	    );
-	  }
-	});
-
-	module.exports = StudentPanel;
-
-/***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Lesson Panel"
-	    );
-	  }
-	});
-
-	module.exports = LessonPanel;
-
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var Grid = React.createClass({
-	  displayName: "Grid",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Grid"
-	    );
-	  }
-	});
-
-	module.exports = Grid;
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	//below this import follow this syntax to add
-	//a new component. Save it in this file with capital
-	//file names to show that it is a react file
-	var Header = __webpack_require__(206);
-	var SignUp = __webpack_require__(207);
-
-	var Body = React.createClass({
-	  displayName: "Body",
-
-	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
-	    return React.createElement(
-	      "div",
-	      { id: "main", className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
-	      React.createElement(SignUp, null)
-	    );
-	  }
-	});
-
-	module.exports = Body;
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
 
 	var Header = React.createClass({
 	  displayName: "Header",
@@ -25501,9 +25414,18 @@
 	        teacher.last_name
 	      );
 	      buttons = React.createElement(
-	        "a",
-	        { className: "navbar-btn navbar-right", href: "#" },
-	        "teachery things"
+	        "div",
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: "studentPanel", params: { id: "1" } },
+	          "student panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "lessonPanel", params: { id: "1" } },
+	          "lesson panel"
+	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25542,6 +25464,102 @@
 	});
 
 	module.exports = Header;
+
+/***/ },
+/* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var StudentPanel = React.createClass({
+	  displayName: "StudentPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Student Panel"
+	    );
+	  }
+	});
+
+	module.exports = StudentPanel;
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Lesson Panel"
+	    );
+	  }
+	});
+
+	module.exports = LessonPanel;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Grid = React.createClass({
+	  displayName: "Grid",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Grid"
+	    );
+	  }
+	});
+
+	module.exports = Grid;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	//below this import follow this syntax to add
+	//a new component. Save it in this file with capital
+	//file names to show that it is a react file
+	var Header = __webpack_require__(202);
+	var SignUp = __webpack_require__(207);
+
+	var Body = React.createClass({
+	  displayName: "Body",
+
+	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    return React.createElement(
+	      "div",
+	      { id: "main", className: "container" },
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(SignUp, null)
+	    );
+	  }
+	});
+
+	module.exports = Body;
 
 /***/ },
 /* 207 */
