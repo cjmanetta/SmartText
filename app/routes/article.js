@@ -59,26 +59,32 @@ router.route('/:id')
     res.render('./articles/show', { article: article })
   })
 })
-.put(function(req, res){
-  var title = req.body.title
-  var author = req.body.author
-  var content = req.body.content
 
-  Article.findById(req.params.id, function(err, article){
-    Article.update({
-      title: title,
-      author: author,
-      content: content
-    }, function(err, article){
-      if (err) {
-        return console.log(err)
-      } else {
-        console.log('edited: ' + article)
-        res.redirect('/articles')
-      }
-    })
+.put(function(req, res){
+  Article.findById(req.params.id, function(err, student){
+    if (err) {
+      return console.error(err)
+    } else {
+      article.first_name = req.body.first_name;
+      article.last_name = req.body.last_name;
+      article.username = req.body.username;
+      article.password = req.body.password;
+
+      article.save(function(err, article){
+        console.log('edited: ' + article);
+        res.format({
+          'text/html': function(){
+            res.redirect('/articles')
+          },
+          'application/json': function(){
+            res.send({article: article})
+          }
+        })
+      })
+    }
   })
 })
+
 .delete(function(req, res){
   Article.remove({_id: req.params.id}, function(err, article){
     if (err) {
