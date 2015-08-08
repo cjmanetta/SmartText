@@ -20701,21 +20701,20 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Footer = __webpack_require__(163);
+	var Header = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./Header\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var SignUp = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./SignUp\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var Body = React.createClass({
 	  displayName: "Body",
 
 	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container" },
-	      React.createElement(
-	        "h3",
-	        null,
-	        "Hello, Screw the browser!"
-	      ),
-	      React.createElement(Footer, null)
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(SignUp, null)
 	    );
 	  }
 	});
@@ -20723,32 +20722,7 @@
 	module.exports = Body;
 
 /***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	var Footer = React.createClass({
-	  displayName: "Footer",
-
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      { id: "footer", className: "bg-g h100 tac pt30px cr" },
-	      React.createElement(
-	        "p",
-	        null,
-	        "© SmartText"
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Footer;
-
-/***/ },
+/* 163 */,
 /* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
