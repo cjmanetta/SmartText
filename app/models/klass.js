@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
-	// **REMOVED, NOT NECESSARY** teacher_id: Number,
 	grade: Number,
 	password: String
 	// students: [{
@@ -12,4 +11,6 @@ var klassSchema = Schema({
 	// }]
 
 })
-model.exports = mongoose.model('Klass', klassSchema);
+
+var Klass = mongoose.model('Klass', klassSchema)
+module.exports = {Klass: Klass}

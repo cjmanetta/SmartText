@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 
 var mongoose = require('mongoose'); //mongo connection
-mongoose.connect('mongodb://localhost/test')
+mongoose.createConnection('mongodb://localhost/test');
+var bodyParser = require('body-parser'); //parses information from POST
+var methodOverride = require('method-override');
+
 var Klass = require('../models/klass').Klass
 
-var bodyParser = require('body-parser'); //parses information from POST
 router.use(bodyParser.urlencoded({ extended: true }))
-
-var methodOverride = require('method-override');
 router.use(methodOverride(function(req, res){
       if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         // look in urlencoded POST bodies and delete it
@@ -108,9 +108,6 @@ router.route('/:id')
     if (err) {
       return console.error(err)
     } else {
-      grade: grade,
-      password: password,
-
       klass.grade = req.body.grade;
       klass.password = req.body.password;
 

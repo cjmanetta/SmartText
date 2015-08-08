@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongodb://localhost/test')
+var mongoose = require('mongoose');
+mongoose.createConnection('mongodb://localhost/test');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
