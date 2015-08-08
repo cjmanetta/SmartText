@@ -1,4 +1,4 @@
-<form action="<%= lesson._id %>" method="post">
+<form action="/lessons/<%= lesson._id %>" method="post">
   <input type="hidden" name="_method" value="put">
   <input type="text" name="title" value="<%= lesson.title %>">
   <input type="date" name="date" value="<%= lesson.date %>">

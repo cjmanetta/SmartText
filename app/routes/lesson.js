@@ -20,7 +20,6 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  console.log('hey from the lesson view');
   Lesson.find({}, function(err, lessons){
     res.render('./lessons/index', { lessons: lessons});
   });
@@ -58,6 +57,36 @@ router.route('/:id')
     res.render('./lessons/show', { lesson: lesson })
   })
 })
+.put(function(req, res){
+  var title = req.body.title
+  var date = req.body.date
+  console.log(title)
+
+  Lesson.findById(req.params.id, function(err, lesson){
+    Lesson.update({
+      title: title,
+      date: date
+    }, function(err, teacher){
+      if (err) {
+        return console.log(err)
+      } else {
+        console.log('edited: ' + lesson)
+        res.redirect('/lessons')
+      }
+    })
+  })
+})
+.delete(function(req, res){
+  Lesson.remove({_id: req.params.id}, function(err, lesson){
+    if (err) {
+      return console.log(err)
+    } else {
+      console.log('deleted: ' + lesson)
+      res.redirect('/lessons')
+    }
+  })
+})
+
 
 
 
