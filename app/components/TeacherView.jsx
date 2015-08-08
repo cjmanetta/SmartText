@@ -1,9 +1,9 @@
-import React from "react";
-import RightBar from './RightBar';
+var React = require("react");
+var React = RightBar from './RightBar';
 
-export default React.createClass({
+var TeacherView = React.createClass({
 	handleStart: function(){
-			//turn on listeners for sockets by calling the start function in each stuentview.js 
+			//turn on listeners for sockets by calling the start function in each stuentview.js
 	    io.connect('http://localhost:8080');
 	    var socket = io('/teacher')
 	    socket.on('start', function(data){
@@ -21,3 +21,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = TeacherView;

@@ -1,8 +1,8 @@
-import React from "react";
-import RightBar from './RightBar';
-import MainText from './MainText';
+var React = require("react");
+var RightBar = require('./RightBar');
+var MainText = require('./MainText');
 
-export default React.createClass({
+var StudentView = React.createClass({
   getInitialState: function(){
     return {
       lesson: {prompt:"", text:"", author: "", title: ""}
@@ -37,3 +37,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = StudentView;

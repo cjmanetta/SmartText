@@ -1,7 +1,7 @@
-import React from "react";
-import QuestionBox from "./QuestionBox"
+var React = require("react");
+var QuestionBox = require("./QuestionBox");
 
-export default React.createClass({
+var RightBar = React.createClass({
 
   render: function() {
     return (
@@ -21,3 +21,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = RightBar;
