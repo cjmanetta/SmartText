@@ -1,0 +1,21 @@
+<h1>Articles</h1>
+
+<a href="/articles/new">Make a new text</a>
+
+<% for (var i=0; i<articles.length; i++){ %>
+  <br>
+  <a href="articles/<%= articles[i]._id %>">
+  <%= articles[i].title %>
+  </a>
+  <br>
+  <%= articles[i].author %>
+  <br>
+  <br>
+  <%= articles[i].content %>
+  <br>
+  <form action="/articles/<%= articles[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/articles/<%= articles[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
