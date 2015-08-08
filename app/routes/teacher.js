@@ -106,22 +106,16 @@ router.route('/:id')
 	})
 })
 .put(function(req, res){
-
-	var first_name = req.body.first_name
-	var last_name = req.body.last_name
-	var username = req.body.username
-	var password = req.body.password
-
 	Teacher.findById(req.params.id, function(err, teacher){
-		Teacher.update({
-			first_name: first_name,
-			last_name: last_name,
-			username: username,
-			password: password
-		}, function(err, teacher){
-			if (err) {
-				return console.error(err)
-			} else {
+		if (err) {
+			return console.error(err)
+		} else {
+			teacher.first_name = req.body.first_name;
+			teacher.last_name = req.body.last_name;
+			teacher.username = req.body.username;
+			teacher.password = req.body.password;
+
+			teacher.save(function(err, teacher){
 				console.log('edited: ' + teacher);
 				res.format({
 					'text/html': function(){
@@ -131,8 +125,8 @@ router.route('/:id')
 						res.send({teacher: teacher})
 					}
 				})
-			}
-		})
+			})
+		}
 	})
 })
 .delete(function(req, res){

@@ -58,22 +58,27 @@ router.route('/:id')
   })
 })
 .put(function(req, res){
-  var title = req.body.title
-  var date = req.body.date
-  console.log(title)
-
   Lesson.findById(req.params.id, function(err, lesson){
-    Lesson.update({
-      title: title,
-      date: date
-    }, function(err, teacher){
-      if (err) {
-        return console.log(err)
-      } else {
-        console.log('edited: ' + lesson)
-        res.redirect('/lessons')
-      }
-    })
+    if (err) {
+      return console.error(err)
+    } else {
+      lesson.first_name = req.body.first_name;
+      lesson.last_name = req.body.last_name;
+      lesson.username = req.body.username;
+      lesson.password = req.body.password;
+
+      lesson.save(function(err, lesson){
+        console.log('edited: ' + lesson);
+        res.format({
+          'text/html': function(){
+            res.redirect('/lessons')
+          },
+          'application/json': function(){
+            res.send({lesson: lesson})
+          }
+        })
+      })
+    }
   })
 })
 .delete(function(req, res){
