@@ -21,9 +21,9 @@ router.route('/')
 .get(function(req, res) {
   Student.find({}, function(err, students){
     res.render('./students/index', { students: students })
-    res.render('./students/index')
   });
 })
+
 .post(function(req, res){
   var first_name = req.body.first_name
   var last_initial = req.body.last_initial
@@ -54,27 +54,35 @@ router.get('/:id/edit', function(req, res){
 })
 
 router.route('/:id')
+
+.get(function(req, res) {
+  Student.findById(req.params.id, function(err, student) {
+    res.render('./students/show', { student: student })
+  })
+})
+
 .put(function(req,res){
 
   var first_name = req.body.first_name
   var last_initial = req.body.last_initial
   var username = req.body.username
 
-Student.findById(req.params.id, function(err, student){
-  Student.update({
-    username: username,
-    first_name: first_name,
-    last_initial: last_initial
-  }, function(err, student){
-    if (err){
-      return console.error(err)
-    } else {
-      console.log('edited: ' + student)
-      res.redirect('/students')
-    }
+  Student.findById(req.params.id, function(err, student){
+    Student.update({
+      username: username,
+      first_name: first_name,
+      last_initial: last_initial
+    }, function(err, student){
+      if (err){
+        return console.error(err)
+      } else {
+        console.log('edited: ' + student)
+        res.redirect('/students')
+      }
+    })
   })
 })
-})
+
 .delete(function(req, res){
   Student.remove({_id: req.params.id}, function(err, student){
     if (err) {
