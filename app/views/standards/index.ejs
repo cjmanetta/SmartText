@@ -1,0 +1,21 @@
+<h1>Standards</h1>
+
+<a href="/standards/new">Add a standard</a>
+
+<br>
+<br>
+
+<% for (var i=0; i < standards.length; i++){ %>
+
+  <a href="/standards/<%= standards[i]._id %>">
+    <%= standards[i].description %>
+  </a>
+  <br>
+  <p>grade level: <%= standards[i].grade %></p>
+
+  <form action="/standards/<%= standards[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/standards/<%= standards[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
