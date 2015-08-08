@@ -5,6 +5,8 @@ var _ = require("underscore");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
+require("./application.css");
+
 //functions defined in the global scope to be used in many components
 var call = function(action, method, data){
   return new Promise(function(resolve, reject){
@@ -29,7 +31,7 @@ var call = function(action, method, data){
 var App = React.createClass({
   getInitialState: function(){
     return {
-      page: 'home',
+      page: 'student',
       user: null,
     }
   },
