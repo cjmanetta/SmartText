@@ -1,0 +1,10 @@
+<h1><%= standard.description %></h1>
+
+<p><%= standard.date %></p>
+
+<form action="/standards/<%= standard._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="<%= standard._id %>/edit">edit</a>
+</form>
+
