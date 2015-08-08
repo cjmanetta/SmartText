@@ -7,12 +7,13 @@ var path = require('path')
 var io = require('socket.io').listen(app);
 var port = 8080;
 
-
 var teachers_routes = require('./routes/teacher')
+var students_routes = require('./routes/student')
 
 console.log(teachers_routes)
 
 app.use('/teachers', teachers_routes)
+app.use('/students', students_routes)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
