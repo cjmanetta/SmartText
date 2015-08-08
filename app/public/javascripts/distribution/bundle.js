@@ -91,16 +91,7 @@
 	  displayName: "App",
 
 	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      { id: "main" },
-	      React.createElement(
-	        "h1",
-	        null,
-	        "Smart Text"
-	      ),
-	      React.createElement(RouteHandler, null)
-	    );
+	    return React.createElement(RouteHandler, null);
 	  }
 	});
 
@@ -20710,7 +20701,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { className: "container" },
+	      { id: "main", className: "container" },
 	      React.createElement(
 	        "h3",
 	        null,
