@@ -2,11 +2,12 @@ var React = require("react");
 var RightBar = require('./RightBar');
 
 var TeacherView = React.createClass({
-	handleStart: function(){
+	handleSelect: function(){
 			//turn on listeners for sockets by calling the start function in each stuentview.js
 	    io.connect('http://localhost:8080');
 	    var socket = io('/teacher')
-	    socket.on('start', function(data){
+	    socket.on('select', function(data){
+
 	    })
 	},
 	handleStop: function(){

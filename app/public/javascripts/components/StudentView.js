@@ -5,16 +5,23 @@ var MainText = require('./MainText');
 var StudentView = React.createClass({
   getInitialState: function(){
     return {
-      lesson: {prompt:"", text:"", author: "", title: ""}
+      lesson: {prompt:"", text:"", author: "", title: ""},
+      id: null
     }
   },
   componentDidMount: function(){
     this.getLesson();
+    this.getId();
   },
-  handleStart: function(){
+  handleSelect: function(){
       io.connect('http://localhost:8080');
       var socket = io('/teacher')
-      socket.emit('start', {data: 'hello, world!'})
+      socket.emit('select', {data: 'hello, world!'})
+  },
+  getId: function(){
+    // here is where the api call will happen to get
+    // the id of the student that just logged in
+    // (necessary for the socket to work)
   },
   getLesson: function(){
     //here is where the api call would happen

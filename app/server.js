@@ -34,8 +34,8 @@ console.log('Listening on http://' + port)
 
 io.of('teacher').on('connection', function(socket){
   console.log('data received');
-  socket.on('start', function(data){
-    io.emit('start', data);
+  socket.on('select', function(data){
+    io.emit('select', data);
   })
 
 })
