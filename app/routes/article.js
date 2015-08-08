@@ -6,7 +6,7 @@ mongoose.createConnection('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
-var Lesson = require('../models/lesson').Lesson
+var Article = require('../models/article').Article
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -19,40 +19,42 @@ router.use(methodOverride(function(req, res){
 }))
 
 router.route('/')
-.get(function(req, res) {
-  Lesson.find({}, function(err, lessons){
+.get(function(req, res){
+  Article.find({}, function(err, articles){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./lessons/index', { lessons: lessons});
+          res.render('./articles/index', { articles: articles });
         },
         'application/json': function(){
-          res.send({lessons: lessons})
+          res.send({articles: articles})
         }
       })
     }
-  });
+  })
 })
 .post(function(req, res){
+  var author = req.body.author
   var title = req.body.title
-  var date = req.body.date
+  var content = req.body.content
 
-  Lesson.create({
+  Article.create({
+    author: author,
     title: title,
-    date: date
-  }, function(err, lesson) {
+    content: content
+  }, function(err, article) {
     if (err) {
       console.log('error')
     } else {
-      console.log('post created: ' + lesson)
+      console.log('post created: ' + article)
       res.format({
         'text/html': function(){
-          res.redirect('/lessons')
+          res.redirect('/articles')
         },
         'application/json': function(){
-          res.send({lesson: lesson})
+          res.send({article: article})
         }
       })
     }
@@ -60,65 +62,78 @@ router.route('/')
 })
 
 router.get('/new', function(req, res) {
-  res.render('./lessons/new')
+  res.render('./articles/new')
 })
 
 router.get('/:id/edit', function(req, res) {
-  Lesson.findById(req.params.id, function(err, lesson) {
-    res.render('./lessons/edit', { lesson: lesson })
-  })
-})
-
-router.route('/:id')
-.get(function(req, res) {
-  Lesson.findById(req.params.id, function(err, lesson) {
+  Article.findById(req.params.id, function(err, article){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./lessons/show', { lesson: lesson });
+          res.render('./articles/edit', { article: article });
         },
         'application/json': function(){
-          res.send({lesson: lesson})
+          res.send({article: article})
         }
       })
     }
   })
 })
+
+router.route('/:id')
+.get(function(req, res){
+  Article.findById(req.params.id, function(err, article){
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./articles/show', { article: article })
+        },
+        'application/json': function(){
+          res.send({article: article})
+        }
+      })
+    }
+  })
+})
+
 .put(function(req, res){
-  Lesson.findById(req.params.id, function(err, lesson){
+  Article.findById(req.params.id, function(err, article){
     if (err) {
       return console.error(err)
     } else {
-      lesson.first_name = req.body.first_name;
-      lesson.last_name = req.body.last_name;
-      lesson.username = req.body.username;
-      lesson.password = req.body.password;
+      article.first_name = req.body.first_name;
+      article.last_name = req.body.last_name;
+      article.username = req.body.username;
+      article.password = req.body.password;
 
-      lesson.save(function(err, lesson){
-        console.log('edited: ' + lesson);
+      article.save(function(err, article){
+        console.log('edited: ' + article);
         res.format({
           'text/html': function(){
-            res.redirect('/lessons')
+            res.redirect('/articles')
           },
           'application/json': function(){
-            res.send({lesson: lesson})
+            res.send({article: article})
           }
         })
       })
     }
   })
 })
+
 .delete(function(req, res){
-  Lesson.remove({_id: req.params.id}, function(err, lesson){
+  Article.remove({_id: req.params.id}, function(err, article){
     if (err) {
-      return console.log(err)
+      return console.error(err)
     } else {
-      console.log('deleted: ' + lesson)
+      console.log('deleted: ' + article)
       res.format({
         'text/html': function(){
-          res.redirect('/lessons')
+          res.redirect('/articles')
         },
         'application/json': function(){
           res.sendStatus(200)
@@ -127,9 +142,5 @@ router.route('/:id')
     }
   })
 })
-
-
-
-
 
 module.exports = router

@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
-mongoose.connect('mongodb://localhost/test')
+mongoose.createConnection('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
-var Teacher = require('../models/teacher').Teacher
+var Question = require('../models/question').Question
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -19,16 +19,16 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-	Teacher.find({}, function(err, teachers){
+	Question.find({}, function(err, questions){
 		if (err){
 			return console.error(err);
 		} else {
 			res.format({
 				'text/html': function(){
-	  			res.render('./teachers/index', { teachers: teachers })
+	  			res.render('./questions/index', { questions: questions })
 				},
 				'application/json': function(){
-					res.send({teachers: teachers})
+					res.send({questions: questions})
 				}
 			})
 		}
@@ -36,27 +36,25 @@ router.route('/')
 })
 
 .post(function(req, res){
-	var first_name = req.body.first_name
-	var last_name = req.body.last_name
-	var username = req.body.username
-	var password = req.body.password
+	var prompt = req.body.prompt
+	var green_answer = req.body.green_answer
+	var blue_answer = req.body.blue_answer
 
-	Teacher.create({
-		first_name: first_name,
-		last_name: last_name,
-		username: username,
-		password: password
-		}, function(err, teacher){
+	Question.create({
+		prompt: prompt,
+		green_answer: green_answer,
+		blue_answer: blue_answer
+		}, function(err, question){
 			if (err) {
 				return console.error(err);
 			} else {
-				console.log('post created: ' + teacher)
+				console.log('post created: ' + question)
 				res.format({
 					'text/html': function(){
-		  			res.redirect('/teachers')
+		  			res.redirect('/questions')
 					},
 					'application/json': function(){
-						res.send({teacher: teacher})
+						res.send({question: question})
 					}
 				})
 			}
@@ -66,22 +64,22 @@ router.route('/')
 router.get('/new', function(req, res){
 	res.format({
 		'text/html': function(){
-			res.render('./teachers/new');
+			res.render('./questions/new');
 		}
 	})
 })
 
 router.get('/:id/edit', function(req, res){
-	Teacher.findById(req.params.id, function(err, teacher){
+	Question.findById(req.params.id, function(err, question){
 		if (err){
 			return console.error(err);
 		} else {
 			res.format({
 				'text/html': function(){
-					res.render('./teachers/edit', {teacher: teacher})
+					res.render('./questions/edit', {question: question})
 				},
 				'application/json': function(){
-					res.send({teacher: teacher})
+					res.send({question: question})
 				}
 			})
 		}
@@ -90,39 +88,38 @@ router.get('/:id/edit', function(req, res){
 
 router.route('/:id')
 .get(function(req, res){
-	Teacher.findById(req.params.id, function(err, teacher){
+	Question.findById(req.params.id, function(err, question){
 		if (err){
 			return console.error(err);
 		} else {
 			res.format({
 				'text/html': function(){
-					res.render('./teachers/show', {teacher: teacher})
+					res.render('./questions/show', {question: question})
 				},
 				'application/json': function(){
-					res.send({teacher: teacher})
+					res.send({question: question})
 				}
 			})
 		}
 	})
 })
 .put(function(req, res){
-	Teacher.findById(req.params.id, function(err, teacher){
+	Question.findById(req.params.id, function(err, question){
 		if (err) {
 			return console.error(err)
 		} else {
-			teacher.first_name = req.body.first_name;
-			teacher.last_name = req.body.last_name;
-			teacher.username = req.body.username;
-			teacher.password = req.body.password;
+			question.prompt = req.body.prompt;
+			question.green_answer = req.body.green_answer;
+			question.blue_answer = req.body.blue_answer;
 
-			teacher.save(function(err, teacher){
-				console.log('edited: ' + teacher);
+			question.save(function(err, question){
+				console.log('edited: ' + question);
 				res.format({
 					'text/html': function(){
-						res.redirect('/teachers')
+						res.redirect('/questions')
 					},
 					'application/json': function(){
-						res.send({teacher: teacher})
+						res.send({question: question})
 					}
 				})
 			})
@@ -130,14 +127,14 @@ router.route('/:id')
 	})
 })
 .delete(function(req, res){
-	Teacher.remove({_id: req.params.id}, function(err, teacher){
+	Question.remove({_id: req.params.id}, function(err, question){
 		if (err) {
 			return console.error(err)
 		} else {
-			console.log('deleted: ' + teacher)
+			console.log('deleted: ' + question)
 			res.format({
 				'text/html': function(){
-					res.redirect('/teachers')
+					res.redirect('/questions')
 				},
 				'application/json': function(){
 					res.sendStatus(200)
