@@ -8,9 +8,11 @@ var port = 8080;
 server.listen(port);
 
 var teachers_routes = require('./routes/teacher')
+var lessons_routes = require('./routes/lesson')
 var students_routes = require('./routes/student')
 
 app.use('/teachers', teachers_routes)
+app.use('/lessons', lessons_routes)
 app.use('/students', students_routes)
 
 app.use(express.static(path.join(__dirname, 'public')));
