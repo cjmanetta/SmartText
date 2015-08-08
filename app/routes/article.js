@@ -21,7 +21,18 @@ router.use(methodOverride(function(req, res){
 router.route('/')
 .get(function(req, res){
   Article.find({}, function(err, articles){
-    res.render('./articles/index', { articles: articles });
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./articles/index', { articles: articles });
+        },
+        'application/json': function(){
+          res.send({articles: articles})
+        }
+      })
+    }
   })
 })
 .post(function(req, res){
@@ -37,8 +48,15 @@ router.route('/')
     if (err) {
       console.log('error')
     } else {
-      console.log('article created: ' + article)
-      res.redirect('/articles')
+      console.log('post created: ' + article)
+      res.format({
+        'text/html': function(){
+          res.redirect('/articles')
+        },
+        'application/json': function(){
+          res.send({article: article})
+        }
+      })
     }
   })
 })
@@ -49,19 +67,41 @@ router.get('/new', function(req, res) {
 
 router.get('/:id/edit', function(req, res) {
   Article.findById(req.params.id, function(err, article){
-    res.render('./articles/edit', { article: article })
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./articles/edit', { article: article });
+        },
+        'application/json': function(){
+          res.send({article: article})
+        }
+      })
+    }
   })
 })
 
 router.route('/:id')
 .get(function(req, res){
-  Article.findById(req.params.id, function(err, lesson){
-    res.render('./articles/show', { article: article })
+  Article.findById(req.params.id, function(err, article){
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./articles/show', { article: article })
+        },
+        'application/json': function(){
+          res.send({article: article})
+        }
+      })
+    }
   })
 })
 
 .put(function(req, res){
-  Article.findById(req.params.id, function(err, student){
+  Article.findById(req.params.id, function(err, article){
     if (err) {
       return console.error(err)
     } else {
@@ -88,10 +128,17 @@ router.route('/:id')
 .delete(function(req, res){
   Article.remove({_id: req.params.id}, function(err, article){
     if (err) {
-      console.log(err)
+      return console.error(err)
     } else {
       console.log('deleted: ' + article)
-      res.redirect('/articles')
+      res.format({
+        'text/html': function(){
+          res.redirect('/articles')
+        },
+        'application/json': function(){
+          res.sendStatus(200)
+        }
+      })
     }
   })
 })
