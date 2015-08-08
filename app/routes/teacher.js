@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
-mongoose.createConnection('mongodb://localhost/test')
+mongoose.connect('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
@@ -66,9 +66,9 @@ router.route('/')
 router.get('/new', function(req, res){
 	res.format({
 		'text/html': function(){
-			res.render('./teachers/new');		
+			res.render('./teachers/new');
 		}
-	})	
+	})
 })
 
 router.get('/:id/edit', function(req, res){

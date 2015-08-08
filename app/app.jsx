@@ -1,8 +1,9 @@
-import React from "react";
-import Body from "./components/Body";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import _ from "underscore";
+var React = require("react");
+var Body = require("./components/Body");
+var Header = require("./components/Header");
+var _ = require("underscore");
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 require("./application.css");
 
@@ -37,13 +38,22 @@ var App = React.createClass({
   render: function(){
     return (
       <div id="main">
-        <Header />
-        <Body page={this.state.page}/>
-        <Footer />
+        <RouteHandler />
       </div>
     )
   }
 });
 
 
-React.render(<App />, document.body);
+var routes = (
+  <Route handler={App}>
+  //add default handler!
+    <DefaultRoute >
+    <Route name="login" path = "/login" handler={loginHandler}/>
+  </Route>
+);
+
+
+Router.run(routes, function(Handler){
+  React.render(<Handler />, document.body);
+})
