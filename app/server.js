@@ -12,12 +12,14 @@ var teachers_routes = require('./routes/teacher')
 var lessons_routes = require('./routes/lesson')
 var articles_routes = require('./routes/article')
 var students_routes = require('./routes/student')
+var questions_routes = require('./routes/question')
 
 
 app.use('/teachers', teachers_routes)
 app.use('/lessons', lessons_routes)
 app.use('/articles', articles_routes)
 app.use('/students', students_routes)
+app.use('/questions', questions_routes)
 
 
 app.use(jsxCompile(path.join(__dirname, 'public')));

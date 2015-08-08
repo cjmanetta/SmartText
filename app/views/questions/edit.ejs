@@ -1,0 +1,11 @@
+<form action="/questions/<%= question._id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+
+  <input type="text" name="prompt" value="<%= question.prompt %>" >
+  <input type="text" name="green_answer" value="<%= question.green_answer %>" >
+  <br>
+  <input type="text" name="blue_answer" value="<%= question.blue_answer %>" >
+  <br>
+
+  <input type="submit" value="edit">
+</form>

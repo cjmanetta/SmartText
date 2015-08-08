@@ -1,0 +1,19 @@
+<h1>Questions</h1>
+
+<a href="/questions/new">Add a question</a>
+
+<% for (var i=0; i < questions.length; i++){ %>
+
+  <a href="/questions/<%= questions[i]._id %>">
+    <%= questions[i].prompt%>
+  </a>
+  <br>
+  <p>Best answer: <%= questions[i].green_answer %></p>
+  <p>Second best answer: <%= questions[i].blue_answer %></p>
+
+  <form action="/questions/<%= questions[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/questions/<%= questions[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
