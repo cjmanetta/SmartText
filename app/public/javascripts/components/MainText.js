@@ -5,10 +5,8 @@ var MainText = React.createClass({
     document.addEventListener('mouseup', this.handleMouseUp);
   },
   handleMouseUp: function(){
-    var selected = window.getSelection();
-    this.setState({
-      selection: selected,
-    })
+    var selectedText = window.getSelection();
+    this.props.selectText(selectedText)
   },
   render: function() {
     return (
