@@ -1,4 +1,4 @@
-/******/ (function(modules) { // webpackBootstrap
+ /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -55,11 +55,11 @@
 	var Link = Router.Link;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(203);
-	var LessonPanel = __webpack_require__(204);
-	var Grid = __webpack_require__(205);
-	var Home = __webpack_require__(206);
+	var TeacherView = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/TeacherView\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var StudentPanel = __webpack_require__(202);
+	var LessonPanel = __webpack_require__(203);
+	var Grid = __webpack_require__(204);
+	var Home = __webpack_require__(205);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -23189,7 +23189,7 @@
 	 *       <Route name="about" handler={About}/>
 	 *     </Route>
 	 *   ];
-	 *   
+	 *
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
@@ -25116,9 +25116,9 @@
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
-	 * 
+	 *
 	 * Using HTML5 history and a custom "cursor" prop:
-	 * 
+	 *
 	 *   Router.run(routes, Router.HistoryLocation, function (Handler) {
 	 *     React.render(<Handler cursor={cursor}/>, document.body);
 	 *   });
@@ -25175,12 +25175,20 @@
 	  componentDidMount: function componentDidMount() {
 	    this.getLesson();
 	  },
-	  handleSelect: function handleSelect(selectedText) {
-	    console.log(selectedText);
+	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
+
+	    var selectedRange = selection.getRangeAt(0);
+	    var selectedText = selectedRange.extractContents();
+	    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+	    selectedRange.insertNode(highlightSpan[0]);
+
+	    // I need to add the clear selection functionality here
+	    console.log($('#mainText').html());
+	    var highlightedText = $('#mainText').html();
 	    socket.emit('select', {
 	      user: this.state.user,
-	      selectedText: selectedText
+	      selection: highlightedText
 	    });
 	  },
 	  getLesson: function getLesson() {
@@ -25299,8 +25307,10 @@
 	    document.addEventListener('mouseup', this.handleMouseUp);
 	  },
 	  handleMouseUp: function handleMouseUp() {
-	    var selectedText = window.getSelection();
-	    this.props.selectText(selectedText);
+	    var selection = window.getSelection();
+	    if (selection.isCollapsed === false) {
+	      this.props.selectText(selection);
+	    }
 	  },
 	  render: function render() {
 	    return React.createElement(
@@ -25328,43 +25338,92 @@
 	module.exports = MainText;
 
 /***/ },
-/* 201 */
+/* 201 */,
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
-	var RightBar = __webpack_require__(198);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
+	var StudentPanel = React.createClass({
+	  displayName: "StudentPanel",
 
-	var Header = __webpack_require__(202);
+	  render: function render() {
 
-	var TeacherView = React.createClass({
-	  displayName: 'TeacherView',
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Student Panel"
+	    );
+	  }
+	});
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      lesson: {}
-	    };
-	  },
-	  handleSelect: function handleSelect() {
-	    // io.connect('http://localhost:8080');
-	    // var socket = io('/teacher')
-	    socket.on('select', function (data) {
-	      console.log(data.user);
-	      console.log(data.selectedText);
-	    });
-	  },
-	  handleStop: function handleStop() {
-	    //turn off listeners by calling off function
-	  },
+	module.exports = StudentPanel;
+
+/***/ },
+/* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Lesson Panel"
+	    );
+	  }
+	});
+
+	module.exports = LessonPanel;
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Grid = React.createClass({
+	  displayName: "Grid",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Grid"
+	    );
+	  }
+	});
+
+	module.exports = Grid;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	//below this import follow this syntax to add
+	//a new component. Save it in this file with capital
+	//file names to show that it is a react file
+	var Header = __webpack_require__(206);
+	var SignUp = __webpack_require__(207);
+
+	var Body = React.createClass({
+	  displayName: "Body",
+
 	  render: function render() {
 	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
 	    return React.createElement(
+<<<<<<< HEAD
 	      'div',
 	      { className: 'container' },
 	      React.createElement(Header, { teacher: teacher }),
@@ -25375,14 +25434,20 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      React.createElement(RightBar, { lesson: this.state.lesson, user: '', actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: 'start', labelTwo: 'stop' })
+=======
+	      "div",
+	      { id: "main", className: "container" },
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(SignUp, null)
+>>>>>>> master
 	    );
 	  }
 	});
 
-	module.exports = TeacherView;
+	module.exports = Body;
 
 /***/ },
-/* 202 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25466,102 +25531,6 @@
 	module.exports = Header;
 
 /***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var StudentPanel = React.createClass({
-	  displayName: "StudentPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Student Panel"
-	    );
-	  }
-	});
-
-	module.exports = StudentPanel;
-
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Lesson Panel"
-	    );
-	  }
-	});
-
-	module.exports = LessonPanel;
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var Grid = React.createClass({
-	  displayName: "Grid",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Grid"
-	    );
-	  }
-	});
-
-	module.exports = Grid;
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	//below this import follow this syntax to add
-	//a new component. Save it in this file with capital
-	//file names to show that it is a react file
-	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(207);
-
-	var Body = React.createClass({
-	  displayName: "Body",
-
-	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
-	    return React.createElement(
-	      "div",
-	      { id: "main", className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
-	      React.createElement(SignUp, null)
-	    );
-	  }
-	});
-
-	module.exports = Body;
-
-/***/ },
 /* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25594,7 +25563,6 @@
 	    });
 
 	    request.done(function (serverData) {
-
 	      signUp.transitionTo('teachers', { id: serverData.teacher._id }, serverData);
 	    });
 

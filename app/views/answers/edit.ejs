@@ -1,0 +1,5 @@
+<form action="/answers/<%= answer._id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+  <input type="text" name="text_snippet" value="<%= answer.text_snippet %>">
+  <input type="submit" value="edit">
+</form>
