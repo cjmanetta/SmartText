@@ -1,0 +1,21 @@
+<h1>Texts</h1>
+
+<a href="/texts/new">Make a new text</a>
+
+<% for (var i=0; i<texts.length; i++){ %>
+  <br>
+  <a href="texts/<%= texts[i]._id %>">
+  <%= texts[i].title %>
+  </a>
+  <br>
+  <%= texts[i].author %>
+  <br>
+  <br>
+  <%= texts[i].content %>
+  <br>
+  <form action="/texts/<%= texts[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/texts/<%= texts[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
