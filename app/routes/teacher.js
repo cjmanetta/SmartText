@@ -1,8 +1,7 @@
 var express = require('express');
-//not sure if webpack.router works
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
-mongoose.connect('mongodb://localhost/test')
+mongoose.createConnection('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
@@ -35,6 +34,7 @@ router.route('/')
 		}
   });
 })
+
 .post(function(req, res){
 	var first_name = req.body.first_name
 	var last_name = req.body.last_name
