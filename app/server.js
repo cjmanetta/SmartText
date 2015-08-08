@@ -34,4 +34,8 @@ io.of('teacher').on('connection', function(socket){
 
 })
 
+app.get("/", function(req, res){
+  res.render('index');
+});
+
 
