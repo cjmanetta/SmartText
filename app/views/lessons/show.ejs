@@ -1,0 +1,8 @@
+<h1><%= lesson.title %></h1>
+<%= lesson.date %>
+
+<form action="<%= lesson._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="<%= lesson._id %>/edit">edit</a>
+  </form>

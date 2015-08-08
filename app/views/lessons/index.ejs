@@ -1,0 +1,18 @@
+<h1>Lessons</h1>
+
+<a href="/lessons/new">Make a new lesson</a>
+
+<% for (var i=0; i<lessons.length; i++){ %>
+  <br>
+  <a href="lessons/<%= lessons[i]._id %>">
+  <%= lessons[i].title %>
+  </a>
+  <br>
+  <%= lessons[i].date %>
+  <br>
+  <form action="/lessons/<%= lessons[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/lessons/<%= lessons[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
