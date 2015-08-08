@@ -1,10 +1,14 @@
 var express = require('express')
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+var port = 8080;
+
+
+server.listen(port)
+
 var path = require('path')
 var jsxCompile = require('express-jsx')
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var port = 8080;
 
 server.listen(port);
 
@@ -32,12 +36,19 @@ app.set('view engine', 'ejs')
 
 console.log('Listening on http://' + port)
 
-io.of('teacher').on('connection', function(socket){
+
+// io.of('teacher').on('connection', function(socket){
+//   console.log('data received');
+//   socket.on('select', function(data){
+//     io.emit('select', data);
+//   })
+// })
+
+io.on('connection', function(socket){
   console.log('data received');
   socket.on('select', function(data){
     io.emit('select', data);
   })
-
 })
 
 app.get("/", function(req, res){
