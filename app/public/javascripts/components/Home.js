@@ -8,7 +8,7 @@ var Footer = require("./Footer");
 var Body = React.createClass({
   render: function() {
     return (
-      <div className="container">
+      <div id="main" className="container">
         <h3>Hello, Screw the browser!</h3>
         <Footer />
       </div>

@@ -39,10 +39,7 @@ var routes = (
 var App = React.createClass({
   render: function(){
     return (
-      <div id="main">
-        <h1>Smart Text</h1>
-        <RouteHandler />
-      </div>
+      <RouteHandler />
     )
   }
 });
