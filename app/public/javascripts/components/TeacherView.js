@@ -3,13 +3,6 @@ var RightBar = require('./RightBar');
 var StudentTile = require('./StudentTile');
 var socket = io.connect('http://localhost:8080');
 
-  socket.on('select', function(data){
-    console.log(data.selection)
-    // var studentText = data.selection
-    // $('#studentText').html(studentText.replace(/<\/span>(?:\s)*<span class="highlight">/g, ''));
-  })
-
-
 var TeacherView = React.createClass({
   getInitialState: function(){
     return {
@@ -20,6 +13,14 @@ var TeacherView = React.createClass({
   },
   componentDidMount: function(){
     this.getLesson();
+    socket.on('select', this.updateStudentTile)
+  },
+  updateStudentTile: function(data){
+    console.log('hello')
+    console.log(data.selection)
+    var textFromStudent = data.selection
+    // var studentViewText = $('#studentText')
+    $('#studentText').html(textFromStudent);
   },
   addStudent: function(studentData){
     // not sure where to call addStudent yet, but 
@@ -30,12 +31,6 @@ var TeacherView = React.createClass({
       students: students
     })
   },
-	handleSelect: function(){
-    // var socket = io('/teacher')
-    socket.on('select', function(data){
-
-    })
-	},
 	handleStop: function(){
 		//turn off listeners by calling disconnect function
 	},
