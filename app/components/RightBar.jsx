@@ -9,8 +9,12 @@ var RightBar = React.createClass({
         <div className="pr db h90">
           <QuestionBox question={ this.props.lesson.prompt }/>
           <div className="button-group pa b0 r0">
-            <button>Clear</button>
-            <button>submit</button>
+            <Button onClick={this.props.actionOne}>
+              {this.props.labelOne}
+            </Button>
+            <Button onClick={this.props.actionTwo}>
+              {this.props.labelTwo}
+            </Button>
           </div>
         </div>
       </div>

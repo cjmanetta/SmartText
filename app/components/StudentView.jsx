@@ -11,6 +11,11 @@ var StudentView = React.createClass({
   componentDidMount: function(){
     this.getLesson();
   },
+  handleStart: function(){
+      io.connect('http://localhost:8080');
+      var socket = io('/teacher')
+      socket.emit('start', {data: 'hello, world!'})
+  },
   getLesson: function(){
     //here is where the api call would happen
     //to recieve the lesson which is active
@@ -27,7 +32,7 @@ var StudentView = React.createClass({
     return (
       <div className="container">
         <MainText lesson={this.state.lesson}/>
-        <RightBar lesson={this.state.lesson}/>
+        <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="clear" labelTwo="submit"/>
       </div>
     );
   },
