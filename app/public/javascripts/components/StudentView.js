@@ -31,6 +31,7 @@ var StudentView = React.createClass({
   render: function() {
     return (
       <div className="container">
+        <h1>Student View</h1>
         <MainText lesson={this.state.lesson}/>
         <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="clear" labelTwo="submit"/>
       </div>

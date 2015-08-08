@@ -1,5 +1,5 @@
 var React = require("react");
-var React = RightBar from './RightBar';
+var RightBar = require('./RightBar');
 
 var TeacherView = React.createClass({
 	handleStart: function(){
