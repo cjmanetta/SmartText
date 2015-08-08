@@ -1,0 +1,11 @@
+<h1>Answer</h1>
+
+<p>
+  <%= answer.text_snippet %>
+</p>
+
+<form action="<%= answer._id %>" method="post">
+  <input type="hidden" name="_method" value="delete">
+  <input type="submit" value="delete">
+  <a href="<%= answer._id %>/edit">edit</a>
+</form>
