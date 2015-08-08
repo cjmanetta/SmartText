@@ -1,6 +1,6 @@
-import React from "react";
+var React = require("react");
 
-export default React.createClass({
+var MainText = React.createClass({
   componentDidMount: function(){
     document.addEventListener('mouseup', this.handleMouseUp);
   },
@@ -20,3 +20,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = MainText;

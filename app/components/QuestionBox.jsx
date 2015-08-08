@@ -1,6 +1,6 @@
-import React from "react";
+var React = require("react");
 
-export default React.createClass({
+var QuestionBox = React.createClass({
   render: function() {
     return (
       <div id="questionBox" className="p15px db bcy mt10">
@@ -10,3 +10,5 @@ export default React.createClass({
     );
   },
 });
+
+module.exports = QuestionBox;
