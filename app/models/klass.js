@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
-	teacher_id: Number,
+	// **REMOVED, NOT NECESSARY** teacher_id: Number,
 	grade: Number,
 	password: String
 	// students: [{
