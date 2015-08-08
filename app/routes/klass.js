@@ -42,7 +42,7 @@ router.route('/')
 
   Klass.create({
     grade: grade,
-    password: password,
+    password: password
     }, function(err, klass){
       if (err) {
         return console.error(err);
@@ -69,7 +69,7 @@ router.get('/new', function(req, res){
 })
 
 router.get('/:id/edit', function(req, res){
-  Teacher.findById(req.params.id, function(err, klass){
+  Klass.findById(req.params.id, function(err, klass){
     if (err){
       return console.error(err);
     } else {

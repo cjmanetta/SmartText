@@ -1,0 +1,17 @@
+<h1>Answers</h1>
+
+<% for (var i=0; i < answers.length; i++){ %>
+
+  <a href="/answers/<%= answers[i]._id %>">
+    <%= answers[i].text_snippet %>
+  </a>
+  <br>
+
+  <form action="/answers/<%= answers[i]._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="/answers/<%= answers[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
+
+<a href="/answers/new">Provide a different answer</a>

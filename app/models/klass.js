@@ -3,13 +3,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
-	grade: Number,
+	grade: String,
 	password: String
 	// students: [{
 	// 	type: mongoose.Schema.Types.ObjectId,
 	// 	ref: 'Student'
 	// }]
-
 })
 
 var Klass = mongoose.model('Klass', klassSchema)
