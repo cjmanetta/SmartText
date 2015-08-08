@@ -20,7 +20,18 @@ router.use(methodOverride(function(req, res){
 router.route('/')
 .get(function(req, res) {
   Student.find({}, function(err, students){
-    res.render('./students/index', { students: students })
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./students/index', { students: students })
+        },
+        'application/json': function(){
+          res.send({students: students})
+        }
+      })
+    }
   });
 })
 
@@ -35,10 +46,17 @@ router.route('/')
     last_initial: last_initial
     }, function(err, student){
     if (err){
-      console.log('error!!!')
+      return console.error(err);
     } else {
       console.log('post created: ' + student)
-      res.redirect('/students')
+      res.format({
+        'text/html': function(){
+          res.redirect('/students')
+        },
+        'application/json': function(){
+          res.send({student: student})
+        }
+      })
     }
   })
 })
@@ -49,15 +67,36 @@ router.get('/new', function(req, res){
 
 router.get('/:id/edit', function(req, res){
   Student.findById(req.params.id, function(err, student){
-  res.render('./students/edit', {student: student})
-})
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./students/edit', {student: student})
+        },
+        'application/json': function(){
+          res.send({student: student})
+        }
+      })
+    }
+  })
 })
 
 router.route('/:id')
-
 .get(function(req, res) {
   Student.findById(req.params.id, function(err, student) {
-    res.render('./students/show', { student: student })
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./students/show', { student: student })
+        },
+        'application/json': function(){
+          res.send({student: student})
+        }
+      })
+    }
   })
 })
 
@@ -92,7 +131,14 @@ router.route('/:id')
       return console.error(err)
     } else {
       console.log('deleted: ' + student)
-      res.redirect('/students')
+      res.format({
+        'text/html': function(){
+          res.redirect('/students')
+        },
+        'application/json': function(){
+          res.sendStatus(200)
+        }
+      })
     }
   })
 })
