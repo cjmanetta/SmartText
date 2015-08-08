@@ -4,7 +4,7 @@
 
 <% for (var i=0; i<teachers.length; i++){ %>
 	<br>
-	<%= teachers[i].first_name %>
+	<a href="/teachers/<%= teachers[i]._id %>"><%= teachers[i].first_name %></a>
 	<br>
 	<%= teachers[i].last_name %>
 	<br>

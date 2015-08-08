@@ -10,7 +10,7 @@ var teacherSchema = mongoose.Schema({
 	// 	type: mongoose.Schema.Types.ObjectId,
 	// 	ref: 'Klass'
 	// }],
-	// lessons: [{	
+	// lessons: [{
 	// 	type: mongoose.Schema.Types.ObjectId,
 	// 	ref: 'Klass'
 	// }]
