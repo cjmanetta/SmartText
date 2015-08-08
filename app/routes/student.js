@@ -81,7 +81,7 @@ Student.findById(req.params.id, function(err, student){
       return console.error(err)
     } else {
       console.log('deleted: ' + student)
-      res.redirect('/student')
+      res.redirect('/students')
     }
   })
 })
