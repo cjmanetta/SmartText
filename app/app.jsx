@@ -1,5 +1,6 @@
 var React = require("react");
 var Body = require("./components/Body");
+var Header = require("./components/Header");
 var _ = require("underscore");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;

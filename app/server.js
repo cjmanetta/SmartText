@@ -1,7 +1,7 @@
 var express = require('express')
 var app = express();
 var path = require('path')
-
+var jsxCompile = require('express-jsx')
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var port = 8080;
@@ -16,7 +16,9 @@ app.use('/teachers', teachers_routes)
 app.use('/lessons', lessons_routes)
 app.use('/students', students_routes)
 
+app.use(jsxCompile(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs')
@@ -32,12 +34,4 @@ io.of('teacher').on('connection', function(socket){
 
 })
 
-
-io.of('teacher').on('connection', function(socket){
-  console.log('data received');
-  socket.on('start', function(data){
-    io.emit('start', data);
-  })
-
-})
 
