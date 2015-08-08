@@ -56,7 +56,7 @@ router.route('/')
 		  			res.redirect('/teachers')
 					},
 					'application/json': function(){
-						res.send({message: "created"})
+						res.send({teacher: teacher})
 					}
 				})
 			}
@@ -133,7 +133,7 @@ router.route('/:id')
 						res.redirect('/teachers')
 					},
 					'application/json': function(){
-						res.send({message: "updated"})
+						res.send({teacher: teacher})
 					}
 				})
 			}
@@ -151,7 +151,7 @@ router.route('/:id')
 					res.redirect('/teachers')
 				},
 				'application/json': function(){
-					res.send({message: "deleted"})
+					res.sendStatus(200)
 				}
 			})
 		}
