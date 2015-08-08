@@ -3,13 +3,14 @@ var React = require("react");
 //a new component. Save it in this file with capital
 //file names to show that it is a react file
 var Footer = require("./Footer");
+var SignUp = require("./SignUp");
 
 
 var Body = React.createClass({
   render: function() {
     return (
-      <div className="container">
-        <h3>Hello, Screw the browser!</h3>
+      <div id="main" className="container">
+        <SignUp />
         <Footer />
       </div>
     );

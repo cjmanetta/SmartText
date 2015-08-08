@@ -21,7 +21,18 @@ router.use(methodOverride(function(req, res){
 router.route('/')
 .get(function(req, res) {
   Lesson.find({}, function(err, lessons){
-    res.render('./lessons/index', { lessons: lessons});
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./lessons/index', { lessons: lessons});
+        },
+        'application/json': function(){
+          res.send({lessons: lessons})
+        }
+      })
+    }
   });
 })
 .post(function(req, res){
@@ -36,7 +47,14 @@ router.route('/')
       console.log('error')
     } else {
       console.log('post created: ' + lesson)
-      res.redirect('/lessons')
+      res.format({
+        'text/html': function(){
+          res.redirect('/lessons')
+        },
+        'application/json': function(){
+          res.send({lesson: lesson})
+        }
+      })
     }
   })
 })
@@ -54,7 +72,18 @@ router.get('/:id/edit', function(req, res) {
 router.route('/:id')
 .get(function(req, res) {
   Lesson.findById(req.params.id, function(err, lesson) {
-    res.render('./lessons/show', { lesson: lesson })
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./lessons/show', { lesson: lesson });
+        },
+        'application/json': function(){
+          res.send({lesson: lesson})
+        }
+      })
+    }
   })
 })
 .put(function(req, res){
@@ -87,7 +116,14 @@ router.route('/:id')
       return console.log(err)
     } else {
       console.log('deleted: ' + lesson)
-      res.redirect('/lessons')
+      res.format({
+        'text/html': function(){
+          res.redirect('/lessons')
+        },
+        'application/json': function(){
+          res.sendStatus(200)
+        }
+      })
     }
   })
 })

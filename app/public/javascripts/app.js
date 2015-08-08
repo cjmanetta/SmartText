@@ -37,12 +37,12 @@ var routes = (
 
 //Top Level app component that manages whole app state
 var App = React.createClass({
+  getInitialState: function(){
+    user: null
+  },
   render: function(){
     return (
-      <div id="main">
-        <h1>Smart Text</h1>
-        <RouteHandler />
-      </div>
+      <RouteHandler />
     )
   }
 });

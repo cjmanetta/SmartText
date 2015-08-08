@@ -1,0 +1,11 @@
+<h1><%= question.prompt %></h1>
+
+<p><%= question.green_answer %></p>
+<p><%= question.blue_answer %></p>
+
+<form action="/questions/<%= question._id %>" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">
+    <a href="<%= question._id %>/edit">edit</a>
+</form>
+

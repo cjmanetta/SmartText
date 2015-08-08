@@ -1,12 +1,11 @@
 var express = require('express');
-//not sure if webpack.router works
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
 mongoose.createConnection('mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
-var Article = require('../models/article').Article
+var Standard = require('../models/standard').Standard
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -19,63 +18,66 @@ router.use(methodOverride(function(req, res){
 }))
 
 router.route('/')
-.get(function(req, res){
-  Article.find({}, function(err, articles){
+.get(function(req, res) {
+  Standard.find({}, function(err, standards){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./articles/index', { articles: articles });
+          res.render('./standards/index', { standards: standards })
         },
         'application/json': function(){
-          res.send({articles: articles})
+          res.send({standards: standards})
         }
       })
     }
-  })
+  });
 })
+
 .post(function(req, res){
-  var author = req.body.author
-  var title = req.body.title
-  var content = req.body.content
+  var grade = req.body.grade
+  var description = req.body.description
 
-  Article.create({
-    author: author,
-    title: title,
-    content: content
-  }, function(err, article) {
-    if (err) {
-      console.log('error')
-    } else {
-      console.log('post created: ' + article)
-      res.format({
-        'text/html': function(){
-          res.redirect('/articles')
-        },
-        'application/json': function(){
-          res.send({article: article})
-        }
-      })
+  Standard.create({
+    grade: grade,
+    description: description
+    }, function(err, standard){
+      if (err) {
+        return console.error(err);
+      } else {
+        console.log('post created: ' + standard)
+        res.format({
+          'text/html': function(){
+            res.redirect('/standards')
+          },
+          'application/json': function(){
+            res.send({standard: standard})
+          }
+        })
+      }
+  })
+})
+
+router.get('/new', function(req, res){
+  res.format({
+    'text/html': function(){
+      res.render('./standards/new');
     }
   })
 })
 
-router.get('/new', function(req, res) {
-  res.render('./articles/new')
-})
-
-router.get('/:id/edit', function(req, res) {
-  Article.findById(req.params.id, function(err, article){
+router.get('/:id/edit', function(req, res){
+  Standard.findById(req.params.id, function(err, standard){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./articles/edit', { article: article });
+          res.render('./standards/edit', {standard: standard})
         },
         'application/json': function(){
-          res.send({article: article})
+          res.send({standard: standard})
         }
       })
     }
@@ -84,56 +86,52 @@ router.get('/:id/edit', function(req, res) {
 
 router.route('/:id')
 .get(function(req, res){
-  Article.findById(req.params.id, function(err, article){
+  Standard.findById(req.params.id, function(err, standard){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./articles/show', { article: article })
+          res.render('./standards/show', {standard: standard})
         },
         'application/json': function(){
-          res.send({article: article})
+          res.send({standard: standard})
         }
       })
     }
   })
 })
-
 .put(function(req, res){
-  Article.findById(req.params.id, function(err, article){
+  Standard.findById(req.params.id, function(err, standard){
     if (err) {
       return console.error(err)
     } else {
-      article.first_name = req.body.first_name;
-      article.last_name = req.body.last_name;
-      article.username = req.body.username;
-      article.password = req.body.password;
+      standard.grade = req.body.grade;
+      standard.description = req.body.description;
 
-      article.save(function(err, article){
-        console.log('edited: ' + article);
+      standard.save(function(err, standard){
+        console.log('edited: ' + standard);
         res.format({
           'text/html': function(){
-            res.redirect('/articles')
+            res.redirect('/standards')
           },
           'application/json': function(){
-            res.send({article: article})
+            res.send({standard: standard})
           }
         })
       })
     }
   })
 })
-
 .delete(function(req, res){
-  Article.remove({_id: req.params.id}, function(err, article){
+  Standard.remove({_id: req.params.id}, function(err, standard){
     if (err) {
       return console.error(err)
     } else {
-      console.log('deleted: ' + article)
+      console.log('deleted: ' + standard)
       res.format({
         'text/html': function(){
-          res.redirect('/articles')
+          res.redirect('/standards')
         },
         'application/json': function(){
           res.sendStatus(200)

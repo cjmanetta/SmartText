@@ -1,0 +1,10 @@
+<form action="/standards/<%= standard._id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+
+  <input type="number" name="grade" value="<%= standard.grade %>" >
+  <input type="text" name="description" value="<%= standard.description %>" >
+  <br>
+  <br>
+
+  <input type="submit" value="edit">
+</form>
