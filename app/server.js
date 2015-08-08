@@ -16,25 +16,25 @@ var teachers_routes = require('./routes/teacher')
 var lessons_routes = require('./routes/lesson')
 var articles_routes = require('./routes/article')
 var students_routes = require('./routes/student')
+var answers_routes = require('./routes/answer')
+var klasses_routes = require('./routes/klass')
 var questions_routes = require('./routes/question')
 var standards_routes = require('./routes/standard')
-
 
 app.use('/teachers', teachers_routes)
 app.use('/lessons', lessons_routes)
 app.use('/articles', articles_routes)
 app.use('/students', students_routes)
+app.use('/answers', answers_routes)
+app.use('/klasses', klasses_routes)
 app.use('/questions', questions_routes)
 app.use('/standards', standards_routes)
-
 
 app.use(jsxCompile(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs')
-
 
 console.log('Listening on http://' + port)
 

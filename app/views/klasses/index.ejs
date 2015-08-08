@@ -1,0 +1,19 @@
+<h1>Reading Comprehension Classes</h1>
+
+<% for (var i=0; i < klasses.length; i++){ %>
+
+  Grade:&nbsp;<a href="/klasses/<%= klasses[i]._id %>">
+    <%= klasses[i].grade %>
+  </a>
+  Password:&nbsp;<a href="/klasses/<%= klasses[i]._id %>">
+    <%= klasses[i].password %>
+  </a>&nbsp;
+
+  <form action="/klasses/<%= klasses[i]._id %>" method="post" style="display: inline;">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="delete">&nbsp;
+    <a href="/klasses/<%= klasses[i]._id %>/edit">edit</a>
+  </form>
+<% } %>
+<br/><br/>
+<a href="/klasses/new">Initiate a new class</a>
