@@ -4,14 +4,17 @@
 var express = require('express')
 var app = express();
 var path = require('path')
+var io = require('socket.io').listen(app);
 var port = 8080;
 
 var teachers_routes = require('./routes/teacher')
+var lessons_routes = require('./routes/lesson')
 var students_routes = require('./routes/student')
 
 console.log(teachers_routes)
 
 app.use('/teachers', teachers_routes)
+app.use('/lessons', lessons_routes)
 app.use('/students', students_routes)
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,4 +27,13 @@ var server = app.listen(port, function(){
 	var port = server.address().port;
 	console.log('Listening on http://', host, port)
 });
+
+
+io.of('teacher').on('connection', function(socket){
+  console.log('data received');
+  socket.on('start', function(data){
+    io.emit('start', data);
+  })
+
+})
 
