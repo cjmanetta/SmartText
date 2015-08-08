@@ -47,8 +47,8 @@ console.log('Listening on http://' + port)
 // })
 
 io.on('connection', function(socket){
-  console.log('data received');
   socket.on('select', function(data){
+  	// console.log(data);
     io.emit('select', data);
   })
 })
