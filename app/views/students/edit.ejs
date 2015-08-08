@@ -1,0 +1,11 @@
+<form action="/students/<%= student._id %>" method="post">
+  <input type="hidden" name="_method" value="put">
+
+  <input type="text" name="username" value="<%= student.username %>" >
+  <input type="text" name="first_name" value="<%= student.first_name %>" >
+  <br>
+  <input type="text" name="last_initial" value="<%= student.last_initial %>" >
+  <br>
+
+  <input type="submit" value="edit">
+</form>
