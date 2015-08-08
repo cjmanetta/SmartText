@@ -1,6 +1,8 @@
-import React from "react";
-import Body from "./components/Body";
-import _ from "underscore";
+var React = require("react");
+var Body = require("./components/Body");
+var _ = require("underscore");
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 //functions defined in the global scope to be used in many components
 var call = function(action, method, data){
@@ -33,11 +35,22 @@ var App = React.createClass({
   render: function(){
     return (
       <div id="main">
-        <Body />
+        <RouteHandler />
       </div>
     )
   }
 });
 
 
-React.render(<App />, document.body);
+var routes = (
+  <Route handler={App}>
+  //add default handler!
+    <DefaultRoute >
+    <Route name="login" path = "/login" handler={loginHandler}/>
+  </Route>
+);
+
+
+Router.run(routes, function(Handler){
+  React.render(<Handler />, document.body);
+})
