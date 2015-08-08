@@ -24,3 +24,22 @@ var server = app.listen(port, function(){
 	console.log('Listening on http://', host, port)
 });
 
+var io = require('socket.io')();
+
+io.sockets.on('connection', function(socket){
+		// EXAMPLE connection below
+		// socket.on('draw', function(data){
+		// 	io.emit('draw', data);
+		// });
+});
+
+// EXAMPLE namespaced connection and emit
+// var nsp = io.of('/my-namespace');
+// nsp.on('connection', function(socket){
+//   console.log('someone connected'):
+// });
+// nsp.emit('hi', 'everyone!');
+
+// EXAMPLE CLIENTSIDE CONNECTION
+// var socket = io('/my-namespace');
+
