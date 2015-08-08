@@ -1,7 +1,11 @@
 var React = require("react");
+var Router = require('react-router');
 
 var Header = React.createClass({
-
+  mixins: [
+    Router.Navigation,
+    Router.State,
+  ],
   render: function(){
     var teacher = this.props.teacher
     var student = this.props.student
@@ -11,12 +15,10 @@ var Header = React.createClass({
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
       buttons = <a className="navbar-btn navbar-right" href="#">teachery things</a>
-      }
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
       buttons = <a className="navbar-btn navbar-right" href="#">studenty things</a>
-      }
-    } else
+    } else {
       content = null
     }
 

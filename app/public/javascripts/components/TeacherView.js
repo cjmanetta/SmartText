@@ -1,5 +1,7 @@
 var React = require("react");
 var RightBar = require('./RightBar');
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var TeacherView = React.createClass({
   getInitialState: function(){
@@ -22,6 +24,7 @@ var TeacherView = React.createClass({
     return (
       <div className="container">
         <h3>Teacher View Component</h3>
+        <RouteHandler />
         <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="start" labelTwo="stop"/>
       </div>
     );
