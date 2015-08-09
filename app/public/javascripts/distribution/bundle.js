@@ -25386,7 +25386,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      teacher: {}
+	      teacher: { _id: 0 }
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25412,17 +25412,15 @@
 	    });
 	  },
 	  render: function render() {
-	    var teacher = this.state.teacher;
-
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px" },
-	      React.createElement(Header, { teacher: teacher }),
+	      React.createElement(Header, { teacher: this.state.teacher }),
 	      React.createElement(
 	        "h3",
 	        null,
 	        "Welcome, ",
-	        teacher.first_name
+	        this.state.teacher.first_name
 	      ),
 	      React.createElement(RouteHandler, null)
 	    );
@@ -25468,12 +25466,12 @@
 	        null,
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: "1" }, className: "btn btn-default navbar-btn" },
+	          { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "student panel"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: "1" }, className: "btn btn-default navbar-btn" },
+	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
 	        )
 	      );
