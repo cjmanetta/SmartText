@@ -39,6 +39,7 @@ router.route('/')
 
 .post(function(req, res){
   var grade = req.body.grade
+  var name = req.body.name
   var pin = req.body.pin
   var teacher_id = req.params.id
   var students = null
