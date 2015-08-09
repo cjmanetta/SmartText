@@ -25532,7 +25532,7 @@
 	    return {
 	      lesson: { prompt: "", text: "", author: "", title: "" },
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }]
+	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J' }]
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25573,7 +25573,15 @@
 	  render: function render() {
 	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
 	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    var lesson = this.state.lesson;
 
+	    var students = this.state.students.map(function (student) {
+	      return React.createElement(
+	        "li",
+	        { key: student.id },
+	        React.createElement(StudentTile, { student: student, lesson: lesson })
+	      );
+	    });
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
@@ -25581,10 +25589,14 @@
 	      React.createElement(
 	        "h3",
 	        null,
-	        "Teacher View Component"
+	        "Teacher Dashboard"
 	      ),
 	      React.createElement(RouteHandler, null),
-	      React.createElement(StudentTile, { student: this.state.students[0], lesson: this.state.lesson }),
+	      React.createElement(
+	        "ul",
+	        null,
+	        students
+	      ),
 	      React.createElement(RightBar, { lesson: this.state.lesson, user: "", actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: "start", labelTwo: "stop" })
 	    );
 	  }
@@ -25611,7 +25623,6 @@
 	        "span",
 	        { className: "fs14px" },
 	        this.props.student.first_name,
-	        " ",
 	        this.props.student.last_initial
 	      ),
 	      React.createElement(
