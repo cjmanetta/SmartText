@@ -8,12 +8,20 @@
   Password:&nbsp;<a href="/klasses/<%= klasses[i]._id %>">
     <%= klasses[i].password %>
   </a>&nbsp;
+  Teacher ID: <%= klasses[i]._teacher_id %>
+  <br>
+  Students: <%= klasses[i].students %>
+  <br>
 
-  <form action="/klasses/<%= klasses[i]._id %>" method="post" style="display: inline;">
+
+  <form action="/teachers/<%= id %>/klasses/<%= klasses[i]._id %>" method="post" style="display: inline;">
     <input type="hidden" name="_method" value="delete">
     <input type="submit" value="delete">&nbsp;
-    <a href="/klasses/<%= klasses[i]._id %>/edit">edit</a>
+    <a href="/teachers/<%= id %>/klasses/<%= klasses[i]._id %>/edit">edit</a>
   </form>
 <% } %>
 <br/><br/>
-<a href="/klasses/new">Initiate a new class</a>
+
+
+
+<a href='/teachers/<%= id %>/klasses/new'>Initiate a new class</a>

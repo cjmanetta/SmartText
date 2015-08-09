@@ -4,11 +4,15 @@
 
 <% for (var i=0; i<teachers.length; i++){ %>
 	<br>
-	<a href="/teachers/<%= teachers[i]._id %>"><%= teachers[i].first_name %></a>
+	first name: <a href="/teachers/<%= teachers[i]._id %>"><%= teachers[i].first_name %></a>
 	<br>
-	<%= teachers[i].last_name %>
+	last name: <%= teachers[i].last_name %>
 	<br>
-	<%= teachers[i].username %>
+	username: <%= teachers[i].username %>
+	<br>
+	klasses: <%= teachers[i].klasses %> 
+	<br>
+	lessons: <%= teachers[i].lessons %> 
 	<form action="/teachers/<%= teachers[i]._id %>" method="post">
 		<input type="hidden" name="_method" value="delete">
 		<input type="submit" value="delete">

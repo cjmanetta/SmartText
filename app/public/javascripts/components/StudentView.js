@@ -46,7 +46,8 @@ var StudentView = React.createClass({
     if (this.state.highlightOn){
       var selectedRange = selection.getRangeAt(0);
       var selectedText = selectedRange.extractContents()
-      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+      var highlightSpan = $("<span class='highlight'>" + 
+                          selectedText.textContent + "</span>");
       selectedRange.insertNode(highlightSpan[0]);  
       
       // I need to add the clear selection functionality here
