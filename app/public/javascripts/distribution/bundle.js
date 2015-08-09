@@ -25181,6 +25181,12 @@
 	    socket.on('viewPrompt', function (data) {
 	      that.updatePrompt(data);
 	    });
+	    socket.on('finish', function () {
+	      alert('Your teacher has ended the session.');
+	      that.setState({
+	        highlightOn: false
+	      });
+	    });
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
@@ -25600,8 +25606,7 @@
 	    socket.emit('viewPrompt', this.state.prompt);
 	  },
 	  disableStudents: function disableStudents() {
-	    //turn off listeners by calling disconnect function
-	    socket.disconnect();
+	    socket.emit('finish');
 	  },
 	  getLesson: function getLesson() {
 	    //here is where the api call would happen

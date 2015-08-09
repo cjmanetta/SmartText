@@ -19,6 +19,12 @@ var StudentView = React.createClass({
     socket.on('viewPrompt', function(data){
       that.updatePrompt(data)
     })
+    socket.on('finish', function(){
+      alert('Your teacher has ended the session.')
+      that.setState({
+        highlightOn: false
+      });
+    })
   },
   updatePrompt: function(data){
     this.setState({

@@ -39,8 +39,7 @@ var Grid = React.createClass({
     socket.emit('viewPrompt', this.state.prompt)
   },
   disableStudents: function(){
-    //turn off listeners by calling disconnect function
-    socket.disconnect()
+    socket.emit('finish')
   },
   getLesson: function(){
     //here is where the api call would happen

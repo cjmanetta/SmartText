@@ -58,6 +58,9 @@ io.on('connection', function(socket){
   	console.log(data)
   	io.emit('viewPrompt', data);
   });
+  socket.on('finish', function(){
+  	io.emit('finish');
+  });
 })
 
 app.get("/", function(req, res){
