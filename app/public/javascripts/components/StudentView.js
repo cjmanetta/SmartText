@@ -48,9 +48,9 @@ var StudentView = React.createClass({
       var correctColor = this.compareSelection(selection);
       var selectedRange = selection.getRangeAt(0);
       var selectedText = selectedRange.extractContents()
-      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+      var highlightSpan = $("<span class='highlight'>" +
+                          selectedText.textContent + "</span>");
       selectedRange.insertNode(highlightSpan[0]);
-
 
       // I need to add the clear selection functionality here
       console.log($('#mainText').html())
