@@ -1,7 +1,7 @@
 var React = require("react");
 var _ = require("underscore");
 var Router = require('react-router');
-var { Route, DefaultRoute, RouteHandler, Link } = Router;
+var { Route, DefaultRoute, RouteHandler, Link, State } = Router;
 
 var StudentView = require("./components/StudentView");
 var TeacherView = require("./components/TeacherView");
@@ -55,6 +55,6 @@ var App = React.createClass({
   }
 });
 
-Router.run(routes, Router.HashLocation, function(Root){
+Router.run(routes, Router.HashLocation, function(Root, state){
   React.render(<Root />, document.body);
 })

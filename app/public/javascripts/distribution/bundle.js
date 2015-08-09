@@ -53,6 +53,7 @@
 	var DefaultRoute = Router.DefaultRoute;
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
+	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
@@ -108,7 +109,7 @@
 	  }
 	});
 
-	Router.run(routes, Router.HashLocation, function (Root) {
+	Router.run(routes, Router.HashLocation, function (Root, state) {
 	  React.render(React.createElement(Root, null), document.body);
 	});
 
