@@ -25710,10 +25710,11 @@
 	    var signUp = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
-	    var username = $("#username").val();
+	    var username = $(event.target).find('#username').val();
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
-	    var password = $("#password").val();
+	    var password = $(event.target).find('#password').val();
+	    debugger;
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
 
 	    var request = $.ajax({
@@ -25724,7 +25725,7 @@
 	    });
 
 	    request.done(function (serverData) {
-	      signUp.transitionTo('teachers', { id: serverData.teacher._id }, serverData);
+	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	    });
 
 	    request.fail(function (serverData) {
@@ -25769,7 +25770,7 @@
 	          { className: 'row' },
 	          React.createElement(
 	            'form',
-	            { id: 'teacherLoginForm', className: 'col-sm-4 col-md-4 col-lg-4', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
+	            { id: 'teacherLoginForm', className: 'col-sm-4 col-md-4 col-lg-4', action: '/teachers/login', method: 'post', onSubmit: this.handleSubmit },
 	            React.createElement(
 	              'div',
 	              { className: 'form-group' },
