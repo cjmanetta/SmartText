@@ -25377,6 +25377,7 @@
 	    });
 
 	    request.done(function (serverData) {
+	      console.log("success");
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25389,7 +25390,7 @@
 	  },
 	  render: function render() {
 	    var teacher = this.state.teacher;
-
+	    debugger;
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px" },
@@ -25399,8 +25400,7 @@
 	        null,
 	        "Welcome, ",
 	        teacher.first_name
-	      ),
-	      React.createElement(RouteHandler, null)
+	      )
 	    );
 	  }
 	});
@@ -25437,7 +25437,9 @@
 	        { className: "navbar-text navbar-left" },
 	        teacher.first_name,
 	        " ",
-	        teacher.last_name
+	        teacher.last_name,
+	        " ",
+	        teacher._id
 	      );
 	      buttons = React.createElement(
 	        "div",
@@ -25449,7 +25451,7 @@
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: "1" }, className: "btn btn-default navbar-btn" },
+	          { to: "lessonPanel", params: ({ id: "55c7b2f3b9f41254d41b9d2d" }, { teacher: teacher }), className: "btn btn-default navbar-btn" },
 	          "lesson panel"
 	        )
 	      );
@@ -25522,8 +25524,10 @@
 
 	    return React.createElement(
 	      "div",
-	      null,
-	      "Lesson Panel"
+	      { className: "container" },
+	      "Lesson Panel",
+	      this.params.teacher.first_name,
+	      React.createElement(NewLesson, null)
 	    );
 	  }
 	});
@@ -25729,7 +25733,6 @@
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
 	    var password = $(event.target).find('#password').val();
-	    debugger;
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
 
 	    var request = $.ajax({
@@ -25742,7 +25745,6 @@
 	    request.done(function (serverData) {
 	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	    });
-
 	    request.fail(function (serverData) {
 	      console.log(serverData);
 	    });

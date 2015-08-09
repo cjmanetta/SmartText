@@ -15,6 +15,7 @@ var TeacherView = React.createClass({
     var action = '/teachers/' + this.props.params.id;
     var method = 'get';
 
+
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -22,6 +23,7 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
+      console.log("success")
       teacherView.setState({
         teacher: serverData.teacher
       });
@@ -34,13 +36,13 @@ var TeacherView = React.createClass({
   },
   render: function() {
     var teacher = this.state.teacher
-
+    debugger
     return (
       <div className="container pt150px">
-        <Header teacher={teacher}/>
+        <Header teacher={ teacher }/>
         <h3>Welcome, { teacher.first_name}</h3>
 
-        <RouteHandler />
+
       </div>
     );
   },

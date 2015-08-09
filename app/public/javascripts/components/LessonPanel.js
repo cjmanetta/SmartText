@@ -4,7 +4,11 @@ var LessonPanel = React.createClass({
   render: function(){
 
     return (
-      <div>Lesson Panel</div>
+      <div className="container">Lesson Panel
+        {this.params.teacher.first_name}
+        <NewLesson />
+      </div>
+
     )
   }
 });
