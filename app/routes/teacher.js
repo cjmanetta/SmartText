@@ -105,6 +105,27 @@ router.route('/:id')
 		}
 	})
 })
+router.route('/login')
+.post(function(req, res){
+	console.log(req.body.username)
+	Teacher.findOne({"username" : req.body.username}, function(err, teacher){
+		console.log(teacher);
+		if (err){
+			return console.error(err);
+		} else if (teacher.password === req.body.password){
+			res.format({
+				'text/html': function(){
+					res.render('./teachers/show', {teacher: teacher})
+				},
+				'application/json': function(){
+					res.send({teacher: teacher})
+				}
+			})
+		} else {
+		  res.sendStatus(401);
+		}
+	})
+})
 .put(function(req, res){
 	Teacher.findById(req.params.id, function(err, teacher){
 		if (err) {

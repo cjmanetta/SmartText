@@ -17,10 +17,11 @@ var SignUp = React.createClass({
     var signUp = this;
     var action = $(event.target).attr('action');
     var method = $(event.target).attr('method');
-    var username = $("#username").val();
+    var username = $(event.target).find('#username').val()
     var first_name = $("#first_name").val();
     var last_name = $("#last_name").val();
-    var password = $("#password").val();
+    var password = $(event.target).find('#password').val()
+    debugger
     var data = {username: username, first_name: first_name, last_name: last_name, password: password}
 
     var request = $.ajax({
@@ -31,7 +32,7 @@ var SignUp = React.createClass({
     });
 
     request.done(function(serverData){
-      signUp.transitionTo('teachers', {id: serverData.teacher._id}, serverData);
+      signUp.transitionTo('teachers', {id: serverData.teacher._id});
     });
 
     request.fail(function(serverData){
@@ -52,7 +53,7 @@ var SignUp = React.createClass({
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
         </ul>
         <div className="row">
-          <form id="teacherLoginForm" className="col-sm-4 col-md-4 col-lg-4" action="/teachers" method="post" onSubmit={this.handleSubmit}>
+          <form id="teacherLoginForm" className="col-sm-4 col-md-4 col-lg-4" action="/teachers/login" method="post" onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
