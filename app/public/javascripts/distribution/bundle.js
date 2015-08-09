@@ -53,6 +53,7 @@
 	var DefaultRoute = Router.DefaultRoute;
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
+	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
@@ -108,7 +109,7 @@
 	  }
 	});
 
-	Router.run(routes, Router.HashLocation, function (Root) {
+	Router.run(routes, Router.HashLocation, function (Root, state) {
 	  React.render(React.createElement(Root, null), document.body);
 	});
 
@@ -25378,10 +25379,34 @@
 	  displayName: "TeacherView",
 
 	  getInitialState: function getInitialState() {
-	    return {};
+	    return {
+	      teacher: {}
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var teacherView = this;
+	    var action = '/teachers/' + this.props.params.id;
+	    var method = 'get';
+
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      teacherView.setState({
+	        teacher: serverData.teacher
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('There was an error getting the teacher');
+	      console.log(serverData);
+	    });
 	  },
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var teacher = this.state.teacher;
 
 	    return React.createElement(
 	      "div",
@@ -25390,7 +25415,8 @@
 	      React.createElement(
 	        "h3",
 	        null,
-	        "Teacher View Component"
+	        "Welcome, ",
+	        teacher.first_name
 	      ),
 	      React.createElement(RouteHandler, null)
 	    );
@@ -25719,10 +25745,11 @@
 	    var signUp = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
-	    var username = $("#username").val();
+	    var username = $(event.target).find('#username').val();
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
-	    var password = $("#password").val();
+	    var password = $(event.target).find('#password').val();
+	    debugger;
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
 
 	    var request = $.ajax({
@@ -25733,7 +25760,7 @@
 	    });
 
 	    request.done(function (serverData) {
-	      signUp.transitionTo('teachers', { id: serverData.teacher._id }, serverData);
+	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	    });
 
 	    request.fail(function (serverData) {
@@ -25778,7 +25805,7 @@
 	          { className: 'row' },
 	          React.createElement(
 	            'form',
-	            { id: 'teacherLoginForm', className: 'col-sm-4 col-md-4 col-lg-4', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
+	            { id: 'teacherLoginForm', className: 'col-sm-4 col-md-4 col-lg-4', action: '/teachers/login', method: 'post', onSubmit: this.handleSubmit },
 	            React.createElement(
 	              'div',
 	              { className: 'form-group' },

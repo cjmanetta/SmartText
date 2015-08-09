@@ -30,8 +30,7 @@ chrome-user-data
 *.sublime-project
 *.sublime-workspace
 .idea
-*.iml
-app/public/javascripts/distribution/bundle.js
+*bundle.js
 
 
 # Coveralls

@@ -6,7 +6,7 @@ By providing real-time data, we help reading teachers give each student the atte
 BEFORE LESSON
 - teacher can sign up, create a class, enter students
 - teacher can login and logout
-- students can login and logout
+- students can login
 - teacher can create a lesson: select a text, class, grade and standard
 - teacher can create a question
 - teacher can create an answer by highlighting the text
