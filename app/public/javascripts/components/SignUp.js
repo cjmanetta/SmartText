@@ -61,7 +61,7 @@ var SignUp = React.createClass({
               <label htmlFor="password">Password</label>
               <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
             </div>
-            <button type="submit" className="btn btn-default">Submit</button>
+            <button type="submit" className="btn btn-default">Log In</button>
           </form>
           <form id="signUp" className="col-sm-8 col-md-8 col-lg-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
             <div className="form-group">
@@ -80,7 +80,7 @@ var SignUp = React.createClass({
               <label htmlFor="password">Password</label>
               <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
             </div>
-            <button type="submit" className="btn btn-default">Submit</button>
+            <button type="submit" className="btn btn-default">Sign Up</button>
           </form>
         </div>
       </div>
