@@ -25578,6 +25578,11 @@
 	var StudentPanel = React.createClass({
 	  displayName: 'StudentPanel',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      klasses: []
+	    };
+	  },
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
@@ -25597,8 +25602,10 @@
 	    });
 
 	    request.done(function (serverData) {
-	      debugger;
-	      studentPanel.props.update(serverData);
+	      var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
+	      studentPanel.setState({
+	        klasses: newKlasses
+	      });
 	    });
 
 	    request.fail(function (serverData) {

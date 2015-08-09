@@ -1,5 +1,10 @@
 var React = require("react");
 var StudentPanel = React.createClass({
+  getInitialState: function() {
+    return {
+      klasses:[]
+    };
+  },
   handleSubmit: function(event){
     event.preventDefault();
 
@@ -19,8 +24,10 @@ var StudentPanel = React.createClass({
     });
 
     request.done(function(serverData){
-    debugger
-      studentPanel.props.update(serverData);
+      var newKlasses = studentPanel.state.klasses.concat(serverData.klass)
+      studentPanel.setState({
+        klasses: newKlasses
+      });
     });
 
     request.fail(function(serverData){
