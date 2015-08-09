@@ -6,6 +6,11 @@ var SignUp = React.createClass({
     Router.Navigation,
     Router.State,
   ],
+  getInitialState: function() {
+    return {
+      authBox: 'Teachers'
+    };
+  },
   handleSubmit: function(event){
 
     event.preventDefault();
@@ -33,28 +38,75 @@ var SignUp = React.createClass({
       console.log(serverData);
     });
   },
+  handlePillClick: function(event){
+    event.preventDefault();
+    this.setState({
+      authBox: $(event.target).text()
+    });
+  },
   render: function() {
+    if(this.state.authBox === 'Teachers'){
+      var authBox = <div id="authBox">
+        <ul className="nav nav-pills">
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
+        </ul>
+        <div className="row">
+          <form id="teacherLoginForm" className="col-sm-4 col-md-4 col-lg-4" action="/teachers" method="post" onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
+            </div>
+            <button type="submit" className="btn btn-default">Log In</button>
+          </form>
+          <form id="signUp" className="col-sm-8 col-md-8 col-lg-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="first_name">First Name</label>
+              <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Suzy" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="last_name">Last Name</label>
+              <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Que" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
+            </div>
+            <button type="submit" className="btn btn-default">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    } else if(this.state.authBox === 'Students'){
+      var authBox = <div id="authBox">
+        <ul className="nav nav-pills">
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
+        </ul>
+        <form id="studentLogIn" action="/students" method="post" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Pin</label>
+            <input type="text" className="form-control" name="pin" id="pin" placeholder="1234" />
+          </div>
+          <button type="submit" className="btn btn-default">Submit</button>
+        </form>
+      </div>
+    }
     return (
-      <form id="signUp" action="/teachers" method="post" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="first_name">First Name</label>
-          <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Suzy" />
-        </div>
-        <div className="form-group">
-          <label htmlFor="last_name">Last Name</label>
-          <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Que" />
-        </div>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
-        </div>
-
-        <button type="submit" className="btn btn-default">Submit</button>
-      </form>
+      <div>
+        { authBox }
+      </div>
     );
   }
 });
