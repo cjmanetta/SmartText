@@ -25175,6 +25175,10 @@
 	  componentDidMount: function componentDidMount() {
 	    this.getLesson();
 	  },
+	  handleClear: function handleClear() {
+	    $('.highlight').removeClass('highlight');
+	  },
+	  handleSubmit: function handleSubmit() {},
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 
@@ -25213,7 +25217,7 @@
 	        'Student View'
 	      ),
 	      React.createElement(MainText, { lesson: this.state.lesson, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { lesson: this.state.lesson, user: this.state.user, actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(RightBar, { lesson: this.state.lesson, user: this.state.user, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
 	    );
 	  }
 	});
