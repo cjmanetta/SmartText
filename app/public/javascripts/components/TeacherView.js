@@ -7,15 +7,39 @@ var Header = require("./Header");
 var TeacherView = React.createClass({
   getInitialState: function(){
     return {
+      teacher: {}
     }
   },
+  componentDidMount: function() {
+    var teacherView = this;
+    var action = '/teachers/' + this.props.params.id;
+    var method = 'get';
+
+    var request = $.ajax({
+      url:      action,
+      method:   method,
+      dataType: "json"
+    });
+
+    request.done(function(serverData){
+      teacherView.setState({
+        teacher: serverData.teacher
+      });
+    });
+
+    request.fail(function(serverData){
+      console.log('There was an error getting the teacher')
+      console.log(serverData);
+    });
+  },
   render: function() {
-    var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+    var teacher = this.state.teacher
 
     return (
       <div className="container pt150px">
         <Header teacher={teacher}/>
-        <h3>Teacher View Component</h3>
+        <h3>Welcome, { teacher.first_name}</h3>
+
         <RouteHandler />
       </div>
     );
