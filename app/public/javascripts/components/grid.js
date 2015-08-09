@@ -14,7 +14,7 @@ var Grid = React.createClass({
     return {
       lesson: {prompt:"", text:"", author: "", title: ""},
       user: {first_name: "TEACHER", last_name: "A", username: "hello", id: '123'},
-      students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}]
+      students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}]
     }
   },
   componentDidMount: function(){
@@ -55,14 +55,24 @@ var Grid = React.createClass({
   render: function() {
     var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
     var student = {_id: "24", first_name: "robert", username: "robertb", password: "1234"}
+    var lesson = this.state.lesson
 
+    var students = this.state.students.map(function(student){
+      return ( 
+        <li key={student.id}>
+          <StudentTile student={student} lesson={lesson} />
+        </li>
+      )
+    })
     return (
 
       <div className="container">
         <Header teacher={teacher} student={student} />
-        <h3>Teacher View Component</h3>
+        <h3>Teacher Dashboard</h3>
         <RouteHandler />
-        <StudentTile student={this.state.students[0]}  lesson={this.state.lesson} />
+        <ul>
+          {students}
+        </ul>
         <RightBar lesson={this.state.lesson} user="" actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="start" labelTwo="stop"/>
       </div>
     );
