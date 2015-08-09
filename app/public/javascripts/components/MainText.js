@@ -5,8 +5,10 @@ var MainText = React.createClass({
     document.addEventListener('mouseup', this.handleMouseUp);
   },
   handleMouseUp: function(){
-    var selectedText = window.getSelection();
-    this.props.selectText(selectedText)
+    var selection = window.getSelection()
+    if (selection.isCollapsed === false) {
+      this.props.selectText(selection)
+    }
   },
   render: function() {
     return (

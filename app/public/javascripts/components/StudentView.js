@@ -14,12 +14,26 @@ var StudentView = React.createClass({
   componentDidMount: function(){
     this.getLesson();
   },
-  handleSelect: function(selectedText){
-    console.log(selectedText)
+  handleClear: function(){
+    $('.highlight').removeClass('highlight')
+  },
+  handleSubmit: function(){
+
+  },
+  handleSelect: function(selection){
     // var socket = io('/teacher')
+
+    var selectedRange = selection.getRangeAt(0);
+    var selectedText = selectedRange.extractContents()
+    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+    selectedRange.insertNode(highlightSpan[0]);  
+    
+    // I need to add the clear selection functionality here
+    console.log($('#mainText').html())
+    var highlightedText = $('#mainText').html()
     socket.emit('select', {
-      user: this.state.user, 
-      selectedText: selectedText
+      user: this.state.user,
+      selection: highlightedText
     })
   },
   getLesson: function(){
@@ -39,7 +53,7 @@ var StudentView = React.createClass({
       <div className="container">
         <h1>Student View</h1>
         <MainText lesson={this.state.lesson} selectText={this.handleSelect}/>
-        <RightBar lesson={this.state.lesson} user={this.state.user} actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="clear" labelTwo="submit"/>
+        <RightBar lesson={this.state.lesson} user={this.state.user} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
       </div>
     );
   },

@@ -76,3 +76,32 @@ body {
 .tal {
   text-align: left;
 }
+
+.b1pxsb{
+  border: 1px solid black;
+}
+
+.fs8px{
+  font-size: 8px;
+}
+
+.highlight{
+  background-color: yellow;
+}
+
+
+.pt150px{
+  padding-top: 150px;
+
+.scrol{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.h350px{
+  height: 350px;
+}
+
+.fs14px{
+  font-size: 14px;
+}
