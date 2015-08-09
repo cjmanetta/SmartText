@@ -7,7 +7,7 @@ var Header = require("./Header");
 var TeacherView = React.createClass({
   getInitialState: function(){
     return {
-      teacher: {}
+      teacher: { _id: 0 }
     }
   },
   componentDidMount: function() {
@@ -33,12 +33,10 @@ var TeacherView = React.createClass({
     });
   },
   render: function() {
-    var teacher = this.state.teacher
-
     return (
       <div className="container pt150px">
-        <Header teacher={teacher}/>
-        <h3>Welcome, { teacher.first_name}</h3>
+        <Header teacher={this.state.teacher}/>
+        <h3>Welcome, { this.state.teacher.first_name}</h3>
 
         <RouteHandler />
       </div>
