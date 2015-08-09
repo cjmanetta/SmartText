@@ -1,12 +1,10 @@
 var mongoose = require('mongoose');
 
-var answerSchema = mongoose.Schema({
+var Schema = mongoose.Schema;
+
+var answerSchema = Schema({
+	_student_id: String,
   text_snippet: String
-  //we may want to just not have the ids here and instead do the typical array method that we are using with the other schemas
-  // students: [{
-  //  type: mongoose.Schema.Types.ObjectId,
-  //  ref: 'Student'
-  // }]
 })
 
 var Answer = mongoose.model('Answer', answerSchema)

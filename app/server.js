@@ -6,12 +6,7 @@ mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var port = process.env.PORT || 8080;
-
-
-server.listen(port)
-
 var path = require('path')
-var jsxCompile = require('express-jsx')
 
 server.listen(port);
 
@@ -25,15 +20,17 @@ var questions_routes = require('./routes/question')
 var standards_routes = require('./routes/standard')
 
 app.use('/teachers', teachers_routes)
-app.use('/lessons', lessons_routes)
-app.use('/articles', articles_routes)
-app.use('/students', students_routes)
-app.use('/answers', answers_routes)
-app.use('/klasses', klasses_routes)
-app.use('/questions', questions_routes)
-app.use('/standards', standards_routes)
+app.use('/teachers/:id/klasses', klasses_routes)
+app.use('/teachers/:id/klasses/:klass_id/students', students_routes)
+app.use('/teachers/:id/klasses/:klass_id/students/:student_id/answers', answers_routes)
 
-app.use(jsxCompile(path.join(__dirname, 'public')));
+
+app.use('/teachers/:id/lessons/', lessons_routes)
+app.use('/teachers/:id/lessons/:lesson_id/articles', articles_routes)
+app.use('/teachers/:id/lessons/:lesson_id/questions', questions_routes)
+app.use('/teachers/:id/lessons/:lesson_id/standards', standards_routes)
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', __dirname + '/views');
@@ -51,9 +48,14 @@ console.log('Listening on http://' + port)
 
 io.on('connection', function(socket){
   socket.on('select', function(data){
-  	// console.log(data);
     io.emit('select', data);
-  })
+  });
+  socket.on('viewPrompt', function(data){
+  	io.emit('viewPrompt', data);
+  });
+  socket.on('finish', function(){
+  	io.emit('finish');
+  });
 })
 
 app.get("/", function(req, res){

@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 
 var mongoose = require('mongoose'); //mongo connection
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test');
@@ -7,6 +7,7 @@ var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
 var Klass = require('../models/klass').Klass
+var Teacher = require('../models/teacher').Teacher
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -20,13 +21,13 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Klass.find({}, function(err, klasses){
+  Klass.find({_teacher_id: req.params.id}, function(err, klasses){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./klasses/index', { klasses: klasses })
+          res.render('./klasses/index', {id: req.params.id, klasses: klasses })
         },
         'application/json': function(){
           res.send({klasses: klasses})
@@ -39,21 +40,41 @@ router.route('/')
 .post(function(req, res){
   var grade = req.body.grade
   var password = req.body.password
+  var teacher_id = req.params.id
+  var students = null
 
-  Klass.create({
+  var klass = new Klass({
+    _teacher_id: teacher_id, 
     grade: grade,
-    password: password
-    }, function(err, klass){
+    password: password,
+    students: students
+  });
+
+  Teacher.findOne({_id: req.params.id}, function(err, teacher){
       if (err) {
         return console.error(err);
       } else {
-        console.log('post created: ' + klass)
-        res.format({
-          'text/html': function(){
-            res.redirect('/klasses')
-          },
-          'application/json': function(){
-            res.send({klass: klass})
+        teacher.klasses.push(klass)
+        console.log(teacher)
+        
+        teacher.save(function(err, teacher){
+          if (err){
+            return console.error(err)
+          } else {
+            klass.save(function(err, klass){
+              if (err){
+                return console.error(err)
+              } else {
+                res.format({
+                  'text/html': function(){
+                    res.redirect('/teachers/'+req.params.id+'/klasses')
+                  },
+                  'application/json': function(){
+                    res.send({klass: klass})
+                  }
+                })
+              }
+            })
           }
         })
       }
@@ -63,19 +84,19 @@ router.route('/')
 router.get('/new', function(req, res){
   res.format({
     'text/html': function(){
-      res.render('./klasses/new');
+      res.render('./klasses/new', {id: req.params.id});
     }
   })
 })
 
-router.get('/:id/edit', function(req, res){
-  Klass.findById(req.params.id, function(err, klass){
+router.get('/:klass_id/edit', function(req, res){
+  Klass.findById(req.params.klass_id, function(err, klass){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./klasses/edit', {klass: klass})
+          res.render('./klasses/edit', {id: req.params.id, klass: klass})
         },
         'application/json': function(){
           res.send({klass: klass})
@@ -85,9 +106,9 @@ router.get('/:id/edit', function(req, res){
   })
 })
 
-router.route('/:id')
+router.route('/:klass_id')
 .get(function(req, res){
-  Klass.findById(req.params.id, function(err, klass){
+  Klass.findById(req.params.klass_id, function(err, klass){
     if (err){
       return console.error(err);
     } else {
@@ -104,10 +125,11 @@ router.route('/:id')
 })
 
 .put(function(req, res){
-  Klass.findById(req.params.id, function(err, klass){
+  Klass.findById(req.params.klass_id, function(err, klass){
     if (err) {
       return console.error(err)
     } else {
+      klass.teacher_id = req.params.id
       klass.grade = req.body.grade;
       klass.password = req.body.password;
 
@@ -115,7 +137,7 @@ router.route('/:id')
         console.log('edited: ' + klass);
         res.format({
           'text/html': function(){
-            res.redirect('/klass')
+            res.redirect('/teachers/'+req.params.id+'/klasses')
           },
           'application/json': function(){
             res.send({klass: klass})
@@ -127,14 +149,14 @@ router.route('/:id')
 })
 
 .delete(function(req, res){
-  Klass.remove({_id: req.params.id}, function(err, klass){
+  Klass.remove({_id: req.params.klass_id}, function(err, klass){
     if (err) {
       return console.error(err)
     } else {
       console.log('deleted: ' + klass)
       res.format({
         'text/html': function(){
-          res.redirect('/klasses')
+          res.redirect('/teachers/'+req.params.id+'/klasses')
         },
         'application/json': function(){
           res.sendStatus(200)
@@ -145,3 +167,23 @@ router.route('/:id')
 })
 
 module.exports = router
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
