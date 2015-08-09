@@ -25753,7 +25753,7 @@
 	            React.createElement(
 	              'button',
 	              { type: 'submit', className: 'btn btn-default' },
-	              'Submit'
+	              'Log In'
 	            )
 	          ),
 	          React.createElement(
@@ -25802,7 +25802,7 @@
 	            React.createElement(
 	              'button',
 	              { type: 'submit', className: 'btn btn-default' },
-	              'Submit'
+	              'Sign Up'
 	            )
 	          )
 	        )
