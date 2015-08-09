@@ -53,7 +53,11 @@ io.on('connection', function(socket){
   socket.on('select', function(data){
   	// console.log(data);
     io.emit('select', data);
-  })
+  });
+  socket.on('viewPrompt', function(data){
+  	console.log(data)
+  	io.emit('viewPrompt', data);
+  });
 })
 
 app.get("/", function(req, res){
