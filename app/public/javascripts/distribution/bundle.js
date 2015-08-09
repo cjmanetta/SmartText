@@ -25363,7 +25363,7 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container" },
+	      { className: "container pt150px" },
 	      React.createElement(Header, { teacher: teacher }),
 	      React.createElement(
 	        "h3",
@@ -25662,7 +25662,7 @@
 	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 	    return React.createElement(
 	      "div",
-	      { id: "main", className: "container" },
+	      { id: "main", className: "container pt150px" },
 	      React.createElement(Header, { teacher: teacher, student: student }),
 	      React.createElement(SignUp, null)
 	    );
@@ -25684,6 +25684,11 @@
 	  displayName: 'SignUp',
 
 	  mixins: [Router.Navigation, Router.State],
+	  getInitialState: function getInitialState() {
+	    return {
+	      authBox: 'Teachers'
+	    };
+	  },
 	  handleSubmit: function handleSubmit(event) {
 
 	    event.preventDefault();
@@ -25711,55 +25716,183 @@
 	      console.log(serverData);
 	    });
 	  },
+	  handlePillClick: function handlePillClick(event) {
+	    event.preventDefault();
+	    this.setState({
+	      authBox: $(event.target).text()
+	    });
+	  },
 	  render: function render() {
+	    if (this.state.authBox === 'Teachers') {
+	      var authBox = React.createElement(
+	        'div',
+	        { id: 'authBox' },
+	        React.createElement(
+	          'ul',
+	          { className: 'nav nav-pills' },
+	          React.createElement(
+	            'li',
+	            { role: 'presentation' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Students'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { role: 'presentation', className: 'active' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Teachers'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'form',
+	            { id: 'teacherLoginForm', className: 'col-sm-4 col-md-4 col-lg-4', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'username' },
+	                'Username'
+	              ),
+	              React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'password' },
+	                'Password'
+	              ),
+	              React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
+	            ),
+	            React.createElement(
+	              'button',
+	              { type: 'submit', className: 'btn btn-default' },
+	              'Log In'
+	            )
+	          ),
+	          React.createElement(
+	            'form',
+	            { id: 'signUp', className: 'col-sm-8 col-md-8 col-lg-8', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'first_name' },
+	                'First Name'
+	              ),
+	              React.createElement('input', { type: 'text', className: 'form-control', name: 'first_name', id: 'first_name', placeholder: 'Suzy' })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'last_name' },
+	                'Last Name'
+	              ),
+	              React.createElement('input', { type: 'text', className: 'form-control', name: 'last_name', id: 'last_name', placeholder: 'Que' })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'username' },
+	                'Username'
+	              ),
+	              React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'password' },
+	                'Password'
+	              ),
+	              React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
+	            ),
+	            React.createElement(
+	              'button',
+	              { type: 'submit', className: 'btn btn-default' },
+	              'Sign Up'
+	            )
+	          )
+	        )
+	      );
+	    } else if (this.state.authBox === 'Students') {
+	      var authBox = React.createElement(
+	        'div',
+	        { id: 'authBox' },
+	        React.createElement(
+	          'ul',
+	          { className: 'nav nav-pills' },
+	          React.createElement(
+	            'li',
+	            { role: 'presentation', className: 'active' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Students'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { role: 'presentation' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Teachers'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'form',
+	          { id: 'studentLogIn', action: '/students', method: 'post', onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement(
+	              'label',
+	              { htmlFor: 'username' },
+	              'Username'
+	            ),
+	            React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement(
+	              'label',
+	              { htmlFor: 'password' },
+	              'Pin'
+	            ),
+	            React.createElement('input', { type: 'text', className: 'form-control', name: 'pin', id: 'pin', placeholder: '1234' })
+	          ),
+	          React.createElement(
+	            'button',
+	            { type: 'submit', className: 'btn btn-default' },
+	            'Submit'
+	          )
+	        )
+	      );
+	    }
 	    return React.createElement(
-	      'form',
-	      { id: 'signUp', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
-	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'first_name' },
-	          'First Name'
-	        ),
-	        React.createElement('input', { type: 'text', className: 'form-control', name: 'first_name', id: 'first_name', placeholder: 'Suzy' })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'last_name' },
-	          'Last Name'
-	        ),
-	        React.createElement('input', { type: 'text', className: 'form-control', name: 'last_name', id: 'last_name', placeholder: 'Que' })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'username' },
-	          'Username'
-	        ),
-	        React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'password' },
-	          'Password'
-	        ),
-	        React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'submit', className: 'btn btn-default' },
-	        'Submit'
-	      )
+	      'div',
+	      null,
+	      authBox
 	    );
 	  }
 	});
