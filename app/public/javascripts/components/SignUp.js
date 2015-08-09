@@ -21,7 +21,6 @@ var SignUp = React.createClass({
     var first_name = $("#first_name").val();
     var last_name = $("#last_name").val();
     var password = $(event.target).find('#password').val()
-    debugger
     var data = {username: username, first_name: first_name, last_name: last_name, password: password}
 
     var request = $.ajax({
