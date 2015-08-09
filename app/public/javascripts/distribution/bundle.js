@@ -25489,6 +25489,8 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+	//var LessonSelector = require("./LessonSelector");
+
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
 
@@ -25496,13 +25498,22 @@
 
 	    return React.createElement(
 	      "div",
-	      null,
-	      "Lesson Panel"
+	      { className: "container" },
+	      "Lesson Panel",
+	      React.createElement(
+	        "p",
+	        null,
+	        "Grandmas prescriptions"
+	      )
 	    );
 	  }
 	});
 
 	module.exports = LessonPanel;
+
+	/*
+	LessonSelector component in the div, then do
+	*/
 
 /***/ },
 /* 205 */
