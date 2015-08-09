@@ -25422,7 +25422,7 @@
 	        "Welcome, ",
 	        this.state.teacher.first_name
 	      ),
-	      React.createElement(RouteHandler, null)
+	      React.createElement(RouteHandler, { teacher: this.state.teacher })
 	    );
 	  }
 	});
@@ -25512,18 +25512,56 @@
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 	var StudentPanel = React.createClass({
-	  displayName: "StudentPanel",
+	  displayName: 'StudentPanel',
 
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+
+	    var studentPanel = this;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    var name = $(event.target).find('#name').val();
+	    var grade = $(event.target).find("#grade").val();
+	    var pin = $(event.target).find('#pin').val();
+	    var teacher_id = this.props.teacher._id;
+	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
+	    debugger;
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log(serverData);
+	    });
+	  },
 	  render: function render() {
-
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
-	      "Student Panel"
+	      React.createElement(
+	        'h5',
+	        null,
+	        'Student Panel'
+	      ),
+	      React.createElement(
+	        'form',
+	        { action: '/klasses', method: 'post', onSubmit: this.handleSubmit },
+	        React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
+	        React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
+	        React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
+	        React.createElement('input', { type: 'submit', value: 'Create Class' })
+	      )
 	    );
 	  }
 	});
@@ -25711,12 +25749,10 @@
 	  displayName: "Body",
 
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
@@ -25752,7 +25788,6 @@
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
 	    var password = $(event.target).find('#password').val();
-	    debugger;
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
 
 	    var request = $.ajax({

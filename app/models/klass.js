@@ -3,8 +3,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
+  name: String,
 	grade: String,
-	password: String
+	pin: String
 	// students: [{
 	// 	type: mongoose.Schema.Types.ObjectId,
 	// 	ref: 'Student'

@@ -15,8 +15,6 @@ var Header = React.createClass({
     var content = null
     var buttons = null
 
-    debugger
-
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
       buttons = <div>
