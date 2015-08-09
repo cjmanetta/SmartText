@@ -25357,10 +25357,34 @@
 	  displayName: "TeacherView",
 
 	  getInitialState: function getInitialState() {
-	    return {};
+	    return {
+	      teacher: {}
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var teacherView = this;
+	    var action = '/teachers/' + this.props.params.id;
+	    var method = 'get';
+
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      teacherView.setState({
+	        teacher: serverData.teacher
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('There was an error getting the teacher');
+	      console.log(serverData);
+	    });
 	  },
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var teacher = this.state.teacher;
 
 	    return React.createElement(
 	      "div",
@@ -25369,7 +25393,8 @@
 	      React.createElement(
 	        "h3",
 	        null,
-	        "Teacher View Component"
+	        "Welcome, ",
+	        teacher.first_name
 	      ),
 	      React.createElement(RouteHandler, null)
 	    );
