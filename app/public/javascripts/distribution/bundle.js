@@ -25169,7 +25169,8 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      lesson: { prompt: "", text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' }
+	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' },
+	      highlightOn: true
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25178,22 +25179,29 @@
 	  handleClear: function handleClear() {
 	    $('.highlight').removeClass('highlight');
 	  },
-	  handleSubmit: function handleSubmit() {},
+	  handleSubmit: function handleSubmit() {
+	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
+	      this.setState({
+	        highlightOn: false
+	      });
+	    }
+	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
+	    if (this.state.highlightOn) {
+	      var selectedRange = selection.getRangeAt(0);
+	      var selectedText = selectedRange.extractContents();
+	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+	      selectedRange.insertNode(highlightSpan[0]);
 
-	    var selectedRange = selection.getRangeAt(0);
-	    var selectedText = selectedRange.extractContents();
-	    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-	    selectedRange.insertNode(highlightSpan[0]);
-
-	    // I need to add the clear selection functionality here
-	    console.log($('#mainText').html());
-	    var highlightedText = $('#mainText').html();
-	    socket.emit('select', {
-	      user: this.state.user,
-	      selection: highlightedText
-	    });
+	      // I need to add the clear selection functionality here
+	      console.log($('#mainText').html());
+	      var highlightedText = $('#mainText').html();
+	      socket.emit('select', {
+	        user: this.state.user,
+	        selection: highlightedText
+	      });
+	    }
 	  },
 	  getLesson: function getLesson() {
 	    //here is where the api call would happen

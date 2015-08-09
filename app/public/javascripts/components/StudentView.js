@@ -8,7 +8,8 @@ var StudentView = React.createClass({
   getInitialState: function(){
     return {
       lesson: {prompt:"", text:"", author: "", title: ""},
-      user: {first_name: "Aaron", last_name: "J", username: "hello", id: '123'}
+      user: {first_name: "Aaron", last_name: "J", username: "hello", id: '123'},
+      highlightOn: true
     }
   },
   componentDidMount: function(){
@@ -18,23 +19,28 @@ var StudentView = React.createClass({
     $('.highlight').removeClass('highlight')
   },
   handleSubmit: function(){
-
+    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
+      this.setState({
+        highlightOn: false
+      });
+    }
   },
   handleSelect: function(selection){
     // var socket = io('/teacher')
-
-    var selectedRange = selection.getRangeAt(0);
-    var selectedText = selectedRange.extractContents()
-    var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-    selectedRange.insertNode(highlightSpan[0]);  
-    
-    // I need to add the clear selection functionality here
-    console.log($('#mainText').html())
-    var highlightedText = $('#mainText').html()
-    socket.emit('select', {
-      user: this.state.user,
-      selection: highlightedText
-    })
+    if (this.state.highlightOn){
+      var selectedRange = selection.getRangeAt(0);
+      var selectedText = selectedRange.extractContents()
+      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+      selectedRange.insertNode(highlightSpan[0]);  
+      
+      // I need to add the clear selection functionality here
+      console.log($('#mainText').html())
+      var highlightedText = $('#mainText').html()
+      socket.emit('select', {
+        user: this.state.user,
+        selection: highlightedText
+      })
+    }
   },
   getLesson: function(){
     //here is where the api call would happen
