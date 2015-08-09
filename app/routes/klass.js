@@ -39,14 +39,14 @@ router.route('/')
 
 .post(function(req, res){
   var grade = req.body.grade
-  var password = req.body.password
+  var pin = req.body.pin
   var teacher_id = req.params.id
   var students = null
 
   var klass = new Klass({
-    _teacher_id: teacher_id, 
+    _teacher_id: teacher_id,
     grade: grade,
-    password: password,
+    pin: pin,
     students: students
   });
 
@@ -56,7 +56,7 @@ router.route('/')
       } else {
         teacher.klasses.push(klass)
         console.log(teacher)
-        
+
         teacher.save(function(err, teacher){
           if (err){
             return console.error(err)

@@ -25589,7 +25589,6 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -25598,6 +25597,7 @@
 	    });
 
 	    request.done(function (serverData) {
+	      debugger;
 	      studentPanel.props.update(serverData);
 	    });
 
