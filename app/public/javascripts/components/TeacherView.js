@@ -64,7 +64,7 @@ var TeacherView = React.createClass({
 
     return (
 
-      <div className="container">
+      <div className="container pt150px">
         <Header teacher={teacher} student={student} />
         <h3>Teacher View Component</h3>
         <RouteHandler />
