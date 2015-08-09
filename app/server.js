@@ -1,8 +1,10 @@
 var express = require('express')
 var app = express();
+mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
+// mongoose.connect(process.env.MONGOLAB_uri || 'mongodb://localhost:8080')
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8080;
 
 
 server.listen(port)
