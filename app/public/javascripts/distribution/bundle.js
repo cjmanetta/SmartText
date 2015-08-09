@@ -25360,12 +25360,11 @@
 	  },
 	  render: function render() {
 	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, { teacher: teacher }),
 	      React.createElement(
 	        "h3",
 	        null,
@@ -25395,6 +25394,7 @@
 	  displayName: "Header",
 
 	  mixins: [Router.Navigation, Router.State],
+
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25414,12 +25414,12 @@
 	        null,
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: "1" } },
+	          { to: "studentPanel", params: { id: "1" }, className: "btn btn-default navbar-btn" },
 	          "student panel"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: "1" } },
+	          { to: "lessonPanel", params: { id: "1" }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
 	        )
 	      );
@@ -25428,11 +25428,6 @@
 	        "p",
 	        { className: "navbar-text navbar-left" },
 	        student.first_name
-	      );
-	      buttons = React.createElement(
-	        "a",
-	        { className: "navbar-btn navbar-right", href: "#" },
-	        "studenty things"
 	      );
 	    } else {
 	      content = null;
