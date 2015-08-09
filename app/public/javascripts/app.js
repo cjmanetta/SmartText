@@ -34,7 +34,7 @@ var call = function(action, method, data){
 var routes = (
   <Route handler={App}>
     <Route path="/"         name="home"     handler={Home} />
-    <Route path="/students" name="students" handler={StudentView}/>
+    <Route path="/students/:id" name="students" handler={StudentView}/>
     <Route path="teachers/:id" name="teachers" handler={TeacherView}>
       <Route path="student-panel" name="studentPanel" handler={StudentPanel}/>
       <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel}/>

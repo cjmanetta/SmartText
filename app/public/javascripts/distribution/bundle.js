@@ -87,7 +87,7 @@
 	  Route,
 	  { handler: App },
 	  React.createElement(Route, { path: "/", name: "home", handler: Home }),
-	  React.createElement(Route, { path: "/students", name: "students", handler: StudentView }),
+	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
 	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
@@ -25206,6 +25206,8 @@
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
+	      //pass off the selection object to compare using the algorithym
+	      var correctColor = this.compareSelection(selection);
 	      var selectedRange = selection.getRangeAt(0);
 	      var selectedText = selectedRange.extractContents();
 	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
@@ -25214,11 +25216,64 @@
 	      // I need to add the clear selection functionality here
 	      console.log($('#mainText').html());
 	      var highlightedText = $('#mainText').html();
+
+	      //can remove the console.log once it is tested over
+	      //the socket
+	      console.log({
+	        user: this.state.user,
+	        selection: highlightedText,
+	        color: correctColor
+	      });
+
 	      socket.emit('select', {
 	        user: this.state.user,
-	        selection: highlightedText
+	        selection: highlightedText,
+	        color: correctColor
 	      });
 	    }
+	  },
+	  compareSelection: function compareSelection(selection) {
+	    var student_start = selection.anchorOffset;
+	    var student_end = selection.focusOffset;
+	    var correct_start = this.state.lesson.correct.start;
+	    var correct_end = this.state.lesson.correct.end;
+
+	    //adjust start/end regardless of which way they highlight
+	    if (student_start > student_end) {
+	      student_start = selection.focusOffset;
+	      student_end = selection.anchorOffset;
+	    }
+	    if (correct_start > correct_end) {
+	      correct_start = this.state.lesson.correct.end;
+	      correct_end = this.state.lesson.correct.start;
+	    }
+
+	    var correct_length = correct_end - correct_start;
+	    var variance = Math.round(correct_length / 6);
+	    var correct_start_range_beginning = correct_start - variance;
+	    var correct_start_range_end = correct_start + variance;
+	    var correct_end_range_beginning = correct_end - variance;
+	    var correct_end_range_end = correct_end + variance;
+
+	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
+	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
+	        var color = 'green';
+	      } else {
+	        var color = 'yellow';
+	      }
+	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
+	      var color = 'yellow';
+	    } else if (student_start > correct_start && student_start < correct_end) {
+	      var color = 'yellow';
+	    } else if (student_end > correct_start && student_end < correct_end) {
+	      var color = 'yellow';
+	    } else if (student_start < correct_start && student_end > correct_end) {
+	      var color = 'yellow';
+	    } else {
+	      var color = 'red';
+	    }
+
+	    return color;
 	  },
 	  getLesson: function getLesson() {
 	    //here is where the api call would happen
@@ -25226,7 +25281,7 @@
 	    //for that class
 
 	    //stubbed for right now
-	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" };
+	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni", correct: { start: 241, end: 284, string: "A robinshrilled hidden in some trees nearby" } };
 
 	    this.setState({
 	      lesson: newLesson
@@ -25411,6 +25466,11 @@
 	      console.log(serverData);
 	    });
 	  },
+	  handleUpdateTeacher: function handleUpdateTeacher(serverData) {
+	    this.setState({
+	      teacher: serverData.teacher
+	    });
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      "div",
@@ -25422,7 +25482,7 @@
 	        "Welcome, ",
 	        this.state.teacher.first_name
 	      ),
-	      React.createElement(RouteHandler, { teacher: this.state.teacher })
+	      React.createElement(RouteHandler, { teacher: this.state.teacher, update: this.handleUpdateTeacher })
 	    );
 	  }
 	});
@@ -25538,14 +25598,16 @@
 	    });
 
 	    request.done(function (serverData) {
-	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
+	      studentPanel.props.update(serverData);
 	    });
 
 	    request.fail(function (serverData) {
+	      console.log('there was an error creating that lesson');
 	      console.log(serverData);
 	    });
 	  },
 	  render: function render() {
+	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
 	    return React.createElement(
 	      'div',
 	      null,
@@ -25556,7 +25618,7 @@
 	      ),
 	      React.createElement(
 	        'form',
-	        { action: '/klasses', method: 'post', onSubmit: this.handleSubmit },
+	        { action: path, method: 'post', onSubmit: this.handleSubmit },
 	        React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
 	        React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
 	        React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
