@@ -55,11 +55,11 @@
 	var Link = Router.Link;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/TeacherView\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	var StudentPanel = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(204);
-	var Home = __webpack_require__(205);
+	var TeacherView = __webpack_require__(201);
+	var StudentPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
+	var Grid = __webpack_require__(205);
+	var Home = __webpack_require__(207);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -25338,104 +25338,48 @@
 	module.exports = MainText;
 
 /***/ },
-/* 201 */,
-/* 202 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var StudentPanel = React.createClass({
-	  displayName: "StudentPanel",
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
 
-	  render: function render() {
+	var Header = __webpack_require__(202);
 
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Student Panel"
-	    );
-	  }
-	});
+	var TeacherView = React.createClass({
+	  displayName: "TeacherView",
 
-	module.exports = StudentPanel;
-
-/***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Lesson Panel"
-	    );
-	  }
-	});
-
-	module.exports = LessonPanel;
-
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var Grid = React.createClass({
-	  displayName: "Grid",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      null,
-	      "Grid"
-	    );
-	  }
-	});
-
-	module.exports = Grid;
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	//below this import follow this syntax to add
-	//a new component. Save it in this file with capital
-	//file names to show that it is a react file
-	var Header = __webpack_require__(206);
-	var SignUp = __webpack_require__(207);
-
-	var Body = React.createClass({
-	  displayName: "Body",
-
+	  getInitialState: function getInitialState() {
+	    return {};
+	  },
 	  render: function render() {
 	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
 	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+
 	    return React.createElement(
 	      "div",
-	      { id: "main", className: "container" },
+	      { className: "container" },
 	      React.createElement(Header, { teacher: teacher, student: student }),
-	      React.createElement(SignUp, null)
+	      React.createElement(
+	        "h3",
+	        null,
+	        "Teacher View Component"
+	      ),
+	      React.createElement(RouteHandler, null)
 	    );
 	  }
 	});
 
-	module.exports = Body;
+	module.exports = TeacherView;
 
 /***/ },
-/* 206 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25518,7 +25462,211 @@
 	module.exports = Header;
 
 /***/ },
+/* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var StudentPanel = React.createClass({
+	  displayName: "StudentPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Student Panel"
+	    );
+	  }
+	});
+
+	module.exports = StudentPanel;
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      "Lesson Panel"
+	    );
+	  }
+	});
+
+	module.exports = LessonPanel;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = __webpack_require__(202);
+	var RightBar = __webpack_require__(198);
+
+	//Sockets
+	var StudentTile = __webpack_require__(206);
+	var socket = io.connect('http://localhost:8080');
+
+	var Grid = React.createClass({
+	  displayName: "Grid",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      lesson: { prompt: "", text: "", author: "", title: "" },
+	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
+	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }]
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getLesson();
+	    socket.on('select', this.updateStudentTile);
+	  },
+	  updateStudentTile: function updateStudentTile(data) {
+	    console.log('hello');
+	    console.log(data.selection);
+	    var textFromStudent = data.selection;
+	    // var studentViewText = $('#studentText')
+	    $('#studentText').html(textFromStudent);
+	  },
+	  addStudent: function addStudent(studentData) {
+	    // not sure where to call addStudent yet, but
+	    // probably somewhere in the login component
+	    var students = this.state.students;
+	    students.push(studentData);
+	    this.setState({
+	      students: students
+	    });
+	  },
+	  handleStop: function handleStop() {
+	    //turn off listeners by calling disconnect function
+	  },
+	  getLesson: function getLesson() {
+	    //here is where the api call would happen
+	    //to recieve the lesson which is active
+	    //for that class
+
+	    //stubbed for right now
+	    var newLesson = { prompt: "Please look at the text and highlight the best example of a character showing caring.", text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" };
+
+	    this.setState({
+	      lesson: newLesson
+	    });
+	  },
+	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "Teacher View Component"
+	      ),
+	      React.createElement(RouteHandler, null),
+	      React.createElement(StudentTile, { student: this.state.students[0], lesson: this.state.lesson }),
+	      React.createElement(RightBar, { lesson: this.state.lesson, user: "", actionOne: this.handleStart, actionTwo: this.handleStop, labelOne: "start", labelTwo: "stop" })
+	    );
+	  }
+	});
+
+	module.exports = Grid;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var StudentTile = React.createClass({
+	  displayName: "StudentTile",
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px" },
+	      React.createElement(
+	        "span",
+	        { className: "fs14px" },
+	        this.props.student.first_name,
+	        " ",
+	        this.props.student.last_initial
+	      ),
+	      React.createElement(
+	        "h6",
+	        null,
+	        this.props.lesson.title
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.lesson.author
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.lesson.text
+	      )
+	    );
+	  }
+	});
+
+	module.exports = StudentTile;
+
+/***/ },
 /* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	//below this import follow this syntax to add
+	//a new component. Save it in this file with capital
+	//file names to show that it is a react file
+	var Header = __webpack_require__(202);
+	var SignUp = __webpack_require__(208);
+
+	var Body = React.createClass({
+	  displayName: "Body",
+
+	  render: function render() {
+	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
+	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    return React.createElement(
+	      "div",
+	      { id: "main", className: "container" },
+	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(SignUp, null)
+	    );
+	  }
+	});
+
+	module.exports = Body;
+
+/***/ },
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
