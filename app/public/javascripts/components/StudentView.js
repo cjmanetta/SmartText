@@ -14,6 +14,12 @@ var StudentView = React.createClass({
   componentDidMount: function(){
     this.getLesson();
   },
+  handleClear: function(){
+    $('.highlight').removeClass('highlight')
+  },
+  handleSubmit: function(){
+
+  },
   handleSelect: function(selection){
     // var socket = io('/teacher')
 
@@ -47,7 +53,7 @@ var StudentView = React.createClass({
       <div className="container">
         <h1>Student View</h1>
         <MainText lesson={this.state.lesson} selectText={this.handleSelect}/>
-        <RightBar lesson={this.state.lesson} user={this.state.user} actionOne={this.handleStart} actionTwo={this.handleStop} labelOne="clear" labelTwo="submit"/>
+        <RightBar lesson={this.state.lesson} user={this.state.user} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
       </div>
     );
   },
