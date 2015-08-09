@@ -1,19 +1,20 @@
 var mongoose = require('mongoose');
 
-var teacherSchema = mongoose.Schema({
+var Schema = mongoose.Schema;
+
+var teacherSchema = Schema({
 	username: String,
 	password: String,
 	first_name: String,
-	last_name: String
-	//two ways to do the associations!
-	// klasses: [{
-	// 	type: mongoose.Schema.Types.ObjectId,
-	// 	ref: 'Klass'
-	// }],
-	// lessons: [{
-	// 	type: mongoose.Schema.Types.ObjectId,
-	// 	ref: 'Klass'
-	// }]
+	last_name: String,
+	klasses: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Klass'
+	}],
+	lessons: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Lesson'
+	}]
 })
 
 var Teacher = mongoose.model('Teacher', teacherSchema)

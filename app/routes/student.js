@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var mongoose = require('mongoose');
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 /* parses out body of the request */
@@ -36,11 +36,13 @@ router.route('/')
 })
 
 .post(function(req, res){
-  var first_name = req.body.first_name
-  var last_initial = req.body.last_initial
-  var username = req.body.username
+  var first_name = req.body.first_name;
+  var last_initial = req.body.last_initial;
+  var username = req.body.username;
+  var klass_id = req.body.klass_id;
 
   Student.create({
+    _klass_id: klass_id,
     username: username,
     first_name: first_name,
     last_initial: last_initial
@@ -109,6 +111,7 @@ router.route('/:id')
       student.last_name = req.body.last_name;
       student.username = req.body.username;
       student.password = req.body.password;
+      student._klass_id = req.body.klass_id,
 
       student.save(function(err, student){
         console.log('edited: ' + student);
