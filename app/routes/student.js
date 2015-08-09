@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-mongoose.createConnection('mongodb://localhost/test')
+mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 /* parses out body of the request */
 var bodyParser = require('body-parser');
 
