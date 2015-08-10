@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose'); //mongo connection
+
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
 var Teacher = require('../models/teacher').Teacher
-var Klass = require('../models/klass').Klass
-var Student = require('../models/student').Student
-var Answer = require('../models/answer').Answer
+
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -117,25 +116,22 @@ router.route('/login')
 
 router.route('/:id')
 .get(function(req, res){
-  Teacher.findOne({_id: req.params.id})
-  	.populate('klasses')
-  	.exec(function(err, teacher){
-			Klass.populate(teacher.klasses, {path: 'students'}, function(err, students){
-
-					console.log(teacher)
-
-					res.format({
-					  'text/html': function(){
-					    res.render('./teachers/show', { teacher: teacher})
-					  },
-					  'application/json': function(){
-					    res.send({teacher: teacher})
-					  }
-					})	
-			})
-  })	   
+   Teacher.findOne({_id: req.params.id}, function(err, teacher){
+   	if (err){
+   	  return console.error(err);
+   	} else {
+     console.log(teacher)
+     res.format({
+       'text/html': function(){
+         res.render('./teachers/show', { teacher: teacher})
+       },
+       'application/json': function(){
+         res.send({teacher: teacher})
+     		}
+      })
+    }
+  })
 })
-
 
 .put(function(req, res){
 	Teacher.findById(req.params.id, function(err, teacher){
@@ -180,5 +176,6 @@ router.route('/:id')
 })
 
 module.exports = router
+
 
 

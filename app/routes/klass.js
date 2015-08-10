@@ -38,9 +38,9 @@ router.route('/')
 })
 
 .post(function(req, res){
-  var grade = req.body.grade
   var name = req.body.name
-  var pin = req.body.pin
+  var grade = req.body.grade
+  var password = req.body.password
   var teacher_id = req.params.id
   var students = []
 
@@ -48,7 +48,7 @@ router.route('/')
     _teacher_id: teacher_id,
     name: name,
     grade: grade,
-    pin: pin,
+    password: password,
     students: students
   });
 
@@ -110,7 +110,6 @@ router.get('/:klass_id/edit', function(req, res){
 
 router.route('/:klass_id')
 .get(function(req, res){
-  console.log(req.params.klass_id)
   Klass.findOne({_id: req.params.klass_id}, function(err, klass){
     if (err){
       return console.error(err);
@@ -133,7 +132,7 @@ router.route('/:klass_id')
     if (err) {
       return console.error(err)
     } else {
-      klass.teacher_id = req.params.id
+      klass._teacher_id = req.params.id
       klass.grade = req.body.grade;
       klass.password = req.body.password;
 
@@ -179,62 +178,5 @@ router.route('/:klass_id')
 })
 
 module.exports = router
-
-
-
-
-
-  // Teacher.findOne({_id: req.params.id})
-  //   .populate('klasses')
-  //   .populate('students')
-  //   .populate('answers')
-  //   .exec(function(err, teacher){
-  //     console.log(teacher)
-  //     res.format({
-  //       'text/html': function(){
-  //         res.render('./teachers/show', { teacher: teacher})
-  //       },
-  //       'application/json': function(){
-  //         res.send({teacher: teacher})
-  //       }
-  //   })
-  // })   
-
-
-  // Teacher.findOne({_id: req.params.id})
-  //   .populate('klasses')
-  //   .exec(function(err, teacher){
-  //     for (var i=0; i<teacher.klasses.length; i++){
-  //       Klass.findOne({_id: teacher.klasses[i]._id})
-  //         .populate('students')
-  //         .exec(function(err, klass){
-  //           if (err){
-  //             return console.error(err);
-  //           } else {
-  //             console.log(klass)
-  //           }
-  //         })
-  //     }
-  //   })
-  // Teacher.findOne({_id: req.params.id}, function(err, teacher){
-  //   console.log(teacher)
-  //   res.format({
-  //     'text/html': function(){
-  //       res.render('./teachers/show', { teacher: teacher})
-  //     },
-  //     'application/json': function(){
-  //       res.send({teacher: teacher})
-  //     }
-  //   })  
-  // })  
-
-
-
-
-
-
-
-
-
 
 
