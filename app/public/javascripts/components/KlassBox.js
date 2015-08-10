@@ -17,6 +17,9 @@ var KlassBox = React.createClass({
   handleSubmit: function(event){
     event.preventDefault();
     this.props.update(event);
+    this.setState({
+      display: panel
+    });
   },
   render: function() {
     if(this.state.display === "panel"){
