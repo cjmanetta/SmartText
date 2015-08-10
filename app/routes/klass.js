@@ -38,9 +38,9 @@ router.route('/')
 })
 
 .post(function(req, res){
-  var grade = req.body.grade
   var name = req.body.name
-  var pin = req.body.pin
+  var grade = req.body.grade
+  var password = req.body.password
   var teacher_id = req.params.id
   var students = []
 
@@ -48,7 +48,7 @@ router.route('/')
     _teacher_id: teacher_id,
     name: name,
     grade: grade,
-    pin: pin,
+    password: password,
     students: students
   });
 
@@ -110,7 +110,6 @@ router.get('/:klass_id/edit', function(req, res){
 
 router.route('/:klass_id')
 .get(function(req, res){
-  console.log(req.params.klass_id)
   Klass.findOne({_id: req.params.klass_id}, function(err, klass){
     if (err){
       return console.error(err);
@@ -181,23 +180,5 @@ router.route('/:klass_id')
 })
 
 module.exports = router
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

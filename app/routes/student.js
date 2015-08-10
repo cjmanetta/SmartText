@@ -6,6 +6,7 @@ mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var bodyParser = require('body-parser');
 
 var methodOverride = require('method-override');
+
 var Student = require('../models/student').Student
 var Klass = require('../models/klass').Klass
 
@@ -90,7 +91,7 @@ router.get('/new', function(req, res){
   res.render('./students/new', {id: req.params.id, klass_id: req.params.klass_id})
 })
 
-router.get('/:id/edit', function(req, res){
+router.get('/:student_id/edit', function(req, res){
   Student.findById(req.params.student_id, function(err, student){
     if (err){
       return console.error(err);

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var answerSchema = Schema({
 	_student_id: String,
+	_question_id: String,
   text_snippet: String
 })
 
