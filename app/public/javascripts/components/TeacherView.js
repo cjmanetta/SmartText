@@ -3,6 +3,7 @@ var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
+var LessonPanel = require("./LessonPanel");
 
 var TeacherView = React.createClass({
   getInitialState: function(){
@@ -37,8 +38,6 @@ var TeacherView = React.createClass({
       <div className="container pt150px">
         <Header teacher={this.state.teacher}/>
         <h3>Welcome, { this.state.teacher.first_name}</h3>
-
-        <RouteHandler />
       </div>
     );
   },

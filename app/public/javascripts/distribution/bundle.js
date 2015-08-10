@@ -57,10 +57,10 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(203);
-	var LessonPanel = __webpack_require__(204);
-	var Grid = __webpack_require__(205);
-	var Home = __webpack_require__(207);
+	var StudentPanel = __webpack_require__(205);
+	var LessonPanel = __webpack_require__(203);
+	var Grid = __webpack_require__(206);
+	var Home = __webpack_require__(208);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -25380,6 +25380,7 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(202);
+	var LessonPanel = __webpack_require__(203);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25421,8 +25422,7 @@
 	        null,
 	        "Welcome, ",
 	        this.state.teacher.first_name
-	      ),
-	      React.createElement(RouteHandler, null)
+	      )
 	    );
 	  }
 	});
@@ -25459,7 +25459,8 @@
 	        { className: "navbar-text navbar-left" },
 	        teacher.first_name,
 	        " ",
-	        teacher.last_name
+	        teacher.last_name,
+	        teacher._id
 	      );
 	      buttons = React.createElement(
 	        "div",
@@ -25473,7 +25474,8 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
-	        )
+	        ),
+	        React.createElement(RouteHandler, { teacher: teacher })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25515,6 +25517,93 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+	var LessonSelect = __webpack_require__(204);
+
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+
+	  render: function render() {
+
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(
+	        "p",
+	        null,
+	        this.props.teacher.first_name
+	      ),
+	      React.createElement(LessonSelect, null)
+	    );
+	  }
+	});
+
+	module.exports = LessonPanel;
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+	//var LessonSelector = require("./LessonSelector");
+
+	var LessonSelect = React.createClass({
+	  displayName: "LessonSelect",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
+	    };
+	  },
+	  render: function render() {
+	    var lessons = this.state.lessons.map(function (lesson) {
+	      return React.createElement(
+	        "li",
+	        { className: "ui-widget-content" },
+	        lesson.title,
+	        " ",
+	        lesson.date
+	      );
+	    });
+
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(
+	        "p",
+	        { id: "feedback" },
+	        React.createElement(
+	          "span",
+	          null,
+	          "You have selected:"
+	        ),
+	        " ",
+	        React.createElement(
+	          "span",
+	          { id: "select-result" },
+	          "none"
+	        ),
+	        "."
+	      ),
+	      React.createElement(
+	        "ol",
+	        null,
+	        lessons
+	      )
+	    );
+	  }
+	});
+
+	module.exports = LessonSelect;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
 
@@ -25531,40 +25620,7 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	//var LessonSelector = require("./LessonSelector");
-
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
-
-	  render: function render() {
-
-	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      "Lesson Panel",
-	      React.createElement(
-	        "p",
-	        null,
-	        "Grandmas prescriptions"
-	      )
-	    );
-	  }
-	});
-
-	module.exports = LessonPanel;
-
-	/*
-	LessonSelector component in the div, then do
-	*/
-
-/***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25580,7 +25636,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(206);
+	var StudentTile = __webpack_require__(207);
 	var socket = io.connect('http://localhost:8080');
 
 	var Grid = React.createClass({
@@ -25664,7 +25720,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25706,7 +25762,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25716,18 +25772,16 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(208);
+	var SignUp = __webpack_require__(209);
 
 	var Body = React.createClass({
 	  displayName: "Body",
 
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
@@ -25736,7 +25790,7 @@
 	module.exports = Body;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25763,7 +25817,6 @@
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
 	    var password = $(event.target).find('#password').val();
-	    debugger;
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
 
 	    var request = $.ajax({

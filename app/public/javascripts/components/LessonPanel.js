@@ -1,20 +1,16 @@
 var React = require("react");
-//var LessonSelector = require("./LessonSelector");
+var LessonSelect = require("./LessonSelect");
 
 var LessonPanel = React.createClass({
-
   render: function(){
 
     return (
-      <div className="container">Lesson Panel
-        <p>Grandmas prescriptions</p>
+      <div className="container">
+        <p>{ this.props.teacher.first_name }</p>
+        <LessonSelect />
       </div>
     )
   }
 });
 
 module.exports = LessonPanel;
-
-/*
-LessonSelector component in the div, then do
-*/
