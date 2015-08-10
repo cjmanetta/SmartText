@@ -25,9 +25,9 @@ var StudentBox = React.createClass({
     if(this.state.display === "panel"){
       var content =
         <li>
-          <p>{this.props.student.username}</p>
-          <p>Pin: {this.props.student.first_name}</p>
-          <p>Grade: {this.props.student.last_initial}</p>
+          <p>Username: {this.props.student.username}</p>
+          <p>First Name: {this.props.student.first_name}</p>
+          <p>Last Initial: {this.props.student.last_initial}</p>
           <button onClick={this.editClick}>Edit</button>
           <button onClick={this.deleteClick}>Delete</button>
         </li>
@@ -40,9 +40,9 @@ var StudentBox = React.createClass({
                    + this.props.student._id
       var content =
         <li>
-          <p>{this.props.student.username}</p>
-          <p>Pin: {this.props.student.first_name}</p>
-          <p>Grade: {this.props.student.last_initial}</p>
+          <p>Username: {this.props.student.username}</p>
+          <p>First Name: {this.props.student.first_name}</p>
+          <p>Last Initial: {this.props.student.last_initial}</p>
           <button onClick={this.deleteClick}>Delete</button>
           <form action={path} method="put" onSubmit={this.handleSubmit}>
             <input id="username" type="text" name="username" placeholder={this.props.student.username} />

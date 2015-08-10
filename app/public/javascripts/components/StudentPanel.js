@@ -44,6 +44,7 @@ var StudentPanel = React.createClass({
     var teacher_id = this.props.teacher._id
     var data = {name: name, grade: grade, pin: pin, teacher_id: teacher_id }
 
+    debugger
     var request = $.ajax({
       url:      action,
       method:   method,
