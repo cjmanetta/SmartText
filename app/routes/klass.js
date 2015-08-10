@@ -46,6 +46,7 @@ router.route('/')
 
   var klass = new Klass({
     _teacher_id: teacher_id,
+    name: name,
     grade: grade,
     pin: pin,
     students: students

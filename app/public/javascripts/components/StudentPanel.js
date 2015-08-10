@@ -82,9 +82,9 @@ var StudentPanel = React.createClass({
   render: function(){
     var klasses = this.state.klasses.map(function(klass){
       return (
-        <li key={klass._id}>
-          <KlassBox klass={klass} delete={this.handleDeleteKlass}/>
-        </li>
+        <div key={klass._id}>
+          <KlassBox klass={klass} delete={this.handleDeleteKlass} teacher={this.props.teacher }/>
+        </div>
       )
     }.bind(this))
     var path = "/teachers/"+ this.props.teacher._id +"/klasses"
@@ -98,9 +98,9 @@ var StudentPanel = React.createClass({
           <input id="pin" type="text" name="pin" placeholder="1234" />
           <input type="submit" value="Create Class" />
         </form>
-        <ul>
+        <div>
           { klasses}
-        </ul>
+        </div>
       </div>
     )
   }

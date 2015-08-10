@@ -25483,7 +25483,7 @@
 	        "Welcome, ",
 	        this.state.teacher.first_name
 	      ),
-	      React.createElement(RouteHandler, { teacher: this.state.teacher, update: this.handleUpdateTeacher })
+	      React.createElement(RouteHandler, { teacher: this.state.teacher })
 	    );
 	  }
 	});
@@ -25661,9 +25661,9 @@
 	  render: function render() {
 	    var klasses = this.state.klasses.map((function (klass) {
 	      return React.createElement(
-	        "li",
+	        "div",
 	        { key: klass._id },
-	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass })
+	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass, teacher: this.props.teacher })
 	      );
 	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
@@ -25689,7 +25689,7 @@
 	        React.createElement("input", { type: "submit", value: "Create Class" })
 	      ),
 	      React.createElement(
-	        "ul",
+	        "div",
 	        null,
 	        klasses
 	      )
@@ -25710,23 +25710,114 @@
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      display: 'panel'
+	    };
+	  },
 	  deleteClick: function deleteClick() {
 	    this.props['delete'](this.props.klass._id);
 	  },
+	  editClick: function editClick() {
+	    this.setState({
+	      display: "edit"
+	    });
+	  },
+	  handleSubmit: function handleSubmit() {
+	    console.log('got here');
+	    // this.props.delete(this.props.klass._id);
+	  },
 	  render: function render() {
+	    if (this.state.display === "panel") {
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.editClick },
+	            'Edit'
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          'Panel content'
+	        )
+	      );
+	    } else if (this.state.display === "edit") {
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses" + this.props.teacher._id;
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          React.createElement(
+	            'form',
+	            { action: path, method: 'post', onSubmit: this.handleSubmit },
+	            React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
+	            React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
+	            React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
+	            React.createElement('input', { type: 'submit', value: 'Create Class' })
+	          )
+	        )
+	      );
+	    }
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(
-	        'h5',
-	        null,
-	        this.props.klass._id
-	      ),
-	      React.createElement(
-	        'button',
-	        { onClick: this.deleteClick },
-	        'Delete'
-	      )
+	      content
 	    );
 	  }
 
