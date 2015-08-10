@@ -60,14 +60,18 @@ var StudentPanel = React.createClass({
       console.log(serverData);
     });
   },
+  handleDeleteKlass: function(klass_id){
+    //actually delete the component
+    console.log('delete' + klass_id);
+  },
   render: function(){
     var klasses = this.state.klasses.map(function(klass){
       return (
         <li key={klass._id}>
-          <KlassBox klass={klass} />
+          <KlassBox klass={klass} delete={this.handleDeleteKlass}/>
         </li>
       )
-    })
+    }.bind(this))
     var path = "/teachers/"+ this.props.teacher._id +"/klasses"
     return (
       <div>

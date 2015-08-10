@@ -61,6 +61,7 @@
 	var LessonPanel = __webpack_require__(205);
 	var Grid = __webpack_require__(207);
 	var Home = __webpack_require__(209);
+	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -102,7 +103,7 @@
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
-	    user: null;
+	    teacher: null;
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -25534,8 +25535,7 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
-	        ),
-	        React.createElement(RouteHandler, { teacher: teacher })
+	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25639,14 +25639,18 @@
 	      console.log(serverData);
 	    });
 	  },
+	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
+	    //actually delete the component
+	    console.log('delete' + klass_id);
+	  },
 	  render: function render() {
-	    var klasses = this.state.klasses.map(function (klass) {
+	    var klasses = this.state.klasses.map((function (klass) {
 	      return React.createElement(
 	        "li",
 	        { key: klass._id },
-	        React.createElement(KlassBox, { klass: klass })
+	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass })
 	      );
-	    });
+	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
 	    return React.createElement(
 	      "div",
@@ -25691,6 +25695,9 @@
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
 
+	  deleteClick: function deleteClick() {
+	    console.log('clicked' + this.props.klass._id);
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -25699,6 +25706,11 @@
 	        'h5',
 	        null,
 	        this.props.klass._id
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.deleteClick },
+	        'Delete'
 	      )
 	    );
 	  }
@@ -25968,13 +25980,13 @@
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
-	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
 	});
 
 	module.exports = Body;
+	//<Header />
 
 /***/ },
 /* 210 */

@@ -9,6 +9,7 @@ var StudentPanel = require("./components/StudentPanel");
 var LessonPanel = require("./components/LessonPanel");
 var Grid = require("./components/Grid");
 var Home = require("./components/Home");
+var Header = require("./components/Header");
 
 //functions defined in the global scope to be used in many components
 var call = function(action, method, data){
@@ -46,7 +47,7 @@ var routes = (
 //Top Level app component that manages whole app state
 var App = React.createClass({
   getInitialState: function(){
-    user: null
+    teacher: null
   },
   render: function(){
     return (
