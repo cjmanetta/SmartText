@@ -21,7 +21,7 @@ var Header = React.createClass({
 
       <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">student panel</Link>
       <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">lesson panel</Link>
-        <RouteHandler teacher={teacher} />
+      <RouteHandler teacher={teacher} />
 
       </div>
 
@@ -36,6 +36,7 @@ var Header = React.createClass({
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">SmartText</a>
+
           {content}
           {buttons}
         </div>

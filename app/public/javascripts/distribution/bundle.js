@@ -25549,7 +25549,8 @@
 	      "div",
 	      { className: "container" },
 	      "Lesson Panel",
-	      React.createElement(NewLesson, null)
+	      this.props.teacher.first_name,
+	      React.createElement(NewLesson, { teacher: this.props.teacher })
 	    );
 	  }
 	});
@@ -25569,12 +25570,35 @@
 	  displayName: 'NewLesson',
 
 	  handleSubmit: function handleSubmit(event) {
+	    var newLesson = this;
 	    event.preventDefault();
+	    debugger;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    // var data = $(event.target).serialize();
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date };
+
+	    $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        debugger;
+	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
 	  },
 	  render: function render() {
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
 	    return React.createElement(
 	      'form',
-	      { id: 'newLesson', action: '/lessons', method: 'post', onSubmit: this.handleSubmit },
+	      { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
 	      React.createElement(
 	        'div',
 	        { className: 'form-group' },

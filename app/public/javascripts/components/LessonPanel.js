@@ -7,7 +7,8 @@ var LessonPanel = React.createClass({
 
     return (
       <div className="container">Lesson Panel
-      <NewLesson />
+      {this.props.teacher.first_name}
+      <NewLesson teacher={this.props.teacher}/>
       </div>
 
     )
