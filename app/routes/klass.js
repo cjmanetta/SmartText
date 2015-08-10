@@ -184,7 +184,21 @@ module.exports = router
 
 
 
-
+  // Teacher.findOne({_id: req.params.id})
+  //   .populate('klasses')
+  //   .populate('students')
+  //   .populate('answers')
+  //   .exec(function(err, teacher){
+  //     console.log(teacher)
+  //     res.format({
+  //       'text/html': function(){
+  //         res.render('./teachers/show', { teacher: teacher})
+  //       },
+  //       'application/json': function(){
+  //         res.send({teacher: teacher})
+  //       }
+  //   })
+  // })   
 
 
 

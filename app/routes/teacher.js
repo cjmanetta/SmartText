@@ -7,6 +7,8 @@ var methodOverride = require('method-override');
 
 var Teacher = require('../models/teacher').Teacher
 var Klass = require('../models/klass').Klass
+var Student = require('../models/student').Student
+var Answer = require('../models/answer').Answer
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
