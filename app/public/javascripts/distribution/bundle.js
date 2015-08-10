@@ -25560,7 +25560,7 @@
 	    var lessons = this.state.lessons.map(function (lesson) {
 	      return React.createElement(
 	        "li",
-	        { className: "ui-widget-content" },
+	        { className: "list-group-item" },
 	        lesson.title,
 	        " ",
 	        lesson.date
@@ -25587,8 +25587,8 @@
 	        "."
 	      ),
 	      React.createElement(
-	        "ol",
-	        null,
+	        "ul",
+	        { className: "list-group" },
 	        lessons
 	      )
 	    );

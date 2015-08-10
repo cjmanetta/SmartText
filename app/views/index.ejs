@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script type="text/javascript" src="javascripts/distribution/fuzzy.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
 
     <link rel="stylesheet" href="/css/application.css">
@@ -17,19 +16,7 @@
   </body>
   <script src="javascripts/distribution/jquery.min.js" ></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-  <script>
-  $(function() {
-    $( "#selectable" ).selectable({
-      stop: function() {
-        var result = $( "#select-result" ).empty();
-        $( ".ui-selected", this ).each(function() {
-          var index = $( "#selectable li" ).index( this );
-          result.append( " #" + ( index + 1 ) );
-        });
-      }
-    });
-  });
-  </script>
+  <script type="text/javascript" src="javascripts/distribution/listgroup.min.js"></script>
+
   <script src="javascripts/distribution/bundle.js"></script>
 </html>

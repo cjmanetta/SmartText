@@ -11,7 +11,7 @@ var LessonSelect = React.createClass({
     var lessons = this.state.lessons.map(
       function(lesson){
         return(
-        <li className="ui-widget-content">{ lesson.title } { lesson.date }</li>
+        <li className="list-group-item">{ lesson.title } { lesson.date }</li>
         )
       }
     );
@@ -21,9 +21,9 @@ var LessonSelect = React.createClass({
         <p id="feedback">
           <span>You have selected:</span> <span id="select-result">none</span>.
         </p>
-        <ol>
+        <ul className="list-group">
           { lessons }
-        </ol>
+        </ul>
       </div>
     )
   }
