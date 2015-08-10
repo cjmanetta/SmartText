@@ -39,14 +39,16 @@ router.route('/')
 
 .post(function(req, res){
   var grade = req.body.grade
-  var password = req.body.password
+  var name = req.body.name
+  var pin = req.body.pin
   var teacher_id = req.params.id
-  var students = null
+  var students = []
 
   var klass = new Klass({
-    _teacher_id: teacher_id, 
+    _teacher_id: teacher_id,
+    name: name,
     grade: grade,
-    password: password,
+    pin: pin,
     students: students
   });
 
@@ -56,7 +58,7 @@ router.route('/')
       } else {
         teacher.klasses.push(klass)
         console.log(teacher)
-        
+
         teacher.save(function(err, teacher){
           if (err){
             return console.error(err)
@@ -108,10 +110,12 @@ router.get('/:klass_id/edit', function(req, res){
 
 router.route('/:klass_id')
 .get(function(req, res){
-  Klass.findById(req.params.klass_id, function(err, klass){
+  console.log(req.params.klass_id)
+  Klass.findOne({_id: req.params.klass_id}, function(err, klass){
     if (err){
       return console.error(err);
     } else {
+      console.log('klass: ' + klass)
       res.format({
         'text/html': function(){
           res.render('./klasses/show', {klass: klass})
@@ -154,13 +158,21 @@ router.route('/:klass_id')
       return console.error(err)
     } else {
       console.log('deleted: ' + klass)
-      res.format({
-        'text/html': function(){
-          res.redirect('/teachers/'+req.params.id+'/klasses')
-        },
-        'application/json': function(){
-          res.sendStatus(200)
-        }
+
+      Teacher.findOne({_id: req.params.id}, function(err, teacher){
+
+        teacher.klasses.pop({_id: req.params.klass_id})
+        
+        teacher.save(function(err, teacher){
+          res.format({
+            'text/html': function(){
+              res.redirect('/teachers/'+req.params.id+'/klasses')
+            },
+            'application/json': function(){
+              res.sendStatus({klass: 'deleted'})
+            }
+          }) 
+        }) 
       })
     }
   })

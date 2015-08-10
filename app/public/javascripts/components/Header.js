@@ -16,15 +16,11 @@ var Header = React.createClass({
     var buttons = null
 
     if (teacher) {
-      content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
+      content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}{teacher._id}</p>
       buttons = <div>
-
-      <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">student panel</Link>
-      <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">lesson panel</Link>
-      <RouteHandler teacher={teacher} />
-
+        <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">student panel</Link>
+        <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">lesson panel</Link>
       </div>
-
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
     } else {
@@ -36,7 +32,6 @@ var Header = React.createClass({
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">SmartText</a>
-
           {content}
           {buttons}
         </div>

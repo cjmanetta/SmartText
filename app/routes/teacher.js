@@ -24,6 +24,7 @@ router.route('/')
 		if (err){
 			return console.error(err);
 		} else {
+			console.log(teachers)
 			res.format({
 				'text/html': function(){
 	  			res.render('./teachers/index', { teachers: teachers })
@@ -41,7 +42,7 @@ router.route('/')
 	var last_name = req.body.last_name
 	var username = req.body.username
 	var password = req.body.password
-	var klasses = null
+	var klasses = []
 
 	Teacher.create({
 		first_name: first_name,

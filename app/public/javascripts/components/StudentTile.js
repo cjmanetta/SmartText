@@ -5,7 +5,7 @@ var StudentTile = React.createClass({
     return (
       <div id="studentText" className="w20 p15px b1pxsb fs8px scrol h350px">
         <span className="fs14px">
-          {this.props.student.first_name} 
+          {this.props.student.first_name}
           {this.props.student.last_initial}
         </span>
         <h6>{this.props.lesson.title}</h6>
