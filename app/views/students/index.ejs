@@ -4,12 +4,12 @@
 
 <% for (var i=0; i < students.length; i++){ %>
 
-  <a href="/students/<%= students[i]._id %>">
+  <a href="/teachers/<%= id %>/klasses/<%= klass_id %>/students/<%= students[i]._id %>">
     <%= students[i].first_name + " " + students[i].last_initial + "\'s login name: " + students[i].username %>
   </a>
   <br>
 
-  <form action="/students/<%= students[i]._id %>" method="post">
+  <form action="/teachers/<%= id %>/klasses/<%= klass_id %>/students/<%= students[i]._id %>" method="post">
     <input type="hidden" name="_method" value="delete">
     <input type="submit" value="delete">
     <a href="/students/<%= students[i]._id %>/edit">edit</a>

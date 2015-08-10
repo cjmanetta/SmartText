@@ -156,19 +156,21 @@ router.route('/:klass_id')
       return console.error(err)
     } else {
       console.log('deleted: ' + klass)
+      
+      Teacher.findOne({_id: req.params.id}, function(err, teacher){
 
-      collection.update(
-        { _id: id },
-        { $pull: { 'teacher.klasses': { _id: req.params.klass_id } } }
-      );
-
-      res.format({
-        'text/html': function(){
-          res.redirect('/teachers/'+req.params.id+'/klasses')
-        },
-        'application/json': function(){
-          res.sendStatus(200)
-        }
+        teacher.klasses.pop({_id: req.params.klass_id})
+        
+        teacher.save(function(err, teacher){
+          res.format({
+            'text/html': function(){
+              res.redirect('/teachers/'+req.params.id+'/klasses')
+            },
+            'application/json': function(){
+              res.sendStatus(200)
+            }
+          }) 
+        }) 
       })
     }
   })

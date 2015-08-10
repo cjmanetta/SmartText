@@ -24,6 +24,7 @@ router.route('/')
 		if (err){
 			return console.error(err);
 		} else {
+			console.log(teachers)
 			res.format({
 				'text/html': function(){
 	  			res.render('./teachers/index', { teachers: teachers })

@@ -20,7 +20,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Student.find({}, function(err, students){
+  Student.find({_klass_id: req.params.klass_id}, function(err, students){
     if (err){
       return console.error(err);
     } else {
@@ -55,8 +55,9 @@ router.route('/')
       if (err) {
         return console.error(err);
       } else {
-        console.log(klass)
         klass.students.push(student)
+
+        console.log(klass)
         
         klass.save(function(err, klass){
           if (err){
@@ -90,7 +91,7 @@ router.get('/new', function(req, res){
 })
 
 router.get('/:id/edit', function(req, res){
-  Student.findById(req.params.id, function(err, student){
+  Student.findById(req.params.student_id, function(err, student){
     if (err){
       return console.error(err);
     } else {
@@ -106,15 +107,15 @@ router.get('/:id/edit', function(req, res){
   })
 })
 
-router.route('/:id')
+router.route('/:student_id')
 .get(function(req, res) {
-  Student.findById(req.params.id, function(err, student) {
+  Student.findOne({_id: req.params.student_id}, function(err, student) {
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./students/show', { student: student })
+          res.render('./students/show', { student: student, id: req.params.id, klass_id: req.params.klass_id })
         },
         'application/json': function(){
           res.send({student: student})
@@ -151,21 +152,38 @@ router.route('/:id')
 })
 
 .delete(function(req, res){
-  Student.remove({_id: req.params.id}, function(err, student){
+  Student.remove({_id: req.params.student_id}, function(err, student){
     if (err) {
       return console.error(err)
     } else {
       console.log('deleted: ' + student)
-      res.format({
-        'text/html': function(){
-          res.redirect('/students')
-        },
-        'application/json': function(){
-          res.sendStatus(200)
-        }
+
+      Klass.findOne({_id: req.params.klass_id}, function(err, klass){
+
+        klass.students.pop({_id: req.params.student_id})
+
+        console.log(klass)
+
+        klass.save(function(err, klass){
+          res.format({
+            'text/html': function(){
+              res.redirect('/teachers/'+req.params.id+'/klasses/'+req.params.klass_id+'/students')
+            },
+            'application/json': function(){
+              res.sendStatus(200)
+            }
+          })
+        })
       })
     }
   })
 })
 
 module.exports = router
+
+
+
+
+
+
+
