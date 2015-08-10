@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
-	_teacher_id: {type: String, ref: 'Teacher'},
+  _teacher_id: {type: String, ref: 'Teacher'},
+  name: String,
 	grade: String,
 	password: String,
 	students: [{

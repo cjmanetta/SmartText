@@ -34,11 +34,17 @@ var TeacherView = React.createClass({
       console.log(serverData);
     });
   },
+  handleUpdateTeacher: function(serverData){
+    this.setState({
+      teacher: serverData.teacher
+    });
+  },
   render: function() {
     return (
       <div className="container pt150px">
         <Header teacher={this.state.teacher}/>
         <h3>Welcome, { this.state.teacher.first_name}</h3>
+        <RouteHandler teacher={this.state.teacher} update={this.handleUpdateTeacher}/>
       </div>
     );
   },
