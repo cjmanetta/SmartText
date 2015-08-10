@@ -21,8 +21,9 @@ var SignUp = React.createClass({
     var first_name = $("#first_name").val();
     var last_name = $("#last_name").val();
     var password = $(event.target).find('#password').val()
-    var data = {username: username, first_name: first_name, last_name: last_name, password: password}
-
+    var pin = $(event.target).find('#pin').val()
+    var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
+    debugger
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -31,9 +32,15 @@ var SignUp = React.createClass({
     });
 
     request.done(function(serverData){
-      signUp.transitionTo('teachers', {id: serverData.teacher._id});
+      debugger
+      if(serverData.teacher){
+        signUp.transitionTo('teachers', {id: serverData.teacher._id});
+      } else {
+        signUp.transitionTo('students', {id: serverData.student._id});
+      }
     })
     request.fail(function(serverData){
+      debugger
       console.log(serverData);
     });
   },
@@ -89,13 +96,13 @@ var SignUp = React.createClass({
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
         </ul>
-        <form id="studentLogIn" action="/students" method="post" onSubmit={this.handleSubmit}>
+        <form id="studentLogIn" action="/students/login" method="post" onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Pin</label>
+            <label htmlFor="pin">Pin</label>
             <input type="text" className="form-control" name="pin" id="pin" placeholder="1234" />
           </div>
           <button type="submit" className="btn btn-default">Submit</button>
