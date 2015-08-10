@@ -41,7 +41,7 @@ router.route('/')
 	var last_name = req.body.last_name
 	var username = req.body.username
 	var password = req.body.password
-	var klasses = null
+	var klasses = []
 
 	Teacher.create({
 		first_name: first_name,
