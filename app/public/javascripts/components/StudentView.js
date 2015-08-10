@@ -101,16 +101,16 @@ var StudentView = React.createClass({
       if(student_end > correct_end_range_beginning && student_end < correct_end_range_end){
         var color = 'green'
       } else {
-        var color = 'yellow'
+        var color = 'blue'
       }
     } else if(student_end > correct_end_range_beginning && student_end < correct_end_range_end){
-      var color = 'yellow'
+      var color = 'blue'
     } else if(student_start > correct_start && student_start < correct_end){
-      var color = 'yellow'
+      var color = 'blue'
     } else if(student_end > correct_start && student_end < correct_end){
-      var color = 'yellow'
+      var color = 'blue'
     } else if(student_start < correct_start && student_end > correct_end){
-      var color = 'yellow'
+      var color = 'blue'
     } else {
       var color = 'red'
     }

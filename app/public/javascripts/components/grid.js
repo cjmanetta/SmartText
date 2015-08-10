@@ -24,7 +24,10 @@ var Grid = React.createClass({
   },
   updateStudentTile: function(data){
     var textFromStudent = data.selection
+    var borderColor = data.color
+
     $('#studentText').html(textFromStudent);
+    $('#studentText').css("border-color", borderColor)
   },
   addStudent: function(studentData){
     // not sure where to call addStudent yet, but

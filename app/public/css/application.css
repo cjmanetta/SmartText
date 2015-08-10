@@ -106,3 +106,7 @@ body {
 .fs14px{
   font-size: 14px;
 }
+
+.bcb{
+  border: 3px solid black;
+}

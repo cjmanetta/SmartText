@@ -25262,16 +25262,16 @@
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
 	        var color = 'green';
 	      } else {
-	        var color = 'yellow';
+	        var color = 'blue';
 	      }
 	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start > correct_start && student_start < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_end > correct_start && student_end < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start < correct_start && student_end > correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else {
 	      var color = 'red';
 	    }
@@ -26041,7 +26041,10 @@
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var textFromStudent = data.selection;
+	    var borderColor = data.color;
+
 	    $('#studentText').html(textFromStudent);
+	    $('#studentText').css("border-color", borderColor);
 	  },
 	  addStudent: function addStudent(studentData) {
 	    // not sure where to call addStudent yet, but
@@ -26118,7 +26121,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px" },
+	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px bcb" },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },
