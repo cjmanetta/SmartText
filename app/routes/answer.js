@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var mongoose = require('mongoose');
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test');
 var bodyParser = require('body-parser');

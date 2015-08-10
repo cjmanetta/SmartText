@@ -1,4 +1,4 @@
-<form action="/klasses/<%= klass._id %>" method="post">
+<form action="/teachers/<%= id %>/klasses/<%= klass._id %>" method="post">
   <input type="hidden" name="_method" value="put">
   <input type="text" name="grade" value="<%= klass.grade %>">
   <input type="text" name="password" value="<%= klass.password %>">

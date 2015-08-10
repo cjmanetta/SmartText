@@ -1,6 +1,6 @@
 var express = require('express');
 //not sure if webpack.router works
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var mongoose = require('mongoose'); //mongo connection
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var bodyParser = require('body-parser'); //parses information from POST

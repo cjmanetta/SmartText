@@ -3,13 +3,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var klassSchema = Schema({
+	_teacher_id: {type: String, ref: 'Teacher'},
 	grade: String,
-	password: String
-	// students: [{
-	// 	type: mongoose.Schema.Types.ObjectId,
-	// 	ref: 'Student'
-	// }]
+	password: String,
+	students: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Student'
+	}]
 })
 
 var Klass = mongoose.model('Klass', klassSchema)
+
 module.exports = {Klass: Klass}

@@ -16,6 +16,7 @@ var TeacherView = React.createClass({
     var action = '/teachers/' + this.props.params.id;
     var method = 'get';
 
+
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -23,6 +24,7 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
+      console.log("success")
       teacherView.setState({
         teacher: serverData.teacher
       });

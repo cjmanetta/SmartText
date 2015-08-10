@@ -57,8 +57,8 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(205);
-	var LessonPanel = __webpack_require__(203);
+	var StudentPanel = __webpack_require__(203); // deleted 205 -NT
+	var LessonPanel = __webpack_require__(204); // deleted 203 -NT
 	var Grid = __webpack_require__(206);
 	var Home = __webpack_require__(208);
 
@@ -23190,7 +23190,7 @@
 	 *       <Route name="about" handler={About}/>
 	 *     </Route>
 	 *   ];
-	 *   
+	 *
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
@@ -25117,9 +25117,9 @@
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
-	 * 
+	 *
 	 * Using HTML5 history and a custom "cursor" prop:
-	 * 
+	 *
 	 *   Router.run(routes, Router.HistoryLocation, function (Handler) {
 	 *     React.render(<Handler cursor={cursor}/>, document.body);
 	 *   });
@@ -25402,6 +25402,7 @@
 	    });
 
 	    request.done(function (serverData) {
+	      console.log("success");
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25546,10 +25547,17 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+<<<<<<< HEAD
 	//var LessonSelector = require("./LessonSelector");
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
+=======
+	var NewLesson = __webpack_require__(205);
+
+	var LessonPanel = React.createClass({
+	  displayName: "LessonPanel",
+>>>>>>> 12752d1e08f5205cdd997dc46b1fa520c19f30c6
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -25570,6 +25578,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
+<<<<<<< HEAD
 	      React.createElement(
 	        "p",
 	        { id: "feedback" },
@@ -25591,6 +25600,11 @@
 	        { className: "list-group" },
 	        lessons
 	      )
+=======
+	      "Lesson Panel",
+	      this.props.teacher.first_name,
+	      React.createElement(NewLesson, { teacher: this.props.teacher })
+>>>>>>> 12752d1e08f5205cdd997dc46b1fa520c19f30c6
 	    );
 	  }
 	});
@@ -25599,6 +25613,79 @@
 
 /***/ },
 /* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+
+	var NewLesson = React.createClass({
+	  displayName: 'NewLesson',
+
+	  handleSubmit: function handleSubmit(event) {
+	    var newLesson = this;
+	    event.preventDefault();
+	    debugger;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    // var data = $(event.target).serialize();
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date };
+
+	    $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        debugger;
+	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
+	  },
+	  render: function render() {
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
+	    return React.createElement(
+	      'form',
+	      { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'title' },
+	          'Lesson Title'
+	        ),
+	        React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'date' },
+	          'Lesson Date'
+	        ),
+	        React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'submit', className: 'btn btn-default' },
+	        'Submit'
+	      )
+	    );
+	  }
+	});
+
+	module.exports = NewLesson;
+
+/***/ },
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25829,7 +25916,6 @@
 	    request.done(function (serverData) {
 	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	    });
-
 	    request.fail(function (serverData) {
 	      console.log(serverData);
 	    });
