@@ -59,8 +59,8 @@
 	var TeacherView = __webpack_require__(201);
 	var StudentPanel = __webpack_require__(203);
 	var LessonPanel = __webpack_require__(205);
-	var Grid = __webpack_require__(206);
-	var Home = __webpack_require__(208);
+	var Grid = __webpack_require__(207);
+	var Home = __webpack_require__(209);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -25456,6 +25456,7 @@
 	    });
 
 	    request.done(function (serverData) {
+	      console.log("success");
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25533,7 +25534,8 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
-	        )
+	        ),
+	        React.createElement(RouteHandler, { teacher: teacher })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25712,6 +25714,8 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+	var NewLesson = __webpack_require__(206);
+
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
 
@@ -25719,8 +25723,10 @@
 
 	    return React.createElement(
 	      "div",
-	      null,
-	      "Lesson Panel"
+	      { className: "container" },
+	      "Lesson Panel",
+	      this.props.teacher.first_name,
+	      React.createElement(NewLesson, { teacher: this.props.teacher })
 	    );
 	  }
 	});
@@ -25729,6 +25735,79 @@
 
 /***/ },
 /* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+
+	var NewLesson = React.createClass({
+	  displayName: 'NewLesson',
+
+	  handleSubmit: function handleSubmit(event) {
+	    var newLesson = this;
+	    event.preventDefault();
+	    debugger;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    // var data = $(event.target).serialize();
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date };
+
+	    $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        debugger;
+	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
+	  },
+	  render: function render() {
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
+	    return React.createElement(
+	      'form',
+	      { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'title' },
+	          'Lesson Title'
+	        ),
+	        React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'date' },
+	          'Lesson Date'
+	        ),
+	        React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'submit', className: 'btn btn-default' },
+	        'Submit'
+	      )
+	    );
+	  }
+	});
+
+	module.exports = NewLesson;
+
+/***/ },
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25744,7 +25823,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(207);
+	var StudentTile = __webpack_require__(208);
 	var socket = io.connect('http://localhost:8080');
 
 	var Grid = React.createClass({
@@ -25828,7 +25907,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25870,7 +25949,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25880,7 +25959,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(209);
+	var SignUp = __webpack_require__(210);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -25898,7 +25977,7 @@
 	module.exports = Body;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25937,7 +26016,6 @@
 	    request.done(function (serverData) {
 	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	    });
-
 	    request.fail(function (serverData) {
 	      console.log(serverData);
 	    });
