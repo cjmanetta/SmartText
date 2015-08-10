@@ -1,6 +1,5 @@
 var React = require("react");
 var NewLesson = require("./NewLesson");
-var EditLesson = require("./EditLesson");
 var Router = require('react-router');
 
 
@@ -15,7 +14,6 @@ var LessonPanel = React.createClass({
 	        {this.props.teacher.first_name}
 	        <LessonSelect teacher={this.props.teacher} />
 	        <NewLesson teacher={this.props.teacher}/>
-	        <EditLesson teacher={this.props.teacher}/>
         </div>
     )
   }

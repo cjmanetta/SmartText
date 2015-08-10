@@ -25581,10 +25581,9 @@
 
 	var React = __webpack_require__(1);
 	var NewLesson = __webpack_require__(204);
-	var EditLesson = __webpack_require__(205);
 	var Router = __webpack_require__(158);
 
-	var LessonSelect = __webpack_require__(206); // Duplication: Nick's code
+	var LessonSelect = __webpack_require__(205); // Duplication: Nick's code
 	var NewLesson = __webpack_require__(204); // Duplication: Adam's code
 
 	var LessonPanel = React.createClass({
@@ -25598,8 +25597,7 @@
 	      "Lesson Panel",
 	      this.props.teacher.first_name,
 	      React.createElement(LessonSelect, { teacher: this.props.teacher }),
-	      React.createElement(NewLesson, { teacher: this.props.teacher }),
-	      React.createElement(EditLesson, { teacher: this.props.teacher })
+	      React.createElement(NewLesson, { teacher: this.props.teacher })
 	    );
 	  }
 	});
@@ -25691,6 +25689,160 @@
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonBox = __webpack_require__(206);
+
+	var LessonSelect = React.createClass({
+	  displayName: "LessonSelect",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
+	    };
+	  },
+	  render: function render() {
+	    var lessons = this.state.lessons.map((function (lesson) {
+	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
+	    }).bind(this));
+
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(
+	        "p",
+	        { id: "feedback" },
+	        React.createElement(
+	          "span",
+	          null,
+	          "You have selected:"
+	        ),
+	        " ",
+	        React.createElement(
+	          "span",
+	          { id: "select-result" },
+	          "none"
+	        ),
+	        "."
+	      ),
+	      React.createElement(
+	        "ul",
+	        { className: "list-group" },
+	        lessons
+	      )
+	    );
+	  }
+	});
+
+	module.exports = LessonSelect;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var EditLesson = __webpack_require__(207);
+
+	var LessonBox = React.createClass({
+	  displayName: 'LessonBox',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      display: 'panel'
+	    };
+	  },
+	  editClick: function editClick() {
+	    debugger;
+	    this.setState({
+	      display: "edit"
+	    });
+	  },
+	  render: function render() {
+	    if (this.state.display === "panel") {
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.lesson.title
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            this.props.lesson.date
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'btn-group' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default', onClick: this.editClick },
+	              'Edit'
+	            ),
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default' },
+	              'Delete'
+	            )
+	          )
+	        )
+	      );
+	    } else if (this.state.display === "edit") {
+	      var path = "/teachers/" + this.props.teacher._id + "/lessons" + this.props.lesson._id;
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.lesson.title
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            this.props.lesson.date
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'btn-group' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default' },
+	              'Delete'
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'panel-body' },
+	            React.createElement(EditLesson, { teacher: this.props.teacher })
+	          )
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { key: this.props.lesson._id },
+	      content
+	    );
+	  }
+	});
+
+	module.exports = LessonBox;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	var React = __webpack_require__(1);
@@ -25734,11 +25886,6 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'row' },
-	      React.createElement(
-	        'h1',
-	        null,
-	        'Edit Lesson'
-	      ),
 	      React.createElement(
 	        'form',
 	        { id: 'EditLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
@@ -25793,86 +25940,6 @@
 	//     ref: 'Lesson'
 	//   }]
 	// })
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var LessonBox = __webpack_require__(207);
-
-	var LessonSelect = React.createClass({
-	  displayName: "LessonSelect",
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
-	    };
-	  },
-	  render: function render() {
-	    var lessons = this.state.lessons.map((function (lesson) {
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
-	    }).bind(this));
-
-	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      React.createElement(
-	        "p",
-	        { id: "feedback" },
-	        React.createElement(
-	          "span",
-	          null,
-	          "You have selected:"
-	        ),
-	        " ",
-	        React.createElement(
-	          "span",
-	          { id: "select-result" },
-	          "none"
-	        ),
-	        "."
-	      ),
-	      React.createElement(
-	        "ul",
-	        { className: "list-group" },
-	        lessons
-	      )
-	    );
-	  }
-	});
-
-	module.exports = LessonSelect;
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	var LessonBox = React.createClass({
-	  displayName: "LessonBox",
-
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      { key: this.props.lesson._id },
-	      React.createElement(
-	        "li",
-	        { className: "list-group-item" },
-	        this.props.lesson.title,
-	        " ",
-	        this.props.lesson.date
-	      )
-	    );
-	  }
-	});
-
-	module.exports = LessonBox;
 
 /***/ },
 /* 208 */

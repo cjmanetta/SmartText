@@ -40,7 +40,6 @@ var EditLesson = React.createClass({
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons/55c76b967cb7dabcaaccd7e3'
     return (
       <div className="row">
-        <h1>Edit Lesson</h1>
         <form id="EditLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
           <input type="hidden" name="_method" value="put" />
           <div className="form-group">
