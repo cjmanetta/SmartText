@@ -11,7 +11,6 @@ var StudentTile = React.createClass({
         <h6>{this.props.lesson.title}</h6>
         <p>{this.props.lesson.author}</p>
         <p>{this.props.lesson.text}</p>
-
       </div>
     );
   },

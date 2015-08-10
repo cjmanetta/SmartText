@@ -25171,7 +25171,7 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' },
+	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '123' },
 	      highlightOn: false,
 	      prompt: ''
 	    };
@@ -25524,8 +25524,7 @@
 	        { className: "navbar-text navbar-left" },
 	        teacher.first_name,
 	        " ",
-	        teacher.last_name,
-	        teacher._id
+	        teacher.last_name
 	      );
 	      buttons = React.createElement(
 	        "div",
@@ -25539,6 +25538,11 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "grid", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
+	          "teacher dashboard"
 	        )
 	      );
 	    } else if (student) {
@@ -26303,13 +26307,18 @@
 	    return {
 	      lesson: { text: "", author: "", title: "" },
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J' }],
-	      prompt: 'Please look at the text and highlight the best example of a character showing caring.'
+	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
+	      students: []
+	      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}],
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.getLesson();
+	    var that = this;
 	    socket.on('select', this.updateStudentTile);
+	    socket.on('addStudent', function (data) {
+	      that.addStudent(data);
+	    });
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var textFromStudent = data.selection;
@@ -26318,11 +26327,9 @@
 	    $('#studentText').html(textFromStudent);
 	    $('#studentText').css("border-color", borderColor);
 	  },
-	  addStudent: function addStudent(studentData) {
-	    // not sure where to call addStudent yet, but
-	    // probably somewhere in the login component
+	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(studentData);
+	    students.push(data.username);
 	    this.setState({
 	      students: students
 	    });
@@ -26346,8 +26353,8 @@
 	    });
 	  },
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+
 	    var lesson = this.state.lesson;
 
 	    var students = this.state.students.map(function (student) {
@@ -26360,7 +26367,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        "h3",
 	        null,
@@ -26669,7 +26676,7 @@
 	          React.createElement(
 	            'button',
 	            { type: 'submit', className: 'btn btn-default' },
-	            'Submit'
+	            'Log In'
 	          )
 	        )
 	      );

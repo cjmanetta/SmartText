@@ -105,7 +105,7 @@ var SignUp = React.createClass({
             <label htmlFor="pin">Pin</label>
             <input type="text" className="form-control" name="pin" id="pin" placeholder="1234" />
           </div>
-          <button type="submit" className="btn btn-default">Submit</button>
+          <button type="submit" className="btn btn-default">Log In</button>
         </form>
       </div>
     }
