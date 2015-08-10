@@ -123,6 +123,7 @@ router.route('/:id')
     }
   })
 })
+
 .delete(function(req, res){
   Standard.remove({_id: req.params.id}, function(err, standard){
     if (err) {
@@ -134,7 +135,7 @@ router.route('/:id')
           res.redirect('/standards')
         },
         'application/json': function(){
-          res.sendStatus(200)
+          res.send({standard: 'deleted'})
         }
       })
     }
