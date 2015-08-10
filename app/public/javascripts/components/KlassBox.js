@@ -14,9 +14,9 @@ var KlassBox = React.createClass({
       display: "edit"
     });
   },
-  handleSubmit: function(){
-    console.log('got here');
-    // this.props.delete(this.props.klass._id);
+  handleSubmit: function(event){
+    event.preventDefault();
+    this.props.update(event);
   },
   render: function() {
     if(this.state.display === "panel"){
@@ -33,7 +33,7 @@ var KlassBox = React.createClass({
         </div>
       </div>
     } else if (this.state.display === "edit"){
-      var path = "/teachers/"+ this.props.teacher._id +"/klasses" + this.props.teacher._id
+      var path = "/teachers/"+ this.props.teacher._id +"/klasses/" + this.props.klass._id
       var content = <div className="panel panel-default">
         <div className="panel-heading">
           <h5 className="panel-title">{this.props.klass.name}</h5>
@@ -42,11 +42,23 @@ var KlassBox = React.createClass({
           <button onClick={this.deleteClick}>Delete</button>
         </div>
         <div className="panel-body">
-          <form action={path} method="post" onSubmit={this.handleSubmit}>
-            <input id="name" type="text" name="name" placeholder="5C - Second Period" />
-            <input id="grade" type="text" name="grade" placeholder="5" />
-            <input id="pin" type="text" name="pin" placeholder="1234" />
-            <input type="submit" value="Create Class" />
+          <form action={path} method="put" onSubmit={this.handleSubmit}>
+            <input id="name"
+                   type="text"
+                   name="name"
+                   placeholder="5C - Second Period"
+                   defaultValue={this.props.klass.name} />
+            <input id="grade"
+                   type="text"
+                   name="grade"
+                   placeholder="5"
+                   defaultValue={this.props.klass.grade} />
+            <input id="pin"
+                   type="text"
+                   name="pin"
+                   placeholder="1234"
+                   defaultValue={this.props.klass.pin} />
+            <input type="submit" value="Update Class" />
           </form>
         </div>
       </div>

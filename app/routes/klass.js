@@ -134,6 +134,8 @@ router.route('/:klass_id')
       return console.error(err)
     } else {
       klass.teacher_id = req.params.id
+      klass.name = req.body.name;
+      klass.pin = req.body.pin;
       klass.grade = req.body.grade;
       klass.password = req.body.password;
 
@@ -162,7 +164,7 @@ router.route('/:klass_id')
       Teacher.findOne({_id: req.params.id}, function(err, teacher){
 
         teacher.klasses.pop({_id: req.params.klass_id})
-        
+
         teacher.save(function(err, teacher){
           res.format({
             'text/html': function(){
@@ -171,8 +173,8 @@ router.route('/:klass_id')
             'application/json': function(){
               res.sendStatus({klass: 'deleted'})
             }
-          }) 
-        }) 
+          })
+        })
       })
     }
   })

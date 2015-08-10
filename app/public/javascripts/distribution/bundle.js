@@ -25800,6 +25800,7 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
+	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -25807,12 +25808,17 @@
 	      dataType: "json"
 	    });
 
-	    request.done(function (serverData) {
-	      var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
-	      studentPanel.setState({
-	        klasses: newKlasses
-	      });
-	    });
+	    request.done((function (serverData) {
+	      debugger;
+	      if (method === "post") {
+	        var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
+	        studentPanel.setState({
+	          klasses: newKlasses
+	        });
+	      } else if (method === "put") {
+	        this.getKlassList();
+	      }
+	    }).bind(this));
 
 	    request.fail(function (serverData) {
 	      console.log('there was an error creating that klass');
@@ -25842,7 +25848,10 @@
 	      return React.createElement(
 	        "div",
 	        { key: klass._id },
-	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass, teacher: this.props.teacher })
+	        React.createElement(KlassBox, { klass: klass,
+	          "delete": this.handleDeleteKlass,
+	          teacher: this.props.teacher,
+	          update: this.handleSubmit })
 	      );
 	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
@@ -25902,9 +25911,9 @@
 	      display: "edit"
 	    });
 	  },
-	  handleSubmit: function handleSubmit() {
-	    console.log('got here');
-	    // this.props.delete(this.props.klass._id);
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    this.props.update(event);
 	  },
 	  render: function render() {
 	    if (this.state.display === "panel") {
@@ -25949,7 +25958,7 @@
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
-	      var path = "/teachers/" + this.props.teacher._id + "/klasses" + this.props.teacher._id;
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id;
 	      var content = React.createElement(
 	        'div',
 	        { className: 'panel panel-default' },
@@ -25984,11 +25993,23 @@
 	          { className: 'panel-body' },
 	          React.createElement(
 	            'form',
-	            { action: path, method: 'post', onSubmit: this.handleSubmit },
-	            React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
-	            React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
-	            React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
-	            React.createElement('input', { type: 'submit', value: 'Create Class' })
+	            { action: path, method: 'put', onSubmit: this.handleSubmit },
+	            React.createElement('input', { id: 'name',
+	              type: 'text',
+	              name: 'name',
+	              placeholder: '5C - Second Period',
+	              defaultValue: this.props.klass.name }),
+	            React.createElement('input', { id: 'grade',
+	              type: 'text',
+	              name: 'grade',
+	              placeholder: '5',
+	              defaultValue: this.props.klass.grade }),
+	            React.createElement('input', { id: 'pin',
+	              type: 'text',
+	              name: 'pin',
+	              placeholder: '1234',
+	              defaultValue: this.props.klass.pin }),
+	            React.createElement('input', { type: 'submit', value: 'Update Class' })
 	          )
 	        )
 	      );
@@ -26166,6 +26187,7 @@
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
+	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }

@@ -10,7 +10,7 @@ var Body = React.createClass({
   render: function() {
     return (
       <div id="main" className="container pt150px">
-
+        <Header />
         <SignUp />
       </div>
     );
