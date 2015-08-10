@@ -25592,7 +25592,6 @@
 	    return React.createElement(
 	      "div",
 	      null,
-	      "// Duplication: Nick's code",
 	      React.createElement(
 	        "div",
 	        { className: "container" },
@@ -25603,12 +25602,10 @@
 	        ),
 	        React.createElement(LessonSelect, null)
 	      ),
-	      "// Duplication: Adam's code",
 	      React.createElement(
 	        "div",
 	        { className: "container" },
 	        "Lesson Panel",
-	        this.props.teacher.first_name,
 	        React.createElement(NewLesson, { teacher: this.props.teacher })
 	      )
 	    );
