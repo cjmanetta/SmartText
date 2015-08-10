@@ -25483,7 +25483,7 @@
 	        "Welcome, ",
 	        this.state.teacher.first_name
 	      ),
-	      React.createElement(RouteHandler, { teacher: this.state.teacher })
+	      React.createElement(RouteHandler, { teacher: this.state.teacher, update: this.handleUpdateTeacher })
 	    );
 	  }
 	});
