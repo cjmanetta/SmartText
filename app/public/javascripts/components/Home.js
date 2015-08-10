@@ -10,7 +10,7 @@ var Body = React.createClass({
   render: function() {
     return (
       <div id="main" className="container pt150px">
-        <Header />
+
         <SignUp />
       </div>
     );
@@ -18,3 +18,4 @@ var Body = React.createClass({
 });
 
 module.exports = Body;
+//<Header />

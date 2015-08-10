@@ -1,12 +1,11 @@
-<h1>Password for the class' grade</h1>
+<h1>Klass Show Page</h1>
 
-<p>
-  <%= klass.grade %>
-  <%= klass.password %>
-</p>
 
-<form action="<%= klass._id %>" method="post">
-  <input type="hidden" name="_method" value="delete">
-  <input type="submit" value="delete">
-  <a href="<%= klass._id %>/edit">edit</a>
-</form>
+Grade: <%= klass.grade %>
+<br>
+Teacher_id: <%= klass._teacher_id %>
+<br>
+Password: <%= klass.password %>
+<br>
+Students: <%= klass.students %>
+

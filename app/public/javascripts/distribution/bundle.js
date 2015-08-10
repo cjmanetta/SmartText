@@ -57,10 +57,11 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(203); // deleted 205 -NT
-	var LessonPanel = __webpack_require__(204); // deleted 203 -NT
-	var Grid = __webpack_require__(206);
-	var Home = __webpack_require__(208);
+	var StudentPanel = __webpack_require__(206);
+	var LessonPanel = __webpack_require__(203);
+	var Grid = __webpack_require__(208);
+	var Home = __webpack_require__(210);
+	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -87,7 +88,7 @@
 	  Route,
 	  { handler: App },
 	  React.createElement(Route, { path: "/", name: "home", handler: Home }),
-	  React.createElement(Route, { path: "/students", name: "students", handler: StudentView }),
+	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
 	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
@@ -102,7 +103,7 @@
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
-	    user: null;
+	    teacher: null;
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -23190,7 +23191,7 @@
 	 *       <Route name="about" handler={About}/>
 	 *     </Route>
 	 *   ];
-	 *
+	 *   
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
@@ -25117,9 +25118,9 @@
 	 *   Router.run(routes, function (Handler) {
 	 *     React.render(<Handler/>, document.body);
 	 *   });
-	 *
+	 * 
 	 * Using HTML5 history and a custom "cursor" prop:
-	 *
+	 * 
 	 *   Router.run(routes, Router.HistoryLocation, function (Handler) {
 	 *     React.render(<Handler cursor={cursor}/>, document.body);
 	 *   });
@@ -25206,19 +25207,76 @@
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
+	      //pass off the selection object to compare using the algorithym
+	      var correctColor = this.compareSelection(selection);
 	      var selectedRange = selection.getRangeAt(0);
 	      var selectedText = selectedRange.extractContents();
+
 	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+
 	      selectedRange.insertNode(highlightSpan[0]);
 
 	      // I need to add the clear selection functionality here
 	      console.log($('#mainText').html());
 	      var highlightedText = $('#mainText').html();
+
+	      //can remove the console.log once it is tested over
+	      //the socket
+	      console.log({
+	        user: this.state.user,
+	        selection: highlightedText,
+	        color: correctColor
+	      });
+
 	      socket.emit('select', {
 	        user: this.state.user,
-	        selection: highlightedText
+	        selection: highlightedText,
+	        color: correctColor
 	      });
 	    }
+	  },
+	  compareSelection: function compareSelection(selection) {
+	    var student_start = selection.anchorOffset;
+	    var student_end = selection.focusOffset;
+	    var correct_start = this.state.lesson.correct.start;
+	    var correct_end = this.state.lesson.correct.end;
+
+	    //adjust start/end regardless of which way they highlight
+	    if (student_start > student_end) {
+	      student_start = selection.focusOffset;
+	      student_end = selection.anchorOffset;
+	    }
+	    if (correct_start > correct_end) {
+	      correct_start = this.state.lesson.correct.end;
+	      correct_end = this.state.lesson.correct.start;
+	    }
+
+	    var correct_length = correct_end - correct_start;
+	    var variance = Math.round(correct_length / 6);
+	    var correct_start_range_beginning = correct_start - variance;
+	    var correct_start_range_end = correct_start + variance;
+	    var correct_end_range_beginning = correct_end - variance;
+	    var correct_end_range_end = correct_end + variance;
+
+	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
+	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
+	        var color = 'green';
+	      } else {
+	        var color = 'yellow';
+	      }
+	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
+	      var color = 'yellow';
+	    } else if (student_start > correct_start && student_start < correct_end) {
+	      var color = 'yellow';
+	    } else if (student_end > correct_start && student_end < correct_end) {
+	      var color = 'yellow';
+	    } else if (student_start < correct_start && student_end > correct_end) {
+	      var color = 'yellow';
+	    } else {
+	      var color = 'red';
+	    }
+
+	    return color;
 	  },
 	  getLesson: function getLesson() {
 	    //here is where the api call would happen
@@ -25226,7 +25284,7 @@
 	    //for that class
 
 	    //stubbed for right now
-	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" };
+	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni", correct: { start: 241, end: 284, string: "A robinshrilled hidden in some trees nearby" } };
 
 	    this.setState({
 	      lesson: newLesson
@@ -25402,7 +25460,6 @@
 	    });
 
 	    request.done(function (serverData) {
-	      console.log("success");
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25411,6 +25468,11 @@
 	    request.fail(function (serverData) {
 	      console.log('There was an error getting the teacher');
 	      console.log(serverData);
+	    });
+	  },
+	  handleUpdateTeacher: function handleUpdateTeacher(serverData) {
+	    this.setState({
+	      teacher: serverData.teacher
 	    });
 	  },
 	  render: function render() {
@@ -25423,7 +25485,8 @@
 	        null,
 	        "Welcome, ",
 	        this.state.teacher.first_name
-	      )
+	      ),
+	      React.createElement(RouteHandler, { teacher: this.state.teacher, update: this.handleUpdateTeacher })
 	    );
 	  }
 	});
@@ -25475,8 +25538,7 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
-	        ),
-	        React.createElement(RouteHandler, { teacher: teacher })
+	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25518,7 +25580,9 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var LessonSelect = __webpack_require__(204);
+
+	var LessonSelect = __webpack_require__(204); // Duplication: Nick's code
+	var NewLesson = __webpack_require__(205); // Duplication: Adam's code
 
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
@@ -25527,13 +25591,26 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container" },
+	      null,
+	      "// Duplication: Nick's code",
 	      React.createElement(
-	        "p",
-	        null,
-	        this.props.teacher.first_name
+	        "div",
+	        { className: "container" },
+	        React.createElement(
+	          "p",
+	          null,
+	          this.props.teacher.first_name
+	        ),
+	        React.createElement(LessonSelect, null)
 	      ),
-	      React.createElement(LessonSelect, null)
+	      "// Duplication: Adam's code",
+	      React.createElement(
+	        "div",
+	        { className: "container" },
+	        "Lesson Panel",
+	        this.props.teacher.first_name,
+	        React.createElement(NewLesson, { teacher: this.props.teacher })
+	      )
 	    );
 	  }
 	});
@@ -25547,17 +25624,10 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
-<<<<<<< HEAD
 	//var LessonSelector = require("./LessonSelector");
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
-=======
-	var NewLesson = __webpack_require__(205);
-
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
->>>>>>> 12752d1e08f5205cdd997dc46b1fa520c19f30c6
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -25578,7 +25648,6 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
-<<<<<<< HEAD
 	      React.createElement(
 	        "p",
 	        { id: "feedback" },
@@ -25600,11 +25669,6 @@
 	        { className: "list-group" },
 	        lessons
 	      )
-=======
-	      "Lesson Panel",
-	      this.props.teacher.first_name,
-	      React.createElement(NewLesson, { teacher: this.props.teacher })
->>>>>>> 12752d1e08f5205cdd997dc46b1fa520c19f30c6
 	    );
 	  }
 	});
@@ -25691,15 +25755,123 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+	var KlassBox = __webpack_require__(207);
+
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
 
-	  render: function render() {
+	  getInitialState: function getInitialState() {
+	    return {
+	      klasses: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getKlassList();
+	  },
+	  getKlassList: function getKlassList() {
+	    var studentPanel = this;
+	    var path = "/teachers/" + this.props.params.id + "/klasses";
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
 
+	    request.done(function (serverData) {
+	      var newKlasses = serverData.klasses;
+	      studentPanel.setState({
+	        klasses: newKlasses
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error getting the lessons');
+	      console.log(serverData);
+	    });
+	  },
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+
+	    var studentPanel = this;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    var name = $(event.target).find('#name').val();
+	    var grade = $(event.target).find("#grade").val();
+	    var pin = $(event.target).find('#pin').val();
+	    var teacher_id = this.props.teacher._id;
+	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
+	      studentPanel.setState({
+	        klasses: newKlasses
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error creating that klass');
+	      console.log(serverData);
+	    });
+	  },
+	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
+	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + klass_id;
+	    var method = 'delete';
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      this.getKlassList();
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error deleting the class');
+	      console.log(serverData);
+	    });
+	  },
+	  render: function render() {
+	    var klasses = this.state.klasses.map((function (klass) {
+	      return React.createElement(
+	        "div",
+	        { key: klass._id },
+	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass, teacher: this.props.teacher })
+	      );
+	    }).bind(this));
+	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
 	    return React.createElement(
 	      "div",
 	      null,
-	      "Student Panel"
+	      React.createElement(
+	        "h5",
+	        null,
+	        "Student Panel"
+	      ),
+	      React.createElement(
+	        "h6",
+	        null,
+	        "New Class"
+	      ),
+	      React.createElement(
+	        "form",
+	        { action: path, method: "post", onSubmit: this.handleSubmit },
+	        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "5C - Second Period" }),
+	        React.createElement("input", { id: "grade", type: "text", name: "grade", placeholder: "5" }),
+	        React.createElement("input", { id: "pin", type: "text", name: "pin", placeholder: "1234" }),
+	        React.createElement("input", { type: "submit", value: "Create Class" })
+	      ),
+	      React.createElement(
+	        "div",
+	        null,
+	        klasses
+	      )
 	    );
 	  }
 	});
@@ -25707,7 +25879,133 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 206 */
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var KlassBox = React.createClass({
+	  displayName: 'KlassBox',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      display: 'panel'
+	    };
+	  },
+	  deleteClick: function deleteClick() {
+	    this.props['delete'](this.props.klass._id);
+	  },
+	  editClick: function editClick() {
+	    this.setState({
+	      display: "edit"
+	    });
+	  },
+	  handleSubmit: function handleSubmit() {
+	    console.log('got here');
+	    // this.props.delete(this.props.klass._id);
+	  },
+	  render: function render() {
+	    if (this.state.display === "panel") {
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.editClick },
+	            'Edit'
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          'Panel content'
+	        )
+	      );
+	    } else if (this.state.display === "edit") {
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses" + this.props.teacher._id;
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          React.createElement(
+	            'form',
+	            { action: path, method: 'post', onSubmit: this.handleSubmit },
+	            React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
+	            React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
+	            React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
+	            React.createElement('input', { type: 'submit', value: 'Create Class' })
+	          )
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      content
+	    );
+	  }
+
+	});
+
+	module.exports = KlassBox;
+
+/***/ },
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25723,7 +26021,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(207);
+	var StudentTile = __webpack_require__(209);
 	var socket = io.connect('http://localhost:8080');
 
 	var Grid = React.createClass({
@@ -25807,7 +26105,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 207 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25849,7 +26147,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 208 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25859,7 +26157,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(209);
+	var SignUp = __webpack_require__(211);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -25868,16 +26166,16 @@
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
-	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
 	});
 
 	module.exports = Body;
+	//<Header />
 
 /***/ },
-/* 209 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
