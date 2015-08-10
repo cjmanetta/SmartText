@@ -160,7 +160,7 @@ router.route('/:klass_id')
           res.redirect('/teachers/'+req.params.id+'/klasses')
         },
         'application/json': function(){
-          res.sendStatus(200)
+          res.send({klass: 'deleted'});
         }
       })
     }

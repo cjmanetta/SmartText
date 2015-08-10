@@ -8,7 +8,9 @@ var StudentPanel = React.createClass({
     };
   },
   componentDidMount: function() {
-
+    this.getKlassList();
+  },
+  getKlassList: function(){
     var studentPanel = this;
     var path = "/teachers/"+ this.props.params.id +"/klasses"
     var request = $.ajax({
@@ -18,7 +20,7 @@ var StudentPanel = React.createClass({
     });
 
     request.done(function(serverData){
-      var newKlasses = studentPanel.state.klasses.concat(serverData.klasses)
+      var newKlasses = serverData.klasses
       studentPanel.setState({
         klasses: newKlasses
       });
@@ -28,7 +30,6 @@ var StudentPanel = React.createClass({
       console.log('there was an error getting the lessons')
       console.log(serverData);
     });
-
   },
   handleSubmit: function(event){
     event.preventDefault();
@@ -56,13 +57,27 @@ var StudentPanel = React.createClass({
     });
 
     request.fail(function(serverData){
-      console.log('there was an error creating that lesson')
+      console.log('there was an error creating that klass')
       console.log(serverData);
     });
   },
   handleDeleteKlass: function(klass_id){
-    //actually delete the component
-    console.log('delete' + klass_id);
+    var action = '/teachers/' + this.props.teacher._id +"/klasses/" + klass_id;
+    var method = 'delete';
+    var request = $.ajax({
+      url:      action,
+      method:   method,
+      dataType: "json"
+    });
+
+    request.done(function(serverData){
+      this.getKlassList();
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('there was an error deleting the class')
+      console.log(serverData);
+    });
   },
   render: function(){
     var klasses = this.state.klasses.map(function(klass){

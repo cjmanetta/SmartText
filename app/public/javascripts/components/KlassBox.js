@@ -2,7 +2,7 @@ var React = require('react');
 
 var KlassBox = React.createClass({
   deleteClick: function(){
-    console.log('clicked' + this.props.klass._id)
+    this.props.delete(this.props.klass._id);
   },
   render: function() {
     return (
