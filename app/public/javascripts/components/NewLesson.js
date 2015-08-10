@@ -3,6 +3,10 @@ var Router = require('react-router');
 
 
 var NewLesson = React.createClass({
+  mixins: [
+    Router.Navigation,
+    Router.State,
+  ],
   handleSubmit: function(event){
     var newLesson = this;
     event.preventDefault();
@@ -12,7 +16,7 @@ var NewLesson = React.createClass({
     // var data = $(event.target).serialize();
     var title = $("#title").val();
     var date = $("#date").val();
-    var data = {title: title, date: date}
+    var data = {title: title, date: date, teacher_id: this.props.teacher._id}
 
     $.ajax({
       url: action,
@@ -21,7 +25,7 @@ var NewLesson = React.createClass({
       dataType: "json",
       success: function(serverData) {
         debugger
-        newLesson.transitionTo('lessonPanel', {id: serverData.teacher._id});
+        newLesson.transitionTo('lessonPanel', {id: newLesson.props.teacher._id});
 
       },
       error: function(serverData) {
@@ -34,18 +38,21 @@ var NewLesson = React.createClass({
   render: function() {
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
     return (
-      <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Lesson Title</label>
-          <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
-        </div>
-        <div className="form-group">
-          <label htmlFor="date">Lesson Date</label>
-          <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
-        </div>
+      <div className="row">
+        <h1>New Lesson</h1>
+        <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="title">Lesson Title</label>
+            <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="date">Lesson Date</label>
+            <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
+          </div>
 
-        <button type="submit" className="btn btn-default">Submit</button>
-      </form>
+          <button type="submit" className="btn btn-default">Submit</button>
+        </form>
+      </div>
     );
   }
 })

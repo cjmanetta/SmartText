@@ -1,5 +1,6 @@
 var React = require("react");
 var NewLesson = require("./NewLesson");
+var EditLesson = require("./EditLesson");
 
 var LessonPanel = React.createClass({
 
@@ -9,7 +10,9 @@ var LessonPanel = React.createClass({
       <div className="container">Lesson Panel
       {this.props.teacher.first_name}
       <NewLesson teacher={this.props.teacher}/>
+      <EditLesson teacher={this.props.teacher}/>
       </div>
+
 
     )
   }

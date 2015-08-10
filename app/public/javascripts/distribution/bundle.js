@@ -59,8 +59,8 @@
 	var TeacherView = __webpack_require__(201);
 	var StudentPanel = __webpack_require__(203);
 	var LessonPanel = __webpack_require__(204);
-	var Grid = __webpack_require__(206);
-	var Home = __webpack_require__(208);
+	var Grid = __webpack_require__(207);
+	var Home = __webpack_require__(209);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -25539,6 +25539,7 @@
 
 	var React = __webpack_require__(1);
 	var NewLesson = __webpack_require__(205);
+	var EditLesson = __webpack_require__(206);
 
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
@@ -25550,7 +25551,8 @@
 	      { className: "container" },
 	      "Lesson Panel",
 	      this.props.teacher.first_name,
-	      React.createElement(NewLesson, { teacher: this.props.teacher })
+	      React.createElement(NewLesson, { teacher: this.props.teacher }),
+	      React.createElement(EditLesson, { teacher: this.props.teacher })
 	    );
 	  }
 	});
@@ -25569,6 +25571,7 @@
 	var NewLesson = React.createClass({
 	  displayName: 'NewLesson',
 
+	  mixins: [Router.Navigation, Router.State],
 	  handleSubmit: function handleSubmit(event) {
 	    var newLesson = this;
 	    event.preventDefault();
@@ -25578,7 +25581,7 @@
 	    // var data = $(event.target).serialize();
 	    var title = $("#title").val();
 	    var date = $("#date").val();
-	    var data = { title: title, date: date };
+	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
 
 	    $.ajax({
 	      url: action,
@@ -25587,7 +25590,7 @@
 	      dataType: "json",
 	      success: function success(serverData) {
 	        debugger;
-	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
+	        newLesson.transitionTo('lessonPanel', { id: newLesson.props.teacher._id });
 	      },
 	      error: function error(serverData) {
 	        console.log(serverData);
@@ -25597,32 +25600,41 @@
 	  render: function render() {
 	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
 	    return React.createElement(
-	      'form',
-	      { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	      'div',
+	      { className: 'row' },
 	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'title' },
-	          'Lesson Title'
-	        ),
-	        React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	        'h1',
+	        null,
+	        'New Lesson'
 	      ),
 	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
+	        'form',
+	        { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'label',
-	          { htmlFor: 'date' },
-	          'Lesson Date'
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'title' },
+	            'Lesson Title'
+	          ),
+	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
 	        ),
-	        React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'submit', className: 'btn btn-default' },
-	        'Submit'
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'date' },
+	            'Lesson Date'
+	          ),
+	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', className: 'btn btn-default' },
+	          'Submit'
+	        )
 	      )
 	    );
 	  }
@@ -25632,6 +25644,116 @@
 
 /***/ },
 /* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+
+	var EditLesson = React.createClass({
+	  displayName: 'EditLesson',
+
+	  getInitialState: function getInitialState() {
+	    debugger;
+	    return {
+	      lesson: { title: "Character Traits", date: "11/24/2015", teacher_id: "0" }
+	    };
+	  },
+
+	  handleSubmit: function handleSubmit(event) {
+	    var editLesson = this;
+	    debugger;
+	    event.preventDefault();
+	    var action = $(event.target).attr('action');
+	    var method = 'put';
+	    // var data = $(event.target).serialize();
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
+
+	    $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        EditLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
+	        EditLesson.setState({ title: serverData.lesson.title });
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
+	  },
+	  render: function render() {
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/55c76b967cb7dabcaaccd7e3';
+	    debugger;
+	    return React.createElement(
+	      'div',
+	      { className: 'row' },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Edit Lesson'
+	      ),
+	      React.createElement(
+	        'form',
+	        { id: 'EditLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	        React.createElement('input', { type: 'hidden', name: '_method', value: 'put' }),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'title' },
+	            'Lesson Title'
+	          ),
+	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', value: this.state.lesson.title })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'date' },
+	            'Lesson Date'
+	          ),
+	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', className: 'btn btn-default' },
+	          'Submit'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = EditLesson;
+
+	// var mongoose = require('mongoose');
+
+	// var Schema = mongoose.Schema;
+
+	// var teacherSchema = Schema({
+	//   username: String,
+	//   password: String,
+	//   first_name: String,
+	//   last_name: String,
+	//   klasses: [{
+	//     type: Schema.Types.ObjectId,
+	//     ref: 'Klass'
+	//   }],
+	//   lessons: [{
+	//     type: Schema.Types.ObjectId,
+	//     ref: 'Lesson'
+	//   }]
+	// })
+
+/***/ },
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25647,7 +25769,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(207);
+	var StudentTile = __webpack_require__(208);
 	var socket = io.connect('http://localhost:8080');
 
 	var Grid = React.createClass({
@@ -25731,7 +25853,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25773,7 +25895,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25783,7 +25905,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(209);
+	var SignUp = __webpack_require__(210);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -25801,7 +25923,7 @@
 	module.exports = Body;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
