@@ -201,7 +201,32 @@ module.exports = router
   // })   
 
 
-
+  // Teacher.findOne({_id: req.params.id})
+  //   .populate('klasses')
+  //   .exec(function(err, teacher){
+  //     for (var i=0; i<teacher.klasses.length; i++){
+  //       Klass.findOne({_id: teacher.klasses[i]._id})
+  //         .populate('students')
+  //         .exec(function(err, klass){
+  //           if (err){
+  //             return console.error(err);
+  //           } else {
+  //             console.log(klass)
+  //           }
+  //         })
+  //     }
+  //   })
+  // Teacher.findOne({_id: req.params.id}, function(err, teacher){
+  //   console.log(teacher)
+  //   res.format({
+  //     'text/html': function(){
+  //       res.render('./teachers/show', { teacher: teacher})
+  //     },
+  //     'application/json': function(){
+  //       res.send({teacher: teacher})
+  //     }
+  //   })  
+  // })  
 
 
 
