@@ -51,7 +51,7 @@ router.route('/')
     last_initial: last_initial,
     answers: answers
   })
-  
+
   Klass.findOne({_id: req.params.klass_id}, function(err, klass){
       if (err) {
         return console.error(err);
@@ -59,7 +59,7 @@ router.route('/')
         klass.students.push(student)
 
         console.log(klass)
-        
+
         klass.save(function(err, klass){
           if (err){
             return console.error(err)
@@ -127,15 +127,15 @@ router.route('/:student_id')
 })
 
 .put(function(req, res){
-  Student.findById(req.params.id, function(err, student){
+  Student.findById(req.params.student_id, function(err, student){
     if (err) {
       return console.error(err)
     } else {
       student.first_name = req.body.first_name;
-      student.last_name = req.body.last_name;
+      student.last_initial = req.body.last_initial;
       student.username = req.body.username;
-      student.password = req.body.password;
-      student._klass_id = req.body.klass_id,
+      //in params
+      //student._klass_id = req.body.klass_id;
 
       student.save(function(err, student){
         console.log('edited: ' + student);
@@ -171,7 +171,7 @@ router.route('/:student_id')
               res.redirect('/teachers/'+req.params.id+'/klasses/'+req.params.klass_id+'/students')
             },
             'application/json': function(){
-              res.send({student: 'deleted'})
+              res.send({deleted: "deleted"});
             }
           })
         })
