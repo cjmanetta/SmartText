@@ -25172,7 +25172,7 @@
 	    return {
 	      lesson: { text: "", author: "", title: "" },
 	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' },
-	      highlightOn: true,
+	      highlightOn: false,
 	      prompt: ''
 	    };
 	  },
@@ -25191,7 +25191,8 @@
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data
+	      prompt: data,
+	      highlightOn: true
 	    });
 	  },
 	  handleClear: function handleClear() {
@@ -25260,7 +25261,7 @@
 
 	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = 'green';
+	        var color = '#76EE00';
 	      } else {
 	        var color = 'blue';
 	      }
