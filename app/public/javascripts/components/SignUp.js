@@ -32,8 +32,7 @@ var SignUp = React.createClass({
 
     request.done(function(serverData){
       signUp.transitionTo('teachers', {id: serverData.teacher._id});
-    });
-
+    })
     request.fail(function(serverData){
       console.log(serverData);
     });
