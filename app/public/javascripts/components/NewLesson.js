@@ -10,7 +10,6 @@ var NewLesson = React.createClass({
   handleSubmit: function(event){
     var newLesson = this;
     event.preventDefault();
-    debugger
     var action = $(event.target).attr('action');
     var method = $(event.target).attr('method');
     // var data = $(event.target).serialize();
@@ -24,7 +23,6 @@ var NewLesson = React.createClass({
       data: data,
       dataType: "json",
       success: function(serverData) {
-        debugger
         newLesson.transitionTo('lessonPanel', {id: newLesson.props.teacher._id});
 
       },

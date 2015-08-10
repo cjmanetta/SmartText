@@ -1,6 +1,8 @@
 var React = require("react");
 var NewLesson = require("./NewLesson");
 var EditLesson = require("./EditLesson");
+var Router = require('react-router');
+
 
 var LessonSelect = require("./LessonSelect"); // Duplication: Nick's code
 var NewLesson = require("./NewLesson"); // Duplication: Adam's code
@@ -11,7 +13,7 @@ var LessonPanel = React.createClass({
     return (
         <div className="container">Lesson Panel
 	        {this.props.teacher.first_name}
-	        <LessonSelect />
+	        <LessonSelect teacher={this.props.teacher} />
 	        <NewLesson teacher={this.props.teacher}/>
 	        <EditLesson teacher={this.props.teacher}/>
         </div>

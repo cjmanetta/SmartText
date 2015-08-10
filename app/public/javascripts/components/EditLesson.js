@@ -4,7 +4,6 @@ var Router = require('react-router');
 
 var EditLesson = React.createClass({
   getInitialState: function(){
-    debugger
     return {
       lesson:  {title: "Character Traits", date: "11/24/2015", teacher_id: "0"}
     }
@@ -13,7 +12,6 @@ var EditLesson = React.createClass({
 
   handleSubmit: function(event){
     var editLesson = this;
-    debugger
     event.preventDefault();
     var action = $(event.target).attr('action');
     var method = 'put';
@@ -40,7 +38,6 @@ var EditLesson = React.createClass({
   },
   render: function() {
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons/55c76b967cb7dabcaaccd7e3'
-    debugger
     return (
       <div className="row">
         <h1>Edit Lesson</h1>
