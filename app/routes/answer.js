@@ -39,6 +39,9 @@ router.route('/')
 .post(function(req, res){
   var text_snippet = req.body.text_snippet;
   var student_id = req.params.student_id;
+  // We will need to go and get the associated question and put it in the body before submitting
+  // This is necessary because answer is not nested in the same path so the associated question is not available through params.
+  var question_id = req.body.question_id;
 
   var answer = new Answer({
     _student_id: student_id,
