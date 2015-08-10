@@ -40,7 +40,7 @@ router.route('/')
 .post(function(req, res){
   var name = req.body.name
   var grade = req.body.grade
-  var password = req.body.password
+  var pin = req.body.pin
   var teacher_id = req.params.id
   var students = []
 
@@ -48,7 +48,7 @@ router.route('/')
     _teacher_id: teacher_id,
     name: name,
     grade: grade,
-    password: password,
+    pin: pin,
     students: students
   });
 
@@ -136,7 +136,6 @@ router.route('/:klass_id')
       klass.name = req.body.name;
       klass.pin = req.body.pin;
       klass.grade = req.body.grade;
-      klass.password = req.body.password;
 
       klass.save(function(err, klass){
         console.log('edited: ' + klass);

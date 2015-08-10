@@ -25798,6 +25798,7 @@
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
+	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26199,18 +26200,19 @@
 	        React.createElement(
 	          "p",
 	          null,
+	          "Username: ",
 	          this.props.student.username
 	        ),
 	        React.createElement(
 	          "p",
 	          null,
-	          "Pin: ",
+	          "First Name: ",
 	          this.props.student.first_name
 	        ),
 	        React.createElement(
 	          "p",
 	          null,
-	          "Grade: ",
+	          "Last Initial: ",
 	          this.props.student.last_initial
 	        ),
 	        React.createElement(
@@ -26232,18 +26234,19 @@
 	        React.createElement(
 	          "p",
 	          null,
+	          "Username: ",
 	          this.props.student.username
 	        ),
 	        React.createElement(
 	          "p",
 	          null,
-	          "Pin: ",
+	          "First Name: ",
 	          this.props.student.first_name
 	        ),
 	        React.createElement(
 	          "p",
 	          null,
-	          "Grade: ",
+	          "Last Initial: ",
 	          this.props.student.last_initial
 	        ),
 	        React.createElement(
