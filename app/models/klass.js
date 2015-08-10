@@ -6,7 +6,7 @@ var klassSchema = Schema({
   _teacher_id: {type: String, ref: 'Teacher'},
   name: String,
 	grade: String,
-	password: String,
+  pin: String,
 	students: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Student'
