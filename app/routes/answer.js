@@ -44,7 +44,7 @@ router.route('/')
     _student_id: student_id,
     text_snippet: text_snippet
   });
-
+  // MAKE SURE TO ALSO ADD THE ANSWER TO THE QUESTION TABLE HERE
   Student.findOne({_id: req.params.student_id}, function(err, student){
       if (err) {
         return console.error(err);

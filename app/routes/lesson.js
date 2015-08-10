@@ -21,7 +21,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Lesson.find({}, function(err, lessons){
+  Lesson.find({_teacher_id: req.params.teacher_id}, function(err, lessons){
     if (err){
       return console.error(err);
     } else {
@@ -119,7 +119,7 @@ router.route('/:id')
     if (err) {
       return console.error(err)
     } else {
-      lesson._teacher_id = req.body.first_name;
+      lesson._teacher_id = req.params.id;
       lesson.title = req.body.title;
       lesson.date = req.body.date;
       lesson.standard_id = req.body.standard_id;
