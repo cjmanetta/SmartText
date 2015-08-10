@@ -1,4 +1,5 @@
 var React = require('react');
+var StudentList = require('./StudentList')
 
 var KlassBox = React.createClass({
   getInitialState: function() {
@@ -32,7 +33,8 @@ var KlassBox = React.createClass({
           <button onClick={this.deleteClick}>Delete</button>
         </div>
         <div className="panel-body">
-          Panel content
+          <StudentList teacher={this.props.teacher}
+                       klass={this.props.klass}/>
         </div>
       </div>
     } else if (this.state.display === "edit"){

@@ -1,6 +1,7 @@
 var React = require("react");
 var KlassBox = require("./KlassBox");
 
+
 var StudentPanel = React.createClass({
   getInitialState: function() {
     return {
@@ -27,7 +28,7 @@ var StudentPanel = React.createClass({
     });
 
     request.fail(function(serverData){
-      console.log('there was an error getting the lessons')
+      console.log('there was an error getting the klasses')
       console.log(serverData);
     });
   },
@@ -42,7 +43,7 @@ var StudentPanel = React.createClass({
     var pin = $(event.target).find('#pin').val()
     var teacher_id = this.props.teacher._id
     var data = {name: name, grade: grade, pin: pin, teacher_id: teacher_id }
-    debugger
+
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -51,7 +52,6 @@ var StudentPanel = React.createClass({
     });
 
     request.done(function(serverData){
-      debugger
       if(method === "post"){
         var newKlasses = studentPanel.state.klasses.concat(serverData.klass)
         studentPanel.setState({
