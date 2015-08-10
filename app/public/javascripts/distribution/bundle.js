@@ -58,9 +58,10 @@
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
 	var StudentPanel = __webpack_require__(203);
-	var LessonPanel = __webpack_require__(204);
-	var Grid = __webpack_require__(206);
-	var Home = __webpack_require__(208);
+	var LessonPanel = __webpack_require__(205);
+	var Grid = __webpack_require__(207);
+	var Home = __webpack_require__(209);
+	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
@@ -102,7 +103,7 @@
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
-	    user: null;
+	    teacher: null;
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -25456,7 +25457,6 @@
 	    });
 
 	    request.done(function (serverData) {
-	      console.log("success");
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25534,8 +25534,7 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
-	        ),
-	        React.createElement(RouteHandler, { teacher: teacher })
+	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25574,12 +25573,43 @@
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
-	var StudentPanel = React.createClass({
-	  displayName: 'StudentPanel',
+	var KlassBox = __webpack_require__(204);
 
+	var StudentPanel = React.createClass({
+	  displayName: "StudentPanel",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      klasses: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getKlassList();
+	  },
+	  getKlassList: function getKlassList() {
+	    var studentPanel = this;
+	    var path = "/teachers/" + this.props.params.id + "/klasses";
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      var newKlasses = serverData.klasses;
+	      studentPanel.setState({
+	        klasses: newKlasses
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error getting the lessons');
+	      console.log(serverData);
+	    });
+	  },
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
@@ -25591,7 +25621,6 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -25600,31 +25629,69 @@
 	    });
 
 	    request.done(function (serverData) {
-	      studentPanel.props.update(serverData);
+	      var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
+	      studentPanel.setState({
+	        klasses: newKlasses
+	      });
 	    });
 
 	    request.fail(function (serverData) {
-	      console.log('there was an error creating that lesson');
+	      console.log('there was an error creating that klass');
+	      console.log(serverData);
+	    });
+	  },
+	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
+	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + klass_id;
+	    var method = 'delete';
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      this.getKlassList();
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error deleting the class');
 	      console.log(serverData);
 	    });
 	  },
 	  render: function render() {
+	    var klasses = this.state.klasses.map((function (klass) {
+	      return React.createElement(
+	        "div",
+	        { key: klass._id },
+	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass, teacher: this.props.teacher })
+	      );
+	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
 	    return React.createElement(
-	      'div',
+	      "div",
 	      null,
 	      React.createElement(
-	        'h5',
+	        "h5",
 	        null,
-	        'Student Panel'
+	        "Student Panel"
 	      ),
 	      React.createElement(
-	        'form',
-	        { action: path, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
-	        React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
-	        React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
-	        React.createElement('input', { type: 'submit', value: 'Create Class' })
+	        "h6",
+	        null,
+	        "New Class"
+	      ),
+	      React.createElement(
+	        "form",
+	        { action: path, method: "post", onSubmit: this.handleSubmit },
+	        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "5C - Second Period" }),
+	        React.createElement("input", { id: "grade", type: "text", name: "grade", placeholder: "5" }),
+	        React.createElement("input", { id: "pin", type: "text", name: "pin", placeholder: "1234" }),
+	        React.createElement("input", { type: "submit", value: "Create Class" })
+	      ),
+	      React.createElement(
+	        "div",
+	        null,
+	        klasses
 	      )
 	    );
 	  }
@@ -25636,10 +25703,136 @@
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var KlassBox = React.createClass({
+	  displayName: 'KlassBox',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      display: 'panel'
+	    };
+	  },
+	  deleteClick: function deleteClick() {
+	    this.props['delete'](this.props.klass._id);
+	  },
+	  editClick: function editClick() {
+	    this.setState({
+	      display: "edit"
+	    });
+	  },
+	  handleSubmit: function handleSubmit() {
+	    console.log('got here');
+	    // this.props.delete(this.props.klass._id);
+	  },
+	  render: function render() {
+	    if (this.state.display === "panel") {
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.editClick },
+	            'Edit'
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          'Panel content'
+	        )
+	      );
+	    } else if (this.state.display === "edit") {
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses" + this.props.teacher._id;
+	      var content = React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h5',
+	            { className: 'panel-title' },
+	            this.props.klass.name
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Pin: ',
+	            this.props.klass.pin
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Grade: ',
+	            this.props.klass.grade
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: this.deleteClick },
+	            'Delete'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          React.createElement(
+	            'form',
+	            { action: path, method: 'post', onSubmit: this.handleSubmit },
+	            React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
+	            React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
+	            React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
+	            React.createElement('input', { type: 'submit', value: 'Create Class' })
+	          )
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      content
+	    );
+	  }
+
+	});
+
+	module.exports = KlassBox;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var NewLesson = __webpack_require__(205);
+	var NewLesson = __webpack_require__(206);
 
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
@@ -25659,7 +25852,7 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25732,7 +25925,7 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25748,7 +25941,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(207);
+	var StudentTile = __webpack_require__(208);
 	var socket = io.connect('http://localhost:8080');
 
 	var Grid = React.createClass({
@@ -25832,7 +26025,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25874,7 +26067,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25884,7 +26077,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(209);
+	var SignUp = __webpack_require__(210);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -25893,16 +26086,16 @@
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
-	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
 	});
 
 	module.exports = Body;
+	//<Header />
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

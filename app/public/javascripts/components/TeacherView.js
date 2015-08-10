@@ -23,7 +23,6 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
-      console.log("success")
       teacherView.setState({
         teacher: serverData.teacher
       });

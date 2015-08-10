@@ -39,14 +39,16 @@ router.route('/')
 
 .post(function(req, res){
   var grade = req.body.grade
-  var password = req.body.password
+  var name = req.body.name
+  var pin = req.body.pin
   var teacher_id = req.params.id
   var students = []
 
   var klass = new Klass({
-    _teacher_id: teacher_id, 
+    _teacher_id: teacher_id,
+    name: name,
     grade: grade,
-    password: password,
+    pin: pin,
     students: students
   });
 
@@ -156,7 +158,7 @@ router.route('/:klass_id')
       return console.error(err)
     } else {
       console.log('deleted: ' + klass)
-      
+
       Teacher.findOne({_id: req.params.id}, function(err, teacher){
 
         teacher.klasses.pop({_id: req.params.klass_id})
@@ -167,7 +169,7 @@ router.route('/:klass_id')
               res.redirect('/teachers/'+req.params.id+'/klasses')
             },
             'application/json': function(){
-              res.sendStatus(200)
+              res.sendStatus({klass: 'deleted'})
             }
           }) 
         }) 
