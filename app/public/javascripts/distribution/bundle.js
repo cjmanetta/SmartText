@@ -25163,7 +25163,7 @@
 	var React = __webpack_require__(1);
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
-	var socket = io.connect('http://localhost:8080');
+	var socket = io.connect('/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -26296,7 +26296,7 @@
 
 	//Sockets
 	var StudentTile = __webpack_require__(211);
-	var socket = io.connect('http://localhost:8080');
+	var socket = io.connect('/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",

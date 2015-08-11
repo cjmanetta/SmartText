@@ -7,7 +7,7 @@ var RightBar = require('./RightBar');
 
 //Sockets
 var StudentTile = require('./StudentTile');
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('/');
 
 var Grid = React.createClass({
   getInitialState: function(){

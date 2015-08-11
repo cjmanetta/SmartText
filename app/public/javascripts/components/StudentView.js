@@ -1,7 +1,7 @@
 var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('/');
 
 
 var StudentView = React.createClass({
