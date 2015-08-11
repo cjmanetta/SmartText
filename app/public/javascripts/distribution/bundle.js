@@ -26308,7 +26308,9 @@
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
 	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
 	      // students: []
-	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2' }]
+	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2' }],
+	      clickable: true,
+	      tileBig: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -26334,6 +26336,18 @@
 	    var borderColor = data.color;
 	    $('#' + data.id).find('#content').html(textFromStudent);
 	    $('#' + data.id).find('div').css("border-color", borderColor);
+	  },
+	  handleTileClick: function handleTileClick(event) {
+
+	    if (event.target.id === "clickable" && this.state.clickable) {
+	      $(event.target).animate({ width: "900px", height: "600px" }, 1000).css("font-size", "20px");
+	      this.state.clickable = false;
+	      $(event.target).attr('id', "clickedBig");
+	    } else if (event.target.id === "clickedBig") {
+	      $(event.target).animate({ width: "250px", height: "350px" }, 1000).css("font-size", "8px");
+	      $(event.target).attr('id', "clickable");
+	      this.state.clickable = true;
+	    }
 	  },
 	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
@@ -26367,9 +26381,13 @@
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-	        "li",
-	        { id: student._id },
-	        React.createElement(StudentTile, { student: student, article: that.state.article })
+	        "div",
+	        null,
+	        React.createElement(
+	          "li",
+	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student, article: that.state.article })
+	        )
 	      );
 	    });
 	    return React.createElement(
@@ -26382,11 +26400,7 @@
 	        "Teacher Dashboard"
 	      ),
 	      React.createElement(RouteHandler, null),
-	      React.createElement(
-	        "ul",
-	        null,
-	        students
-	      ),
+	      students,
 	      React.createElement(RightBar, { prompt: this.state.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
@@ -26408,7 +26422,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: this.props.id, className: "w20 p15px b1pxsb fs8px scrol h350px bcb" },
+	      { id: "clickable", className: "bcb p15px b1pxsb fs8px scrol h350px w250px" },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },

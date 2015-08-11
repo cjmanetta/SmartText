@@ -19,6 +19,8 @@ var Grid = React.createClass({
       prompt: 'Please look at the text and highlight the best example of a character showing caring.',
       // students: []
       students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2'}],
+      clickable: true,
+      tileBig: false
     }
   },
   componentDidMount: function(){
@@ -44,6 +46,18 @@ var Grid = React.createClass({
     var borderColor = data.color;
     $('#'+data.id).find('#content').html(textFromStudent)
     $('#'+data.id).find('div').css("border-color", borderColor)
+  },
+  handleTileClick: function(event){
+
+    if (event.target.id === "clickable" && this.state.clickable){
+      $(event.target).animate({width: "900px", height: "600px"}, 1000).css("font-size", "20px")
+      this.state.clickable = false
+      $(event.target).attr('id', "clickedBig")
+    } else if (event.target.id === "clickedBig"){
+      $(event.target).animate({width: "250px", height: "350px"}, 1000).css("font-size", "8px")
+      $(event.target).attr('id', "clickable")
+      this.state.clickable = true
+    }
   },
   addStudent: function(data){
    var students =  this.state.students;
@@ -77,9 +91,11 @@ var Grid = React.createClass({
     var that = this
     var students = this.state.students.map(function(student){
       return (
-        <li id={student._id}>
-          <StudentTile student={student} article={that.state.article}/>
-        </li>
+        <div  >
+          <li id={student._id} className="w20" onClick={that.handleTileClick}>
+            <StudentTile student={student} article={that.state.article}/>
+          </li>
+        </div>
       )
     })
     return (
@@ -87,9 +103,7 @@ var Grid = React.createClass({
         <Header teacher={this.props.teacher} />
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
-        <ul>
           {students}
-        </ul>
         <RightBar prompt={this.state.prompt} actionOne={this.viewPrompt} actionTwo={this.disableStudents} labelOne="view question" labelTwo="finished"/>
       </div>
     );
