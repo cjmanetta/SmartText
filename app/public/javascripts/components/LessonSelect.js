@@ -1,4 +1,7 @@
 
+var $ = require('jquery');
+require('jquery-ui');
+require('jquery-ui/selectable')
 var React = require("react");
 //var LessonSelector = require("./LessonSelector");
 
@@ -9,12 +12,13 @@ var LessonSelect = React.createClass({
     }
   },
   handleSelection: function(event){
-    console.log("HELLOW");
+    var selection = $(event.target).text();
+    $('#select-result').text(selection);
   },
   render: function(){
     var index = 0;
     console.log(this);
-    var self = this.state;
+    var self = this;
 
     var lessons = this.state.lessons.map(
       function(lesson){
@@ -22,7 +26,7 @@ var LessonSelect = React.createClass({
         attributeId+= index;
         index+=1;
         return(
-        <li onClick={this.handleSelection} id={attributeId} key={lesson.id} data={lesson}>{ lesson.title } { lesson.date }</li>
+        <li role="presentation" onClick={this.handleSelection} id={attributeId} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{ lesson.title }</span><span className="r-date">{ lesson.date }</span></a></li>
         )
       }.bind(this)
     );
@@ -32,7 +36,7 @@ var LessonSelect = React.createClass({
         <p id="feedback">
           <span>You have selected:</span> <span id="select-result">none</span>
         </p>
-        <ul className="list-group">
+        <ul className="nav nav-pills nav-stacked">
           { lessons }
         </ul>
       </div>
