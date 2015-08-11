@@ -25561,7 +25561,9 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      teacher: { _id: 0 },
-	      activeLesson: null
+	      activeLesson: null,
+	      article: {},
+	      question: { prompt: "none" }
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25602,14 +25604,54 @@
 	      dataType: "json"
 	    });
 
-	    request.done(function (serverData) {
-	      teacherView.setState({
+	    request.done((function (serverData) {
+	      this.getArticle(serverData.lesson.article_id);
+	      this.getQuestion(serverData.lesson.question_id);
+	      this.setState({
 	        activeLesson: serverData.lesson
 	      });
-	    });
+	    }).bind(this));
 
 	    request.fail(function (serverData) {
 	      console.log('there was an error getting the active lesson');
+	      console.log(serverData);
+	    });
+	  },
+	  getArticle: function getArticle(article_id) {
+	    var path = "/articles/" + article_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        article: serverData.article
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the article');
+	      console.log(serverData);
+	    });
+	  },
+	  getQuestion: function getQuestion(question_id) {
+	    var path = "/questions/" + question_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        question: serverData.question
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the question');
 	      console.log(serverData);
 	    });
 	  },
@@ -25646,7 +25688,9 @@
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
-	        activate: this.setActiveLesson })
+	        activate: this.setActiveLesson,
+	        article: this.state.article,
+	        question: this.state.question })
 	    );
 	  }
 	});
@@ -27062,16 +27106,12 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      article: { author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood." },
-	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
 	      students: [],
 	      clickable: true,
 	      tileBig: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.getLesson();
 	    var that = this;
 	    socket.on('select', function (data) {
 	      that.updateStudentTile(data);
@@ -27116,22 +27156,10 @@
 	    });
 	  },
 	  viewPrompt: function viewPrompt() {
-	    socket.emit('viewPrompt', this.state.prompt);
+	    socket.emit('viewPrompt', this.props.question.prompt);
 	  },
 	  disableStudents: function disableStudents() {
 	    socket.emit('finish');
-	  },
-	  getLesson: function getLesson() {
-	    //here is where the api call would happen
-	    //to recieve the lesson which is active
-	    //for that class
-
-	    //stubbed for right now
-	    var newLesson = {};
-
-	    this.setState({
-	      lesson: newLesson
-	    });
 	  },
 	  render: function render() {
 
@@ -27159,7 +27187,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { prompt: this.state.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { prompt: this.props.question.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
 	});
