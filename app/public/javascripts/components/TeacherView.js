@@ -163,7 +163,7 @@ var TeacherView = React.createClass({
                       activate={this.setActiveLesson}
                       article={this.state.article}
                       question={this.state.question}
-                      answers={this.state.aswers} />
+                      answers={this.state.answers} />
       </div>
     );
   },

@@ -25795,7 +25795,7 @@
 	        activate: this.setActiveLesson,
 	        article: this.state.article,
 	        question: this.state.question,
-	        answers: this.state.aswers })
+	        answers: this.state.answers })
 	    );
 	  }
 	});
@@ -27197,10 +27197,54 @@
 	  displayName: 'ReviewPanel',
 
 	  render: function render() {
+	    var green = [];
+	    var blue = [];
+	    var red = [];
+	    debugger;
+	    if (this.props.answers) {
+	      this.props.answers.map(function (answer) {
+	        if (answer.correct === 2) {
+	          green.push(answer);
+	        } else if (answer.correct === 1) {
+	          blue.push(answer);
+	        } else {
+	          red.push(answer);
+	        }
+	      });
+	    }
+	    var redLi = red.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
+
+	    var blueLi = blue.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
+	    var greenLi = green.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
 	    return React.createElement(
 	      'div',
 	      null,
-	      'Review Panel'
+	      React.createElement(
+	        'div',
+	        null,
+	        'Review Panel'
+	      ),
+	      greenLi,
+	      blueLi,
+	      redLi
 	    );
 	  }
 	});
