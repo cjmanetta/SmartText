@@ -38,8 +38,8 @@ router.route('/')
 })
 
 .post(function(req, res){
-  var grade = req.body.grade
   var name = req.body.name
+  var grade = req.body.grade
   var pin = req.body.pin
   var teacher_id = req.params.id
   var students = []
@@ -110,7 +110,6 @@ router.get('/:klass_id/edit', function(req, res){
 
 router.route('/:klass_id')
 .get(function(req, res){
-  console.log(req.params.klass_id)
   Klass.findOne({_id: req.params.klass_id}, function(err, klass){
     if (err){
       return console.error(err);
@@ -134,8 +133,9 @@ router.route('/:klass_id')
       return console.error(err)
     } else {
       klass.teacher_id = req.params.id
+      klass.name = req.body.name;
+      klass.pin = req.body.pin;
       klass.grade = req.body.grade;
-      klass.password = req.body.password;
 
       klass.save(function(err, klass){
         console.log('edited: ' + klass);
@@ -162,40 +162,22 @@ router.route('/:klass_id')
       Teacher.findOne({_id: req.params.id}, function(err, teacher){
 
         teacher.klasses.pop({_id: req.params.klass_id})
-        
+
         teacher.save(function(err, teacher){
           res.format({
             'text/html': function(){
               res.redirect('/teachers/'+req.params.id+'/klasses')
             },
             'application/json': function(){
-              res.sendStatus({klass: 'deleted'})
+              res.send({klass: 'deleted'})
             }
-          }) 
-        }) 
+          })
+        })
       })
     }
   })
 })
 
 module.exports = router
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

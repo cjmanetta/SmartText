@@ -7,6 +7,7 @@ var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
 var Lesson = require('../models/lesson').Lesson
+var Teacher = require('../models/teacher').Teacher
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -20,7 +21,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Lesson.find({}, function(err, lessons){
+  Lesson.find({_teacher_id: req.params.teacher_id}, function(err, lessons){
     if (err){
       return console.error(err);
     } else {
@@ -35,36 +36,59 @@ router.route('/')
     }
   });
 })
+
 .post(function(req, res){
   var title = req.body.title
   var date = req.body.date
   var teacher_id = req.body.teacher_id
   var article_id = req.body.article_id
   var question_id = req.body.question_id
-
-  Lesson.create({
+  var standard_id = req.body.standard_id;
+  
+  var lesson = new Lesson({
+    _teacher_id: teacher_id,
     title: title,
     date: date,
-    teacher_id: teacher_id,
     article_id: article_id,
     question_id: question_id
+    standard_id: standard_id,
 
   }, function(err, lesson) {
     if (err) {
       console.log('error')
+  })
+
+  Teacher.findOne({_id: req.params.id}, function(err, teacher){
+    if (err){
+      return console.error(err);
     } else {
-      console.log('post created: ' + lesson)
-      res.format({
-        'text/html': function(){
-          res.redirect('/lessons')
-        },
-        'application/json': function(){
-          res.send({lesson: lesson})
+      teacher.lessons.push(lesson)
+      console.log(lesson)
+
+      teacher.save(function(err, teacher){
+        if (err){
+          return console.error(err);
+        } else {
+          lesson.save(function(err, lesson){
+            if (err){
+              return console.error(err)
+            } else {
+              res.format({
+                'text/html': function(){
+                  res.redirect('/teachers/'+req.params.id+'/lessons')
+                },
+                'application/json': function(){
+                  res.send({lesson: lesson})
+                }
+              })
+            }
+          })
         }
       })
     }
   })
 })
+
 
 router.get('/new', function(req, res) {
   res.render('./lessons/new')
@@ -78,7 +102,7 @@ router.get('/:id/edit', function(req, res) {
 
 router.route('/:id')
 .get(function(req, res) {
-  Lesson.findById(req.params.id, function(err, lesson) {
+  Lesson.findById(req.params.lesson_id, function(err, lesson) {
     if (err){
       return console.error(err);
     } else {
@@ -93,21 +117,24 @@ router.route('/:id')
     }
   })
 })
+
 .put(function(req, res){
-  Lesson.findById(req.params.id, function(err, lesson){
+  Lesson.findById(req.params.lesson_id, function(err, lesson){
     if (err) {
       return console.error(err)
     } else {
-      lesson.first_name = req.body.first_name;
-      lesson.last_name = req.body.last_name;
-      lesson.username = req.body.username;
-      lesson.password = req.body.password;
+      lesson._teacher_id = req.params.id;
+      lesson.title = req.body.title;
+      lesson.date = req.body.date;
+      lesson.standard_id = req.body.standard_id;
+      lesson.article_id = req.body.article_id
+      lesson.questions = req.body.questions
 
       lesson.save(function(err, lesson){
         console.log('edited: ' + lesson);
         res.format({
           'text/html': function(){
-            res.redirect('/lessons')
+            res.redirect('/teachers/'+req.params.id+'/lessons')
           },
           'application/json': function(){
             res.send({lesson: lesson})
@@ -117,8 +144,9 @@ router.route('/:id')
     }
   })
 })
+
 .delete(function(req, res){
-  Lesson.remove({_id: req.params.id}, function(err, lesson){
+  Lesson.remove({_id: req.params.lesson_id}, function(err, lesson){
     if (err) {
       return console.log(err)
     } else {
@@ -130,6 +158,21 @@ router.route('/:id')
         'application/json': function(){
           res.send({status: 200})
         }
+
+      Teacher.findOne({_id: req.params.id}, function(err, teacher){
+
+        teacher.lessons.pop({_id: req.params.lesson_id})
+        
+        teacher.save(function(err, teacher){
+          res.format({
+            'text/html': function(){
+              res.redirect('/teachers/'+req.params.id+'/lessons')
+            },
+            'application/json': function(){
+              res.send({lesson: 'deleted'})
+            }
+          }) 
+        }) 
       })
     }
   })
@@ -140,3 +183,8 @@ router.route('/:id')
 
 
 module.exports = router
+
+
+
+
+

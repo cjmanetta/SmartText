@@ -59,8 +59,8 @@
 	var TeacherView = __webpack_require__(201);
 	var StudentPanel = __webpack_require__(206);
 	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(208);
-	var Home = __webpack_require__(210);
+	var Grid = __webpack_require__(210);
+	var Home = __webpack_require__(212);
 	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
@@ -25164,6 +25164,7 @@
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
 	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -25171,8 +25172,8 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' },
-	      highlightOn: true,
+	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '123' },
+	      highlightOn: false,
 	      prompt: ''
 	    };
 	  },
@@ -25191,7 +25192,8 @@
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data
+	      prompt: data,
+	      highlightOn: true
 	    });
 	  },
 	  handleClear: function handleClear() {
@@ -25260,18 +25262,18 @@
 
 	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = 'green';
+	        var color = '#76EE00';
 	      } else {
-	        var color = 'yellow';
+	        var color = 'blue';
 	      }
 	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start > correct_start && student_start < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_end > correct_start && student_end < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start < correct_start && student_end > correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else {
 	      var color = 'red';
 	    }
@@ -25523,8 +25525,7 @@
 	        { className: "navbar-text navbar-left" },
 	        teacher.first_name,
 	        " ",
-	        teacher.last_name,
-	        teacher._id
+	        teacher.last_name
 	      );
 	      buttons = React.createElement(
 	        "div",
@@ -25538,6 +25539,11 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "grid", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
+	          "teacher dashboard"
 	        )
 	      );
 	    } else if (student) {
@@ -26069,7 +26075,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      lesson: { title: "Character Traits", date: "11/24/2015", teacher_id: "0" }
+	      lesson: {}
 	    };
 	  },
 
@@ -26081,7 +26087,7 @@
 	    // var data = $(event.target).serialize();
 	    var title = $("#title").val();
 	    var date = $("#date").val();
-	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
+	    var data = { title: title, date: date };
 
 	    $.ajax({
 	      url: action,
@@ -26098,7 +26104,7 @@
 	    });
 	  },
 	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/55c76b967cb7dabcaaccd7e3';
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le;
 	    return React.createElement(
 	      'div',
 	      { className: 'row' },
@@ -26175,7 +26181,7 @@
 	    });
 
 	    request.fail(function (serverData) {
-	      console.log('there was an error getting the lessons');
+	      console.log('there was an error getting the klasses');
 	      console.log(serverData);
 	    });
 	  },
@@ -26190,6 +26196,7 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
+
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26197,12 +26204,16 @@
 	      dataType: "json"
 	    });
 
-	    request.done(function (serverData) {
-	      var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
-	      studentPanel.setState({
-	        klasses: newKlasses
-	      });
-	    });
+	    request.done((function (serverData) {
+	      if (method === "post") {
+	        var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
+	        studentPanel.setState({
+	          klasses: newKlasses
+	        });
+	      } else if (method === "put") {
+	        this.getKlassList();
+	      }
+	    }).bind(this));
 
 	    request.fail(function (serverData) {
 	      console.log('there was an error creating that klass');
@@ -26232,7 +26243,10 @@
 	      return React.createElement(
 	        "div",
 	        { key: klass._id },
-	        React.createElement(KlassBox, { klass: klass, "delete": this.handleDeleteKlass, teacher: this.props.teacher })
+	        React.createElement(KlassBox, { klass: klass,
+	          "delete": this.handleDeleteKlass,
+	          teacher: this.props.teacher,
+	          update: this.handleSubmit })
 	      );
 	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
@@ -26275,6 +26289,7 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
+	var StudentList = __webpack_require__(208);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26292,9 +26307,12 @@
 	      display: "edit"
 	    });
 	  },
-	  handleSubmit: function handleSubmit() {
-	    console.log('got here');
-	    // this.props.delete(this.props.klass._id);
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    this.props.update(event);
+	    this.setState({
+	      display: panel
+	    });
 	  },
 	  render: function render() {
 	    if (this.state.display === "panel") {
@@ -26335,11 +26353,12 @@
 	        React.createElement(
 	          'div',
 	          { className: 'panel-body' },
-	          'Panel content'
+	          React.createElement(StudentList, { teacher: this.props.teacher,
+	            klass: this.props.klass })
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
-	      var path = "/teachers/" + this.props.teacher._id + "/klasses" + this.props.teacher._id;
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id;
 	      var content = React.createElement(
 	        'div',
 	        { className: 'panel panel-default' },
@@ -26374,11 +26393,23 @@
 	          { className: 'panel-body' },
 	          React.createElement(
 	            'form',
-	            { action: path, method: 'post', onSubmit: this.handleSubmit },
-	            React.createElement('input', { id: 'name', type: 'text', name: 'name', placeholder: '5C - Second Period' }),
-	            React.createElement('input', { id: 'grade', type: 'text', name: 'grade', placeholder: '5' }),
-	            React.createElement('input', { id: 'pin', type: 'text', name: 'pin', placeholder: '1234' }),
-	            React.createElement('input', { type: 'submit', value: 'Create Class' })
+	            { action: path, method: 'put', onSubmit: this.handleSubmit },
+	            React.createElement('input', { id: 'name',
+	              type: 'text',
+	              name: 'name',
+	              placeholder: '5C - Second Period',
+	              defaultValue: this.props.klass.name }),
+	            React.createElement('input', { id: 'grade',
+	              type: 'text',
+	              name: 'grade',
+	              placeholder: '5',
+	              defaultValue: this.props.klass.grade }),
+	            React.createElement('input', { id: 'pin',
+	              type: 'text',
+	              name: 'pin',
+	              placeholder: '1234',
+	              defaultValue: this.props.klass.pin }),
+	            React.createElement('input', { type: 'submit', value: 'Update Class' })
 	          )
 	        )
 	      );
@@ -26398,6 +26429,253 @@
 /* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var StudentBox = __webpack_require__(209);
+
+	var StudentList = React.createClass({
+	  displayName: 'StudentList',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      students: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getStudentList();
+	  },
+	  getStudentList: function getStudentList() {
+	    var studentList = this;
+	    var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students";
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      var newStudents = serverData.students;
+	      studentList.setState({
+	        students: newStudents
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error getting the students');
+	      console.log(serverData);
+	    });
+	  },
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+
+	    var studentList = this;
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    var username = $(event.target).find('#username').val();
+	    var first_name = $(event.target).find("#first_name").val();
+	    var last_initial = $(event.target).find('#last_initial').val();
+	    var data = { username: username, first_name: first_name, last_initial: last_initial };
+
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      if (method === "post") {
+	        var newStudents = studentList.state.students.concat(serverData.student);
+	        studentList.setState({
+	          students: newStudents
+	        });
+	      } else if (method === "put") {
+	        this.getStudentList();
+	      }
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error creating that student');
+	      console.log(serverData);
+	    });
+	  },
+	  handleDeleteStudent: function handleDeleteStudent(student_id) {
+	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students/" + student_id;
+	    var method = 'delete';
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      this.getStudentList();
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error deleting the student');
+	      console.log(serverData);
+	    });
+	  },
+	  render: function render() {
+	    var students = this.state.students.map((function (student) {
+	      return React.createElement(
+	        'div',
+	        { key: student._id },
+	        React.createElement(StudentBox, { student: student,
+	          'delete': this.handleDeleteStudent,
+	          teacher: this.props.teacher,
+	          klass: this.props.klass,
+	          update: this.handleSubmit })
+	      );
+	    }).bind(this));
+	    var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students";
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h7',
+	        null,
+	        'New Student'
+	      ),
+	      React.createElement(
+	        'form',
+	        { action: path, method: 'post', onSubmit: this.handleSubmit },
+	        React.createElement('input', { id: 'username', type: 'text', name: 'username', placeholder: 'sammysosa' }),
+	        React.createElement('input', { id: 'first_name', type: 'text', name: 'first_name', placeholder: 'Sammy' }),
+	        React.createElement('input', { id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'S.' }),
+	        React.createElement('input', { type: 'submit', value: 'Create Student' })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        students
+	      )
+	    );
+	  }
+	});
+
+	module.exports = StudentList;
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var StudentBox = React.createClass({
+	  displayName: "StudentBox",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      display: "panel"
+	    };
+	  },
+	  deleteClick: function deleteClick() {
+	    this.props["delete"](this.props.student._id);
+	  },
+	  editClick: function editClick() {
+	    this.setState({
+	      display: "edit"
+	    });
+	  },
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    this.props.update(event);
+	    this.setState({
+	      display: "panel"
+	    });
+	  },
+	  render: function render() {
+	    if (this.state.display === "panel") {
+	      var content = React.createElement(
+	        "li",
+	        null,
+	        React.createElement(
+	          "p",
+	          null,
+	          "Username: ",
+	          this.props.student.username
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          "First Name: ",
+	          this.props.student.first_name
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          "Last Initial: ",
+	          this.props.student.last_initial
+	        ),
+	        React.createElement(
+	          "button",
+	          { onClick: this.editClick },
+	          "Edit"
+	        ),
+	        React.createElement(
+	          "button",
+	          { onClick: this.deleteClick },
+	          "Delete"
+	        )
+	      );
+	    } else if (this.state.display === "edit") {
+	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students/" + this.props.student._id;
+	      var content = React.createElement(
+	        "li",
+	        null,
+	        React.createElement(
+	          "p",
+	          null,
+	          "Username: ",
+	          this.props.student.username
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          "First Name: ",
+	          this.props.student.first_name
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          "Last Initial: ",
+	          this.props.student.last_initial
+	        ),
+	        React.createElement(
+	          "button",
+	          { onClick: this.deleteClick },
+	          "Delete"
+	        ),
+	        React.createElement(
+	          "form",
+	          { action: path, method: "put", onSubmit: this.handleSubmit },
+	          React.createElement("input", { id: "username", type: "text", name: "username", placeholder: this.props.student.username }),
+	          React.createElement("input", { id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name }),
+	          React.createElement("input", { id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial }),
+	          React.createElement("input", { type: "submit", value: "Create Student" })
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      "div",
+	      null,
+	      content
+	    );
+	  }
+
+	});
+
+	module.exports = StudentBox;
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	var React = __webpack_require__(1);
@@ -26411,8 +26689,9 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(209);
+	var StudentTile = __webpack_require__(211);
 	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",
@@ -26421,23 +26700,29 @@
 	    return {
 	      lesson: { text: "", author: "", title: "" },
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J' }],
-	      prompt: 'Please look at the text and highlight the best example of a character showing caring.'
+	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
+	      students: []
+	      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}],
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.getLesson();
+	    var that = this;
 	    socket.on('select', this.updateStudentTile);
+	    socket.on('addStudent', function (data) {
+	      that.addStudent(data);
+	    });
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var textFromStudent = data.selection;
+	    var borderColor = data.color;
+
 	    $('#studentText').html(textFromStudent);
+	    $('#studentText').css("border-color", borderColor);
 	  },
-	  addStudent: function addStudent(studentData) {
-	    // not sure where to call addStudent yet, but
-	    // probably somewhere in the login component
+	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(studentData);
+	    students.push(data.username);
 	    this.setState({
 	      students: students
 	    });
@@ -26461,8 +26746,8 @@
 	    });
 	  },
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+
 	    var lesson = this.state.lesson;
 
 	    var students = this.state.students.map(function (student) {
@@ -26475,7 +26760,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        "h3",
 	        null,
@@ -26495,7 +26780,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 209 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26508,7 +26793,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px" },
+	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px bcb" },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },
@@ -26537,7 +26822,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 210 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26547,7 +26832,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(211);
+	var SignUp = __webpack_require__(213);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -26556,6 +26841,7 @@
 	    return React.createElement(
 	      "div",
 	      { id: "main", className: "container pt150px" },
+	      React.createElement(Header, null),
 	      React.createElement(SignUp, null)
 	    );
 	  }
@@ -26565,7 +26851,7 @@
 	//<Header />
 
 /***/ },
-/* 211 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26592,8 +26878,8 @@
 	    var first_name = $("#first_name").val();
 	    var last_name = $("#last_name").val();
 	    var password = $(event.target).find('#password').val();
-	    var data = { username: username, first_name: first_name, last_name: last_name, password: password };
-
+	    var pin = $(event.target).find('#pin').val();
+	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26602,9 +26888,15 @@
 	    });
 
 	    request.done(function (serverData) {
-	      signUp.transitionTo('teachers', { id: serverData.teacher._id });
+
+	      if (serverData.teacher) {
+	        signUp.transitionTo('teachers', { id: serverData.teacher._id });
+	      } else {
+	        signUp.transitionTo('students', { id: serverData.student._id });
+	      }
 	    });
 	    request.fail(function (serverData) {
+
 	      console.log(serverData);
 	    });
 	  },
@@ -26752,7 +27044,7 @@
 	        ),
 	        React.createElement(
 	          'form',
-	          { id: 'studentLogIn', action: '/students', method: 'post', onSubmit: this.handleSubmit },
+	          { id: 'studentLogIn', action: '/students/login', method: 'post', onSubmit: this.handleSubmit },
 	          React.createElement(
 	            'div',
 	            { className: 'form-group' },
@@ -26768,7 +27060,7 @@
 	            { className: 'form-group' },
 	            React.createElement(
 	              'label',
-	              { htmlFor: 'password' },
+	              { htmlFor: 'pin' },
 	              'Pin'
 	            ),
 	            React.createElement('input', { type: 'text', className: 'form-control', name: 'pin', id: 'pin', placeholder: '1234' })
@@ -26776,7 +27068,7 @@
 	          React.createElement(
 	            'button',
 	            { type: 'submit', className: 'btn btn-default' },
-	            'Submit'
+	            'Log In'
 	          )
 	        )
 	      );

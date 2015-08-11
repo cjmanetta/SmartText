@@ -1,10 +1,17 @@
 var mongoose = require('mongoose');
 
-var questionSchema = mongoose.Schema({
+var Schema = mongoose.Schema;
+
+var questionSchema = Schema({
+	_lesson_id: String,
   prompt: String,
   green_start: String,
   green_end: String,
   blue_answer: String
+  answers: [{
+    	type: Schema.Types.ObjectId,
+    	ref: 'Answer'
+  }]
 })
 
 var Question = mongoose.model('Question', questionSchema);

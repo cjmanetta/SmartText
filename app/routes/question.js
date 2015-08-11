@@ -6,6 +6,7 @@ var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
 var Question = require('../models/question').Question
+var Lesson = require('../models/lesson').Lesson
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -19,7 +20,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-	Question.find({}, function(err, questions){
+	Question.find({_student_id: req.params.student_id}, function(err, questions){
 		if (err){
 			return console.error(err);
 		} else {
@@ -36,30 +37,52 @@ router.route('/')
 })
 
 .post(function(req, res){
-	var prompt = req.body.prompt
-	var green_answer = req.body.green_answer
-	var blue_answer = req.body.blue_answer
+	var lesson_id = req.params.lesson_id;
+	var prompt = req.body.prompt;
+	var green_answer = req.body.green_answer;
+	var blue_answer = req.body.blue_answer;
+	var answers = []
 
-	Question.create({
+	var question = new Question({
+		_lesson_id: lesson_id,
 		prompt: prompt,
 		green_answer: green_answer,
-		blue_answer: blue_answer
-		}, function(err, question){
-			if (err) {
-				return console.error(err);
-			} else {
-				console.log('post created: ' + question)
-				res.format({
-					'text/html': function(){
-		  			res.redirect('/questions')
-					},
-					'application/json': function(){
-						res.send({question: question})
-					}
-				})
-			}
+		blue_answer: blue_answer,
+		answer: answer
 	})
+	
+  Lesson.findOne({_id: req.params.lesson_id}, function(err, lesson){
+    if (err){
+      return console.error(err);
+    } else {
+      lesson.questions.push(question)
+      console.log(question)
+
+      lesson.save(function(err, lesson){
+        if (err){
+          return console.error(err);
+        } else {
+          question.save(function(err, question){
+            if (err){
+              return console.error(err)
+            } else {
+              res.format({
+                'text/html': function(){
+                  res.redirect('/teachers/'+req.params.id+'/lessons'+req.params.lesson_id+'/questions')
+                },
+                'application/json': function(){
+                  res.send({question: question})
+                }
+              })
+            }
+          })
+        }
+      })
+    }
+  })
 })
+
+
 
 router.get('/new', function(req, res){
 	res.format({
@@ -69,7 +92,7 @@ router.get('/new', function(req, res){
 	})
 })
 
-router.get('/:id/edit', function(req, res){
+router.get('/:question_id/edit', function(req, res){
 	Question.findById(req.params.id, function(err, question){
 		if (err){
 			return console.error(err);
@@ -86,9 +109,9 @@ router.get('/:id/edit', function(req, res){
 	})
 })
 
-router.route('/:id')
+router.route('/:question_id')
 .get(function(req, res){
-	Question.findById(req.params.id, function(err, question){
+	Question.findById(req.params.question_id, function(err, question){
 		if (err){
 			return console.error(err);
 		} else {
@@ -103,11 +126,13 @@ router.route('/:id')
 		}
 	})
 })
+
 .put(function(req, res){
-	Question.findById(req.params.id, function(err, question){
+	Question.findById(req.params.question_id, function(err, question){
 		if (err) {
 			return console.error(err)
 		} else {
+			question._lesson_id = req.params.lesson_id
 			question.prompt = req.body.prompt;
 			question.green_start = req.body.green_start;
 			question.green_end = req.body.green_end;
@@ -116,7 +141,7 @@ router.route('/:id')
 				console.log('edited: ' + question);
 				res.format({
 					'text/html': function(){
-						res.redirect('/questions')
+						res.redirect('/teachers/'+req.params.id+'/lessons'+req.params.lesson_id+'/questions')
 					},
 					'application/json': function(){
 						res.send({question: question})
@@ -126,20 +151,28 @@ router.route('/:id')
 		}
 	})
 })
+
 .delete(function(req, res){
-	Question.remove({_id: req.params.id}, function(err, question){
+	Question.remove({_id: req.params.question_id}, function(err, question){
 		if (err) {
 			return console.error(err)
 		} else {
-			console.log('deleted: ' + question)
-			res.format({
-				'text/html': function(){
-					res.redirect('/questions')
-				},
-				'application/json': function(){
-					res.sendStatus(200)
-				}
-			})
+
+			Lesson.findOne({_id: req.params.lesson_id}, function(err, lesson){
+				lesson.questions.pop({_id: req.params.question_id})
+
+				lesson.save(function(err, lesson){
+					console.log('deleted: ' + question)
+					res.format({
+						'text/html': function(){
+							res.redirect('/teachers/'+req.params.id+'/lessons'+req.params.lesson_id+'/questions')
+						},
+						'application/json': function(){
+							res.send({question: 'deleted'})
+						}
+					})
+				})
+			})			
 		}
 	})
 })
