@@ -25581,8 +25581,8 @@
 
 	var React = __webpack_require__(1);
 
-	var LessonSelect = __webpack_require__(204); // Duplication: Nick's code
-	var NewLesson = __webpack_require__(205); // Duplication: Adam's code
+	var LessonSelect = __webpack_require__(204);
+	var NewLesson = __webpack_require__(205);
 
 	var LessonPanel = React.createClass({
 	  displayName: "LessonPanel",
@@ -25591,11 +25591,10 @@
 
 	    return React.createElement(
 	      "div",
-	      null,
-	      "// Duplication: Nick's code",
+	      { className: "container" },
 	      React.createElement(
 	        "div",
-	        { className: "container" },
+	        { className: "select-lesson" },
 	        React.createElement(
 	          "p",
 	          null,
@@ -25603,12 +25602,19 @@
 	        ),
 	        React.createElement(LessonSelect, null)
 	      ),
-	      "// Duplication: Adam's code",
 	      React.createElement(
 	        "div",
-	        { className: "container" },
-	        "Lesson Panel",
-	        this.props.teacher.first_name,
+	        { className: "new-lesson" },
+	        React.createElement(
+	          "h3",
+	          null,
+	          "New Lesson"
+	        ),
+	        React.createElement(
+	          "p",
+	          null,
+	          this.props.teacher.first_name
+	        ),
 	        React.createElement(NewLesson, { teacher: this.props.teacher })
 	      )
 	    );
@@ -25634,16 +25640,26 @@
 	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
 	    };
 	  },
+	  handleSelection: function handleSelection(event) {
+	    console.log("HELLOW");
+	  },
 	  render: function render() {
-	    var lessons = this.state.lessons.map(function (lesson) {
+	    var index = 0;
+	    console.log(this);
+	    var self = this.state;
+
+	    var lessons = this.state.lessons.map((function (lesson) {
+	      var attributeId = "list-group-item_";
+	      attributeId += index;
+	      index += 1;
 	      return React.createElement(
 	        "li",
-	        { className: "list-group-item" },
+	        { onClick: this.handleSelection, id: attributeId, key: lesson.id, data: lesson },
 	        lesson.title,
 	        " ",
 	        lesson.date
 	      );
-	    });
+	    }).bind(this));
 
 	    return React.createElement(
 	      "div",
@@ -25661,8 +25677,7 @@
 	          "span",
 	          { id: "select-result" },
 	          "none"
-	        ),
-	        "."
+	        )
 	      ),
 	      React.createElement(
 	        "ul",
@@ -25674,6 +25689,11 @@
 	});
 
 	module.exports = LessonSelect;
+
+	// $("list-group").on('click', function(){
+	//   var selection = $('select-result').val();
+	//   $('list-group-item').text(selection);
+	// });
 
 /***/ },
 /* 205 */

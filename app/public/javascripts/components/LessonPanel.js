@@ -1,21 +1,20 @@
 var React = require("react");
 
-var LessonSelect = require("./LessonSelect"); // Duplication: Nick's code
-var NewLesson = require("./NewLesson"); // Duplication: Adam's code
+var LessonSelect = require("./LessonSelect");
+var NewLesson = require("./NewLesson");
 
 var LessonPanel = React.createClass({
   render: function(){
 
     return (
-      <div>
-        // Duplication: Nick's code
-        <div className="container">
+      <div className="container">
+        <div className="select-lesson">
           <p>{ this.props.teacher.first_name }</p>
           <LessonSelect />
         </div>
-        // Duplication: Adam's code
-        <div className="container">Lesson Panel
-        {this.props.teacher.first_name}
+        <div className="new-lesson">
+          <h3>New Lesson</h3>
+          <p>{this.props.teacher.first_name}</p>
         <NewLesson teacher={this.props.teacher}/>
         </div>
       </div>
