@@ -47,7 +47,7 @@ var KlassBox = React.createClass({
           <button onClick={this.deleteClick}>Delete</button>
         </div>
         <div className="panel-body">
-          <form action={path} method="put" onSubmit={this.handleSubmit}>
+          <form id="klassEdit" action={path} method="put" onSubmit={this.handleSubmit}>
             <input id="name"
                    type="text"
                    name="name"

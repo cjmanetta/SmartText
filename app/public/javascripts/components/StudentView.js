@@ -10,6 +10,7 @@ var StudentView = React.createClass({
     return {
       lesson: {text:"", author: "", title: ""},
       user: {first_name: "Aaron", last_name: "J", username: "Janet", id: '1'},
+      teacher: {},
       highlightOn: false,
       prompt: ''
     }

@@ -8,7 +8,7 @@ var SignUp = React.createClass({
   ],
   getInitialState: function() {
     return {
-      authBox: 'Teachers'
+      authBox: 'Students'
     };
   },
   handleSubmit: function(event){
