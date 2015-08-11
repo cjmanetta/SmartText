@@ -39,43 +39,26 @@ router.route('/')
 .post(function(req, res){
 	var lesson_id = req.params.lesson_id;
 	var prompt = req.body.prompt;
-	var green_answer = req.body.green_answer;
+	var green_start = req.body.green_start;
+	var green_end = req.body.green_end;
 	var blue_answer = req.body.blue_answer;
-	var answers = []
 
 	var question = new Question({
 		_lesson_id: lesson_id,
 		prompt: prompt,
-		green_answer: green_answer,
-		blue_answer: blue_answer,
-		answer: answer
+		green_start: green_start,
+		green_end: green_end,
 	})
-	
-  Lesson.findOne({_id: req.params.lesson_id}, function(err, lesson){
+  question.save(function(err, question){
     if (err){
-      return console.error(err);
+      return console.error(err)
     } else {
-      lesson.questions.push(question)
-      console.log(question)
-
-      lesson.save(function(err, lesson){
-        if (err){
-          return console.error(err);
-        } else {
-          question.save(function(err, question){
-            if (err){
-              return console.error(err)
-            } else {
-              res.format({
-                'text/html': function(){
-                  res.redirect('/teachers/'+req.params.id+'/lessons'+req.params.lesson_id+'/questions')
-                },
-                'application/json': function(){
-                  res.send({question: question})
-                }
-              })
-            }
-          })
+      res.format({
+       'text/html': function(){
+          res.redirect('/teachers/'+req.params.id+'/lessons'+req.params.lesson_id+'/questions')
+        },
+        'application/json': function(){
+          res.send({question: question})
         }
       })
     }
@@ -172,7 +155,7 @@ router.route('/:question_id')
 						}
 					})
 				})
-			})			
+			})
 		}
 	})
 })

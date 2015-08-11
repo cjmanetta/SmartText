@@ -9,7 +9,6 @@ var LessonBox = React.createClass({
     };
   },
   editClick: function(){
-    debugger
     this.setState({
       display: "edit"
     });
@@ -18,6 +17,8 @@ var LessonBox = React.createClass({
     this.props.delete(this.props.lesson._id);
   },
   render: function() {
+    debugger
+
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
           <div className="panel-heading">

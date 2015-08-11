@@ -141,6 +141,7 @@ var LessonPanel = React.createClass({
 
   },
   handleSelectedText: function(selection) {
+    debugger
     var lessonPanel = this;
     var green_start = selection.anchorOffset;
     var green_end = selection.focusOffset;

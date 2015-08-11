@@ -25721,6 +25721,7 @@
 	    });
 	  },
 	  handleSelectedText: function handleSelectedText(selection) {
+	    debugger;
 	    var lessonPanel = this;
 	    var green_start = selection.anchorOffset;
 	    var green_end = selection.focusOffset;
