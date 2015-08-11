@@ -61,7 +61,6 @@ io.on('connection', function(socket){
   	io.emit('finish');
   });
   socket.on('addStudent', function(data){
-    console.log('addStudent: '+ data.user)
     io.emit('addStudent', data);
   })
   socket.on('studentClear', function(data){

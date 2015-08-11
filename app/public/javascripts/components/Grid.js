@@ -10,7 +10,6 @@ var StudentTile = require('./StudentTile');
 var socket = io();
 // var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
-
 var Grid = React.createClass({
   getInitialState: function(){
     return {
@@ -18,7 +17,6 @@ var Grid = React.createClass({
       user: {first_name: "TEACHER", last_name: "A", username: "hello", id: '123'},
       prompt: 'Please look at the text and highlight the best example of a character showing caring.',
       students: [],
-      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2'}],
       clickable: true,
       tileBig: false
     }
@@ -87,7 +85,6 @@ var Grid = React.createClass({
     });
   },
   render: function() {
-    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
 
     var lesson = this.state.lesson
     var that = this
