@@ -25164,7 +25164,6 @@
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
 	var socket = io();
-	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -25188,7 +25187,7 @@
 	  componentDidMount: function componentDidMount() {
 	    // this.state.lesson.on('change', this.lessonChanged)
 
-	    this.getStudent();
+	    // this.getStudent();
 
 	    var that = this;
 	    socket.on('viewPrompt', function (data) {
@@ -25210,6 +25209,40 @@
 	      question: data,
 	      highlightOn: true
 	    });
+	  },
+	  handleClear: function handleClear() {
+	    socket.emit('studentClear', { id: this.state.student.id });
+	    this.forceUpdate();
+	    this.setState({
+	      selections: []
+	    });
+	  },
+	  handleSubmit: function handleSubmit() {
+	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
+	      this.setState({
+	        highlightOn: false
+	      });
+	    }
+	  },
+	  handleSelect: function handleSelect(selection) {
+	    // var socket = io('/teacher')
+
+	    if (this.state.highlightOn) {
+	      // var correctColor = this.compareSelection(selection);
+	      var correctColor = 'blue';
+	      var selectedRange = selection.getRangeAt(0);
+	      this.state.selections.push(selectedRange);
+	      this.forceUpdate();
+
+	      var highlightedText = $('#content').html();
+
+	      socket.emit('select', {
+	        student: this.state.student,
+	        selection: highlightedText,
+	        color: correctColor,
+	        id: this.state.student.id
+	      });
+	    }
 	  },
 	  getStudent: function getStudent() {
 	    var path = "/students/login/" + this.props.params.id;
@@ -25330,35 +25363,6 @@
 	      console.log('Failed to find the question');
 	      console.log(serverData);
 	    });
-	  },
-	  handleClear: function handleClear() {
-	    socket.emit('studentClear', { id: this.state.user.id });
-	  },
-	  handleSubmit: function handleSubmit() {
-	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
-	      this.setState({
-	        highlightOn: false
-	      });
-	    }
-	  },
-	  handleSelect: function handleSelect(selection) {
-	    // var socket = io('/teacher')
-	    if (this.state.highlightOn) {
-	      // var correctColor = this.compareSelection(selection);
-	      var correctColor = 'blue';
-	      var selectedRange = selection.getRangeAt(0);
-	      this.state.selections.push(selectedRange);
-	      this.forceUpdate();
-
-	      var highlightedText = $('#content').html();
-
-	      socket.emit('select', {
-	        student: this.state.student,
-	        selection: highlightedText,
-	        color: correctColor,
-	        id: this.state.student.id
-	      });
-	    }
 	  },
 	  // compareSelection: function(selection){
 	  //   var student_start = selection.anchorOffset;
@@ -25509,8 +25513,10 @@
 	  },
 	  handleMouseUp: function handleMouseUp() {
 	    var selection = window.getSelection();
+
 	    if (selection.isCollapsed === false) {
 	      this.props.onSelect(selection);
+	      this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	    }
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25518,6 +25524,9 @@
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentDidUpdate: function componentDidUpdate() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
 	  getBeginning: function getBeginning(selections) {
 	    var originalContent = this.props.article.content;
@@ -25539,7 +25548,6 @@
 	    var selections = this.props.selections;
 
 	    if (selections.length === 0) {
-
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
 	        'div',
@@ -27148,7 +27156,6 @@
 	//Sockets
 	var StudentTile = __webpack_require__(213);
 	var socket = io();
-	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",

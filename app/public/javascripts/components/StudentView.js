@@ -2,8 +2,6 @@ var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
 var socket = io();
-// var socket = io.connect('/https://smartext.herokuapp.com/#/');
-
 
 var StudentView = React.createClass({
   getInitialState: function(){
@@ -25,7 +23,7 @@ var StudentView = React.createClass({
   componentDidMount: function(){
     // this.state.lesson.on('change', this.lessonChanged)
 
-    this.getStudent();
+    // this.getStudent();
 
     var that = this;
     socket.on('viewPrompt', function(data){
@@ -47,6 +45,40 @@ var StudentView = React.createClass({
       question: data,
       highlightOn: true
     })
+  },
+  handleClear: function(){
+    socket.emit('studentClear', {id: this.state.student.id})
+    this.forceUpdate();
+    this.setState({
+      selections: []
+    })
+  },
+  handleSubmit: function(){
+    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
+      this.setState({
+        highlightOn: false
+      });
+    }
+  },
+  handleSelect: function(selection){
+    // var socket = io('/teacher')
+
+    if (this.state.highlightOn){
+      // var correctColor = this.compareSelection(selection);
+      var correctColor = 'blue'
+      var selectedRange = selection.getRangeAt(0);
+      this.state.selections.push(selectedRange);
+      this.forceUpdate();
+
+      var highlightedText = $('#content').html()
+
+      socket.emit('select', {
+        student: this.state.student,
+        selection: highlightedText,
+        color: correctColor,
+        id: this.state.student.id
+      })
+    }
   },
   getStudent: function(){
     var path = "/students/login/" + this.props.params.id
@@ -167,35 +199,6 @@ var StudentView = React.createClass({
       console.log('Failed to find the question');
       console.log( serverData);
     });
-  },
-  handleClear: function(){
-    socket.emit('studentClear', {id: this.state.user.id})
-  },
-  handleSubmit: function(){
-    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
-      this.setState({
-        highlightOn: false
-      });
-    }
-  },
-  handleSelect: function(selection){
-    // var socket = io('/teacher')
-    if (this.state.highlightOn){
-      // var correctColor = this.compareSelection(selection);
-      var correctColor = 'blue'
-      var selectedRange = selection.getRangeAt(0);
-      this.state.selections.push(selectedRange);
-      this.forceUpdate();
-
-      var highlightedText = $('#content').html()
-
-      socket.emit('select', {
-        student: this.state.student,
-        selection: highlightedText,
-        color: correctColor,
-        id: this.state.student.id
-      })
-    }
   },
   // compareSelection: function(selection){
   //   var student_start = selection.anchorOffset;
