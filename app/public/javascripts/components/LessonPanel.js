@@ -7,7 +7,7 @@ var LessonPanel = React.createClass({
   render: function(){
 
     return (
-      <div>
+      <div id="lessonPanel">
         // Duplication: Nick's code
         <div className="container">
           <p>{ this.props.teacher.first_name }</p>
