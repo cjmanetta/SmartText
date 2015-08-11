@@ -95,6 +95,10 @@ body {
   font-size: 8px;
 }
 
+.fs10px{
+  font-size: 10px;
+}
+
 .highlight{
   background-color: yellow;
 }
@@ -119,4 +123,8 @@ body {
 
 .bcb{
   border: 5px solid black;
+}
+
+.w250px{
+  width: 250px;
 }

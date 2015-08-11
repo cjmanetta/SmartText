@@ -6,11 +6,9 @@ mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var bodyParser = require('body-parser');
 
 var methodOverride = require('method-override');
+
 var Student = require('../models/student').Student
 var Klass = require('../models/klass').Klass
-
-// var socket = io.connect('http://localhost:8080');
-
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -34,6 +32,7 @@ router.route('/')
       if (err){
         return console.error(err);
       } else if ( klass.pin === req.body.pin){
+
         res.format({
           'text/html': function(){
             res.render('./teachers/show', {student: student})
