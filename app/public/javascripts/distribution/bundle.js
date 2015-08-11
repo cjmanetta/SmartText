@@ -25179,7 +25179,8 @@
 	      article: {},
 	      highlightOn: false,
 	      activeLesson: {},
-	      question: { prompt: "none" }
+	      question: { prompt: "none" },
+	      selection: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25188,12 +25189,13 @@
 	    socket.on('viewPrompt', function (data) {
 	      that.updatePrompt(data);
 	    });
-	    socket.on('finish', function () {
+	    socket.on('finish', (function () {
 	      alert('Your teacher has ended the session.');
-	      that.setState({
+	      this.saveAnswer();
+	      this.setState({
 	        highlightOn: false
 	      });
-	    });
+	    }).bind(this));
 	    socket.emit('addStudent', { user: this.state.user });
 	  },
 	  updatePrompt: function updatePrompt(data) {
@@ -25285,7 +25287,6 @@
 	  },
 	  getArticle: function getArticle(article_id) {
 	    var path = "/articles/" + article_id;
-	    debugger;
 	    var request = $.ajax({
 	      url: path,
 	      method: 'get',
@@ -25406,6 +25407,46 @@
 	    }
 
 	    return color;
+	  },
+	  saveAnswer: function saveAnswer() {
+	    if (this.state.selection.length !== 0) {
+	      var start = selection.anchorOffset;
+	      var end = selection.focusOffset;
+	      var color = this.compareSelection(this.state.selection[0]);
+	      if (color == "green") {
+	        var correct = 2;
+	      } else if (color === "blue") {
+	        var correct = 1;
+	      } else {
+	        var correct = 0;
+	      }
+	    } else {
+	      var start = 0;
+	      var end = 0;
+	      var correct = 0;
+	    }
+	    var _question_id = this.state.question._id;
+	    var _student_id = this.state.student._id;
+
+	    var data = { start: start, end: end, correct: correct, _question_id: _question_id, _student_id: _student_id };
+	    var path = "/answers";
+	    var request = $.ajax({
+	      url: path,
+	      method: 'post',
+	      data: data,
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        answer: serverData.answer
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to post the answer');
+	      console.log(serverData);
+	    });
 	  },
 	  render: function render() {
 	    return React.createElement(
@@ -25565,7 +25606,8 @@
 	      teacher: { _id: 0 },
 	      activeLesson: null,
 	      article: {},
-	      question: { prompt: "none" }
+	      question: { prompt: "none" },
+	      answers: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25647,6 +25689,7 @@
 	    });
 
 	    request.done((function (serverData) {
+	      this.getAnswers(serverData.question._id);
 	      this.setState({
 	        question: serverData.question
 	      });
@@ -25654,6 +25697,25 @@
 
 	    request.fail(function (serverData) {
 	      console.log('Failed to find the question');
+	      console.log(serverData);
+	    });
+	  },
+	  getAnswers: function getAnswers(question_id) {
+	    var path = "/answers/questions/" + question_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        answers: serverData.answers
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find answers');
 	      console.log(serverData);
 	    });
 	  },
@@ -25692,7 +25754,8 @@
 	        activeLesson: this.state.activeLesson,
 	        activate: this.setActiveLesson,
 	        article: this.state.article,
-	        question: this.state.question })
+	        question: this.state.question,
+	        answers: this.state.aswers })
 	    );
 	  }
 	});
@@ -27100,7 +27163,6 @@
 	      'Review Panel'
 	    );
 	  }
-
 	});
 
 	module.exports = ReviewPanel;

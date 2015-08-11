@@ -19,87 +19,43 @@ router.use(methodOverride(function(req, res){
 }))
 
 router.route('/')
-.get(function(req, res) {
-  Answer.find({_student_id: req.params.student_id}, function(err, answers){
-    if (err){
-      return console.error(err);
-    } else {
-      res.format({
-        'text/html': function(){
-          res.render('./answers/index', {id: req.params.id, klass_id: req.params.klass_id, student_id: req.params.student_id, answers: answers })
-        },
-        'application/json': function(){
-          res.send({answers: answers})
-        }
-      })
-    }
-  });
-})
-
 .post(function(req, res){
-  var text_snippet = req.body.text_snippet;
-  var student_id = req.params.student_id;
-  // We will need to go and get the associated question and put it in the body before submitting
-  // This is necessary because answer is not nested in the same path so the associated question is not available through params.
+  var start = req.body.start;
+  var stop = req.body.stop;
+  var student_id = req.body.student_id;
   var question_id = req.body.question_id;
+  var correct = req.body.correct;
 
   var answer = new Answer({
     _student_id: student_id,
-    text_snippet: text_snippet
+    start: start,
+    stop: stop,
+    _question_id: question_id,
+    correct: correct
   });
-  // MAKE SURE TO ALSO ADD THE ANSWER TO THE QUESTION TABLE HERE
-  Student.findOne({_id: req.params.student_id}, function(err, student){
-      if (err) {
-        return console.error(err);
-      } else {
-        student.answers.push(answer)
 
-        console.log(student)
-        
-        student.save(function(err, student){
-          if (err){
-            return console.error(err)
-          } else {
-            answer.save(function(err, answer){
-              if (err){
-                return console.error(err)
-              } else {
-                res.format({
-                  'text/html': function(){
-                    res.redirect('/teachers/'+req.params.id+'/klasses/'+req.params.klass_id+'/students/'+req.params.student_id+'/answers')
-                  },
-                  'application/json': function(){
-                    res.send({answer: answer})
-                  }
-                })
-              }
-            })
-          }
-        })
-      }
-  })
-})
-
-
-router.get('/new', function(req, res){
-  res.format({
-    'text/html': function(){
-      res.render('./answers/new', {id: req.params.id, klass_id: req.params.klass_id, student_id: req.params.student_id})
+  answer.save(function(err, answer){
+    if (err){
+      return console.error(err)
+    } else {
+      console.log("Answer that was posted:" + answer);
+      res.send({answer: answer})
     }
-  })
+  });
 })
 
-router.get('/:student_id/edit', function(req, res){
-  Answer.findById(req.params.id, function(err, answer){
+router.route('questions/:question_id')
+.get(function(req, res){
+  Answer.find({_question_id: req.params.question_id}, function(err, answers){
     if (err){
       return console.error(err);
     } else {
       res.format({
         'text/html': function(){
-          res.render('./answers/edit', {answer: answer})
+          res.render('./answers/index', {answers: answers})
         },
         'application/json': function(){
-          res.send({answer: answer})
+          res.send({answers: answers})
         }
       })
     }
@@ -185,7 +141,35 @@ module.exports = router
 
 
 
+// Student.findOne({_id: req.params.student_id}, function(err, student){
+//       if (err) {
+//         return console.error(err);
+//       } else {
+//         student.answers.push(answer)
 
+//         console.log(student)
+
+//         student.save(function(err, student){
+//           if (err){
+//             return console.error(err)
+//           } else {
+//             answer.save(function(err, answer){
+//               if (err){
+//                 return console.error(err)
+//               } else {
+//                 res.format({
+//                   'text/html': function(){
+//                     res.redirect('/teachers/'+req.params.id+'/klasses/'+req.params.klass_id+'/students/'+req.params.student_id+'/answers')
+//                   },
+//                   'application/json': function(){
+//                     res.send({answer: answer})
+//                   }
+//                 })
+//               }
+//             })
+//           }
+//         })
+//       }
 
 
 

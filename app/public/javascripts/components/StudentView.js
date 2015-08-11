@@ -15,6 +15,7 @@ var StudentView = React.createClass({
       highlightOn: false,
       activeLesson: {},
       question: {prompt: "none"},
+      selection: [],
     }
   },
   componentDidMount: function(){
@@ -25,10 +26,11 @@ var StudentView = React.createClass({
     })
     socket.on('finish', function(){
       alert('Your teacher has ended the session.')
-      that.setState({
+      this.saveAnswer();
+      this.setState({
         highlightOn: false
       });
-    })
+    }.bind(this));
     socket.emit('addStudent', {user: this.state.user})
   },
   updatePrompt: function(data){
@@ -120,7 +122,6 @@ var StudentView = React.createClass({
   },
   getArticle: function(article_id){
     var path = "/articles/" + article_id
-    debugger
     var request = $.ajax({
       url: path,
       method: 'get',
@@ -243,6 +244,47 @@ var StudentView = React.createClass({
     }
 
     return color;
+  },
+  saveAnswer: function(){
+    if(this.state.selection.length !== 0){
+      var start = selection.anchorOffset;
+      var end = selection.focusOffset;
+      var color = this.compareSelection(this.state.selection[0]);
+      if(color == "green"){
+        var correct = 2;
+      } else if(color === "blue"){
+        var correct = 1;
+      } else {
+        var correct = 0;
+      }
+    } else {
+      var start = 0;
+      var end = 0;
+      var correct = 0;
+    }
+    var _question_id = this.state.question._id;
+    var _student_id = this.state.student._id;
+
+    var data = {start: start, end: end, correct: correct, _question_id: _question_id, _student_id: _student_id};
+    var path = "/answers"
+    var request = $.ajax({
+      url: path,
+      method: 'post',
+      data: data,
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        answer: serverData.answer
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to post the answer');
+      console.log( serverData);
+    });
+
   },
   render: function() {
     return (

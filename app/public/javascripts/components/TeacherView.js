@@ -12,6 +12,7 @@ var TeacherView = React.createClass({
       activeLesson: null,
       article: {},
       question: {prompt: "none"},
+      answers: [],
     }
   },
   componentDidMount: function() {
@@ -97,6 +98,7 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
+      this.getAnswers(serverData.question._id)
       this.setState({
         question: serverData.question
       })
@@ -105,6 +107,25 @@ var TeacherView = React.createClass({
     request.fail(function(serverData){
       console.log('Failed to find the question');
       console.log( serverData);
+    });
+  },
+  getAnswers: function(question_id){
+    var path = "/answers/questions/" + question_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        answers: serverData.answers
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find answers');
+      console.log(serverData);
     });
   },
   setActiveLesson: function(lesson_id){
@@ -140,7 +161,8 @@ var TeacherView = React.createClass({
                       activeLesson={this.state.activeLesson}
                       activate={this.setActiveLesson}
                       article={this.state.article}
-                      question={this.state.question} />
+                      question={this.state.question}
+                      answers={this.state.aswers} />
       </div>
     );
   },
