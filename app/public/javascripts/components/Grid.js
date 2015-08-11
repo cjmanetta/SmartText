@@ -7,7 +7,8 @@ var RightBar = require('./RightBar');
 
 //Sockets
 var StudentTile = require('./StudentTile');
-var socket = io.connect('/');
+// var socket = io.connect('/localhost://8080');
+var socket = io.connect('/https://smartext.herokuapp.com/');
 
 var Grid = React.createClass({
   getInitialState: function(){
