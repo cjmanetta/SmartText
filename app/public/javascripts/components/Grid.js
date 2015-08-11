@@ -40,7 +40,6 @@ var Grid = React.createClass({
     $('#'+data.id).find('div').css("border-color", 'black')
   },
   updateStudentTile: function(data){
-    console.log('inside update')
     var textFromStudent = data.selection;
     var borderColor = data.color;
     $('#'+data.id).find('#content').html(textFromStudent)
@@ -60,7 +59,7 @@ var Grid = React.createClass({
   },
   addStudent: function(data){
    var students =  this.state.students;
-   students.push(data.user)
+   students.push(data.student)
    console.log('students array: '+ students)
    this.setState({
       students: students
@@ -76,9 +75,11 @@ var Grid = React.createClass({
                       lesson_id: this.props.activeLesson._id
                     });
   },
+  disableStudents: function(){
+    socket.emit('finish')
+  },
   render: function() {
 
-    var lesson = this.state.lesson
     var that = this
     var students = this.state.students.map(function(student){
       return (
@@ -95,7 +96,7 @@ var Grid = React.createClass({
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
           {students}
-        <RightBar prompt={this.props.question.prompt} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
+        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
       </div>
     );
   },

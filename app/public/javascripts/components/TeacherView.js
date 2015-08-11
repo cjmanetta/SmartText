@@ -110,7 +110,7 @@ var TeacherView = React.createClass({
     });
   },
   getAnswers: function(question_id){
-    var path = "/answers/questions/" + question_id
+    var path = "/answers/question/" + question_id
     var request = $.ajax({
       url: path,
       method: 'get',
@@ -152,6 +152,7 @@ var TeacherView = React.createClass({
     });
   },
   render: function() {
+
     return (
       <div className="container pt150px">
         <Header teacher={this.state.teacher}/>

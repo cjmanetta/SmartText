@@ -25173,22 +25173,23 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      student: {},
+	      student: { first_name: "", last_name: "", username: "", id: '' },
 	      teacher: {},
 	      klass: {},
-	      article: {},
+	      article: { content: "", author: "", title: "" },
 	      highlightOn: false,
 	      activeLesson: {},
-	      question: { prompt: "none" },
-	      selection: []
+	      selections: [],
+	      question: { prompt: "", green_start: null, green_end: null }
 	    };
 	  },
+
 	  componentDidMount: function componentDidMount() {
 	    this.getStudent();
-	    var that = this;
-	    socket.on('viewPrompt', function (data) {
+
+	    socket.on('viewPrompt', (function (data) {
 	      that.updatePrompt(data);
-	    });
+	    }).bind(this));
 	    socket.on('finish', (function () {
 	      alert('Your teacher has ended the session.');
 	      this.saveAnswer();
@@ -25196,11 +25197,11 @@
 	        highlightOn: false
 	      });
 	    }).bind(this));
-	    socket.emit('addStudent', { user: this.state.user });
+	    socket.emit('addStudent', { student: this.state.student });
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data,
+	      question: data,
 	      highlightOn: true
 	    });
 	  },
@@ -25324,8 +25325,6 @@
 	    });
 	  },
 	  handleClear: function handleClear() {
-	    // $('.highlight').removeClass('highlight')
-	    $('#maintext').find('#content').html(this.state.lesson.text);
 	    socket.emit('studentClear', { id: this.state.user.id });
 	  },
 	  handleSubmit: function handleSubmit() {
@@ -25338,30 +25337,19 @@
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
-	      //pass off the selection object to compare using the algorithym
-	      var correctColor = this.compareSelection(selection);
+	      // var correctColor = this.compareSelection(selection);
+	      var correctColor = 'blue';
 	      var selectedRange = selection.getRangeAt(0);
-	      var selectedText = selectedRange.extractContents();
-
-	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-
-	      selectedRange.insertNode(highlightSpan[0]);
+	      this.state.selections.push(selectedRange);
+	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
 
-	      //can remove the console.log once it is tested over
-	      //the socket
-	      console.log({
-	        user: this.state.user,
-	        selection: highlightedText,
-	        color: correctColor
-	      });
-
 	      socket.emit('select', {
-	        user: this.state.user,
+	        student: this.state.student,
 	        selection: highlightedText,
 	        color: correctColor,
-	        id: this.state.user.id
+	        id: this.state.student.id
 	      });
 	    }
 	  },
@@ -25409,10 +25397,10 @@
 	    return color;
 	  },
 	  saveAnswer: function saveAnswer() {
-	    if (this.state.selection.length !== 0) {
-	      var start = selection.anchorOffset;
-	      var end = selection.focusOffset;
-	      var color = this.compareSelection(this.state.selection[0]);
+	    if (this.state.selections.length !== 0) {
+	      var start = selections[0].anchorOffset;
+	      var stop = selections[0].focusOffset;
+	      var color = this.compareSelection(this.state.selections[0]);
 	      if (color == "green") {
 	        var correct = 2;
 	      } else if (color === "blue") {
@@ -25422,13 +25410,13 @@
 	      }
 	    } else {
 	      var start = 0;
-	      var end = 0;
+	      var stop = 0;
 	      var correct = 0;
 	    }
 	    var _question_id = this.state.question._id;
 	    var _student_id = this.state.student._id;
 
-	    var data = { start: start, end: end, correct: correct, _question_id: _question_id, _student_id: _student_id };
+	    var data = { start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id };
 	    var path = "/answers";
 	    var request = $.ajax({
 	      url: path,
@@ -25457,8 +25445,8 @@
 	        null,
 	        'Student View'
 	      ),
-	      React.createElement(MainText, { article: this.state.article, question: this.state.question, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { prompt: this.state.question.prompt, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
 	    );
 	  }
 	});
@@ -25484,7 +25472,7 @@
 	      React.createElement(
 	        "div",
 	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.prompt }),
+	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
 	        React.createElement(
 	          "div",
 	          { className: "button-group pa b0 r0" },
@@ -25541,41 +25529,92 @@
 /* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
 	var MainText = React.createClass({
-	  displayName: "MainText",
+	  displayName: 'MainText',
 
-	  componentDidMount: function componentDidMount() {
-	    document.addEventListener('mouseup', this.handleMouseUp);
+	  propTypes: {
+	    lesson: React.PropTypes.object.isRequired,
+	    onSelect: React.PropTypes.func.isRequired
 	  },
 	  handleMouseUp: function handleMouseUp() {
 	    var selection = window.getSelection();
 	    if (selection.isCollapsed === false) {
-	      this.props.selectText(selection);
+	      this.props.onSelect(selection);
 	    }
 	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+	  },
+	  getBeginning: function getBeginning(selections) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, selections[0].startOffset);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(selections) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(selections) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+
+	    var selections = this.props.selections;
+
+	    if (selections.length === 0) {
+
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          this.getBeginning(selections),
+	          React.createElement(
+	            'span',
+	            { className: 'highlight' },
+	            this.updateContent(selections)
+	          ),
+	          this.getEnd(selections)
+	        )
+	      );
+	    }
+
 	    return React.createElement(
-	      "div",
-	      { id: "mainText", className: "w60 p15px ml5" },
+	      'div',
+	      { id: 'mainText', className: 'w60 p15px ml5' },
 	      React.createElement(
-	        "h3",
-	        { id: "title" },
+	        'h3',
+	        { id: 'title' },
 	        this.props.article.title
 	      ),
 	      React.createElement(
-	        "p",
-	        { id: "author" },
+	        'p',
+	        { id: 'author' },
 	        this.props.article.author
 	      ),
-	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        this.props.article.content
-	      )
+	      paragraph
 	    );
 	  }
 	});
@@ -25701,7 +25740,7 @@
 	    });
 	  },
 	  getAnswers: function getAnswers(question_id) {
-	    var path = "/answers/questions/" + question_id;
+	    var path = "/answers/question/" + question_id;
 	    var request = $.ajax({
 	      url: path,
 	      method: 'get',
@@ -25739,6 +25778,7 @@
 	    });
 	  },
 	  render: function render() {
+
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px" },
@@ -27217,7 +27257,6 @@
 	    $('#' + data.id).find('div').css("border-color", 'black');
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
-	    console.log('inside update');
 	    var textFromStudent = data.selection;
 	    var borderColor = data.color;
 	    $('#' + data.id).find('#content').html(textFromStudent);
@@ -27237,7 +27276,7 @@
 	  },
 	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(data.user);
+	    students.push(data.student);
 	    console.log('students array: ' + students);
 	    this.setState({
 	      students: students
@@ -27253,9 +27292,11 @@
 	      lesson_id: this.props.activeLesson._id
 	    });
 	  },
+	  disableStudents: function disableStudents() {
+	    socket.emit('finish');
+	  },
 	  render: function render() {
 
-	    var lesson = this.state.lesson;
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
@@ -27279,7 +27320,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { prompt: this.props.question.prompt, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
 	});

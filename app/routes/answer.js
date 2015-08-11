@@ -22,8 +22,8 @@ router.route('/')
 .post(function(req, res){
   var start = req.body.start;
   var stop = req.body.stop;
-  var student_id = req.body.student_id;
-  var question_id = req.body.question_id;
+  var student_id = req.body._student_id;
+  var question_id = req.body._question_id;
   var correct = req.body.correct;
 
   var answer = new Answer({
@@ -44,9 +44,13 @@ router.route('/')
   });
 })
 
-router.route('questions/:question_id')
+router.route('/question/:question_id')
 .get(function(req, res){
+  console.log('got to get answers by question_id');
+  console.log(req.params);
+
   Answer.find({_question_id: req.params.question_id}, function(err, answers){
+    console.log(answers);
     if (err){
       return console.error(err);
     } else {
@@ -59,7 +63,7 @@ router.route('questions/:question_id')
         }
       })
     }
-  })
+  });
 })
 
 router.route('/:answer_id')

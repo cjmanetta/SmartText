@@ -8,22 +8,23 @@ var socket = io();
 var StudentView = React.createClass({
   getInitialState: function(){
     return {
-      student: {},
+      student: {first_name: "", last_name: "", username: "", id: ''},
       teacher: {},
       klass: {},
-      article: {},
+      article: {content: "", author: "", title: ""},
       highlightOn: false,
       activeLesson: {},
-      question: {prompt: "none"},
-      selection: [],
+      selections: [],
+      question: {prompt: "", green_start: null, green_end: null},
     }
   },
+
   componentDidMount: function(){
     this.getStudent();
-    var that = this;
+
     socket.on('viewPrompt', function(data){
       that.updatePrompt(data)
-    })
+    }.bind(this))
     socket.on('finish', function(){
       alert('Your teacher has ended the session.')
       this.saveAnswer();
@@ -31,11 +32,11 @@ var StudentView = React.createClass({
         highlightOn: false
       });
     }.bind(this));
-    socket.emit('addStudent', {user: this.state.user})
+    socket.emit('addStudent', {student: this.state.student})
   },
   updatePrompt: function(data){
     this.setState({
-      prompt: data,
+      question: data,
       highlightOn: true
     })
   },
@@ -159,8 +160,6 @@ var StudentView = React.createClass({
     });
   },
   handleClear: function(){
-    // $('.highlight').removeClass('highlight')
-    $('#maintext').find('#content').html(this.state.lesson.text)
     socket.emit('studentClear', {id: this.state.user.id})
   },
   handleSubmit: function(){
@@ -173,31 +172,19 @@ var StudentView = React.createClass({
   handleSelect: function(selection){
     // var socket = io('/teacher')
     if (this.state.highlightOn){
-      //pass off the selection object to compare using the algorithym
-      var correctColor = this.compareSelection(selection);
+      // var correctColor = this.compareSelection(selection);
+      var correctColor = 'blue'
       var selectedRange = selection.getRangeAt(0);
-      var selectedText = selectedRange.extractContents()
-
-      var highlightSpan = $("<span class='highlight'>" +
-                          selectedText.textContent + "</span>");
-
-      selectedRange.insertNode(highlightSpan[0]);
+      this.state.selections.push(selectedRange);
+      this.forceUpdate();
 
       var highlightedText = $('#content').html()
 
-      //can remove the console.log once it is tested over
-      //the socket
-      console.log({
-        user: this.state.user,
-        selection: highlightedText,
-        color: correctColor
-      });
-
       socket.emit('select', {
-        user: this.state.user,
+        student: this.state.student,
         selection: highlightedText,
         color: correctColor,
-        id: this.state.user.id
+        id: this.state.student.id
       })
     }
   },
@@ -246,10 +233,10 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
-    if(this.state.selection.length !== 0){
-      var start = selection.anchorOffset;
-      var end = selection.focusOffset;
-      var color = this.compareSelection(this.state.selection[0]);
+    if(this.state.selections.length !== 0){
+      var start = selections[0].anchorOffset;
+      var stop = selections[0].focusOffset;
+      var color = this.compareSelection(this.state.selections[0]);
       if(color == "green"){
         var correct = 2;
       } else if(color === "blue"){
@@ -259,13 +246,13 @@ var StudentView = React.createClass({
       }
     } else {
       var start = 0;
-      var end = 0;
+      var stop = 0;
       var correct = 0;
     }
     var _question_id = this.state.question._id;
     var _student_id = this.state.student._id;
 
-    var data = {start: start, end: end, correct: correct, _question_id: _question_id, _student_id: _student_id};
+    var data = {start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id};
     var path = "/answers"
     var request = $.ajax({
       url: path,
@@ -290,8 +277,8 @@ var StudentView = React.createClass({
     return (
       <div className="container">
         <h1>Student View</h1>
-        <MainText article={this.state.article} question={this.state.question} selectText={this.handleSelect}/>
-        <RightBar prompt={this.state.question.prompt} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
+        <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
+        <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
       </div>
     );
   },
