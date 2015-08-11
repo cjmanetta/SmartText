@@ -26309,7 +26309,6 @@
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
 	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
 	      students: [],
-	      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2'}],
 	      clickable: true,
 	      tileBig: false
 	    };
@@ -26378,7 +26377,6 @@
 	    });
 	  },
 	  render: function render() {
-	    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
 
 	    var lesson = this.state.lesson;
 	    var that = this;
@@ -26388,7 +26386,7 @@
 	        null,
 	        React.createElement(
 	          "li",
-	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          { id: student.id, className: "w20", onClick: that.handleTileClick },
 	          React.createElement(StudentTile, { student: student, article: that.state.article })
 	        )
 	      );

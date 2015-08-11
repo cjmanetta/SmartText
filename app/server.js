@@ -52,6 +52,8 @@ console.log('Listening on http://' + port)
 
 io.on('connection', function(socket){
   socket.on('select', function(data){
+    console.log('inside select')
+    console.log('id: '+data.id)
     io.emit('select', data);
   });
   socket.on('viewPrompt', function(data){
@@ -64,7 +66,6 @@ io.on('connection', function(socket){
     io.emit('addStudent', data);
   })
   socket.on('studentClear', function(data){
-    console.log(data)
     io.emit('studentClear', data);
   })
 })

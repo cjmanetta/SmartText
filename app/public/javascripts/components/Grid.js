@@ -91,7 +91,7 @@ var Grid = React.createClass({
     var students = this.state.students.map(function(student){
       return (
         <div  >
-          <li id={student._id} className="w20" onClick={that.handleTileClick}>
+          <li id={student.id} className="w20" onClick={that.handleTileClick}>
             <StudentTile student={student} article={that.state.article}/>
           </li>
         </div>
