@@ -112,13 +112,13 @@ getInitialState: function() {
     return (
       <div>
         <h7>New Student</h7>
-        <form action={path} method="post" onSubmit={this.handleSubmit}>
+        <form id="newStudent" action={path} method="post" onSubmit={this.handleSubmit}>
           <input id="username" type="text" name="username" placeholder="sammysosa" />
           <input id="first_name" type="text" name="first_name" placeholder="Sammy" />
           <input id="last_initial" type="text" name="last_initial" placeholder="S." />
           <input type="submit" value="Create Student" />
         </form>
-        <div>
+        <div id="studentsList">
           {students}
         </div>
       </div>

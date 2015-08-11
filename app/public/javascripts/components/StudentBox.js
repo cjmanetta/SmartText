@@ -44,11 +44,11 @@ var StudentBox = React.createClass({
           <p>First Name: {this.props.student.first_name}</p>
           <p>Last Initial: {this.props.student.last_initial}</p>
           <button onClick={this.deleteClick}>Delete</button>
-          <form action={path} method="put" onSubmit={this.handleSubmit}>
+          <form id="studentEdit" action={path} method="put" onSubmit={this.handleSubmit}>
             <input id="username" type="text" name="username" placeholder={this.props.student.username} />
             <input id="first_name" type="text" name="first_name" placeholder={this.props.student.first_name} />
             <input id="last_initial" type="text" name="last_initial" placeholder={this.props.student.last_initial} />
-            <input type="submit" value="Create Student" />
+            <input type="submit" value="Update Student" />
           </form>
         </li>
     }

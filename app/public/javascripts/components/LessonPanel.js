@@ -275,7 +275,7 @@ var LessonPanel = React.createClass({
       </div>
     }
     return (
-      <div className="container">
+      <div id="lessonPanel" className="container">
         <div className="row">
           {lessonPills}
         </div>

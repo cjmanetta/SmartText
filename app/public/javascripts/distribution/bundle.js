@@ -25512,7 +25512,6 @@
 	  displayName: "Header",
 
 	  mixins: [Router.Navigation, Router.State],
-
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25533,12 +25532,17 @@
 	        React.createElement(
 	          Link,
 	          { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "student panel"
+	          "Students Panel"
 	        ),
 	        React.createElement(
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "lesson panel"
+	          "Lessons Panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "home", className: "btn btn-default navbar-btn" },
+	          "Log Out"
 	        ),
 	        React.createElement(
 	          Link,
@@ -25947,7 +25951,7 @@
 	    }
 	    return React.createElement(
 	      "div",
-	      { className: "container" },
+	      { id: "lessonPanel", className: "container" },
 	      React.createElement(
 	        "div",
 	        { className: "row" },
@@ -26397,7 +26401,7 @@
 	    var klasses = this.state.klasses.map((function (klass) {
 	      return React.createElement(
 	        "div",
-	        { key: klass._id },
+	        { className: "klassBox", key: klass._id },
 	        React.createElement(KlassBox, { klass: klass,
 	          "delete": this.handleDeleteKlass,
 	          teacher: this.props.teacher,
@@ -26407,7 +26411,7 @@
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
 	    return React.createElement(
 	      "div",
-	      null,
+	      { id: "studentPanel" },
 	      React.createElement(
 	        "h5",
 	        null,
@@ -26420,7 +26424,7 @@
 	      ),
 	      React.createElement(
 	        "form",
-	        { action: path, method: "post", onSubmit: this.handleSubmit },
+	        { id: "newKlass", action: path, method: "post", onSubmit: this.handleSubmit },
 	        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "5C - Second Period" }),
 	        React.createElement("input", { id: "grade", type: "text", name: "grade", placeholder: "5" }),
 	        React.createElement("input", { id: "pin", type: "text", name: "pin", placeholder: "1234" }),
@@ -26548,7 +26552,7 @@
 	          { className: 'panel-body' },
 	          React.createElement(
 	            'form',
-	            { action: path, method: 'put', onSubmit: this.handleSubmit },
+	            { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
 	            React.createElement('input', { id: 'name',
 	              type: 'text',
 	              name: 'name',
@@ -26696,7 +26700,7 @@
 	      ),
 	      React.createElement(
 	        'form',
-	        { action: path, method: 'post', onSubmit: this.handleSubmit },
+	        { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
 	        React.createElement('input', { id: 'username', type: 'text', name: 'username', placeholder: 'sammysosa' }),
 	        React.createElement('input', { id: 'first_name', type: 'text', name: 'first_name', placeholder: 'Sammy' }),
 	        React.createElement('input', { id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'S.' }),
@@ -26704,7 +26708,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { id: 'studentsList' },
 	        students
 	      )
 	    );
@@ -26808,11 +26812,11 @@
 	        ),
 	        React.createElement(
 	          "form",
-	          { action: path, method: "put", onSubmit: this.handleSubmit },
+	          { id: "studentEdit", action: path, method: "put", onSubmit: this.handleSubmit },
 	          React.createElement("input", { id: "username", type: "text", name: "username", placeholder: this.props.student.username }),
 	          React.createElement("input", { id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name }),
 	          React.createElement("input", { id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial }),
-	          React.createElement("input", { type: "submit", value: "Create Student" })
+	          React.createElement("input", { type: "submit", value: "Update Student" })
 	        )
 	      );
 	    }
@@ -27020,7 +27024,7 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      authBox: 'Teachers'
+	      authBox: 'Students'
 	    };
 	  },
 	  handleSubmit: function handleSubmit(event) {
