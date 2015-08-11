@@ -35,7 +35,8 @@ var StudentView = React.createClass({
     })
   },
   handleClear: function(){
-    $('.highlight').removeClass('highlight')
+    // $('.highlight').removeClass('highlight')
+    $('#MainText').find('#content').html(this.state.lesson.text)
     socket.emit('studentClear', {id: this.state.user.id})
   },
   handleSubmit: function(){
