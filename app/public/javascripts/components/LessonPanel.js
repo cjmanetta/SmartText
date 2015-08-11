@@ -69,11 +69,14 @@ var LessonPanel = React.createClass({
       dataType: "json",
       success: function(serverData) {
         var newLessons = lessonPanel.state.lessons.concat(serverData.lesson)
-        debugger
         lessonPanel.setState({
-          lessons: newLessons
+          lessons: newLessons,
+          article: null,
+          textBox: null,
+          answer: null,
+          question: null,
+          answered: false
         });
-
       },
       error: function(serverData) {
         console.log(serverData);
@@ -154,6 +157,24 @@ var LessonPanel = React.createClass({
       console.log(serverData);
     });
   },
+  handleDeleteLesson: function(lesson_id){
+    var action = '/teachers/' + this.props.teacher._id +"/lessons/" + lesson_id;
+    var method = 'delete';
+    var request = $.ajax({
+      url:      action,
+      method:   method,
+      dataType: "json"
+    });
+
+    request.done(function(serverData){
+      this.getLessonsList();
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('there was an error deleting the class')
+      console.log(serverData);
+    });
+  },
   render: function(){
 
     if (this.state.article && this.state.answer) {
@@ -200,7 +221,7 @@ var LessonPanel = React.createClass({
     var lessons = this.state.lessons.map(
       function(lesson){
         return(
-        <LessonBox lesson={lesson} teacher={this.props.teacher }/>
+        <LessonBox lesson={lesson} teacher={this.props.teacher } delete={this.handleDeleteLesson} />
         )
       }.bind(this)
     );

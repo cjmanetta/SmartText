@@ -128,7 +128,7 @@ router.route('/:id')
           res.redirect('/lessons')
         },
         'application/json': function(){
-          res.sendStatus(200)
+          res.send({status: 200})
         }
       })
     }

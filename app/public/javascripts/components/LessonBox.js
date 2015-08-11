@@ -14,6 +14,9 @@ var LessonBox = React.createClass({
       display: "edit"
     });
   },
+  deleteClick: function(){
+    this.props.delete(this.props.lesson._id);
+  },
   render: function() {
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
@@ -22,7 +25,7 @@ var LessonBox = React.createClass({
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
               <button type="button" className="btn btn-default" onClick={this.editClick}>Edit</button>
-              <button type="button" className="btn btn-default">Delete</button>
+              <button type="button" className="btn btn-default" onClick={this.deleteClick}>Delete</button>
           </div>
         </div>
       </div>

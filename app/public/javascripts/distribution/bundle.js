@@ -25649,9 +25649,13 @@
 	      dataType: "json",
 	      success: function success(serverData) {
 	        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson);
-	        debugger;
 	        lessonPanel.setState({
-	          lessons: newLessons
+	          lessons: newLessons,
+	          article: null,
+	          textBox: null,
+	          answer: null,
+	          question: null,
+	          answered: false
 	        });
 	      },
 	      error: function error(serverData) {
@@ -25725,6 +25729,24 @@
 	      });
 	    }).fail(function (serverData) {
 	      console.log('You have failed to answer the quesiton');
+	      console.log(serverData);
+	    });
+	  },
+	  handleDeleteLesson: function handleDeleteLesson(lesson_id) {
+	    var action = '/teachers/' + this.props.teacher._id + "/lessons/" + lesson_id;
+	    var method = 'delete';
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      this.getLessonsList();
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error deleting the class');
 	      console.log(serverData);
 	    });
 	  },
@@ -25814,7 +25836,7 @@
 	    }
 
 	    var lessons = this.state.lessons.map((function (lesson) {
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
+	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher, "delete": this.handleDeleteLesson });
 	    }).bind(this));
 
 	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
@@ -25893,6 +25915,9 @@
 	      display: "edit"
 	    });
 	  },
+	  deleteClick: function deleteClick() {
+	    this.props['delete'](this.props.lesson._id);
+	  },
 	  render: function render() {
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
@@ -25921,7 +25946,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default' },
+	              { type: 'button', className: 'btn btn-default', onClick: this.deleteClick },
 	              'Delete'
 	            )
 	          )
