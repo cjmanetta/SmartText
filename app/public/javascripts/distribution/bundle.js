@@ -25171,17 +25171,25 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      student: {},
+	      student: { first_name: "Aaron", last_name: "J", username: "Janet", id: '1' },
 	      teacher: {},
 	      klass: {},
-	      article: {},
+	      article: { content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" },
 	      highlightOn: false,
 	      activeLesson: {},
-	      question: { prompt: "none" }
+	      question: { prompt: "", green_start: null, green_end: null },
+	      // lesson: new Lession(),
+	      selections: []
 	    };
 	  },
+	  // lessonChanged:function(){
+	  //   this.forceUpdate();
+	  // },
 	  componentDidMount: function componentDidMount() {
+	    // this.state.lesson.on('change', this.lessonChanged)
+
 	    this.getStudent();
+
 	    var that = this;
 	    socket.on('viewPrompt', function (data) {
 	      that.updatePrompt(data);
@@ -25192,11 +25200,14 @@
 	        highlightOn: false
 	      });
 	    });
-	    socket.emit('addStudent', { user: this.state.user });
+	    socket.emit('addStudent', { student: this.state.student });
 	  },
+	  // componentWillUnmount: function() {
+	  //   this.state.lesson.off('change', this.lessonChanged)
+	  // },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data,
+	      question: data,
 	      highlightOn: true
 	    });
 	  },
@@ -25321,8 +25332,6 @@
 	    });
 	  },
 	  handleClear: function handleClear() {
-	    // $('.highlight').removeClass('highlight')
-	    $('#maintext').find('#content').html(this.state.lesson.text);
 	    socket.emit('studentClear', { id: this.state.user.id });
 	  },
 	  handleSubmit: function handleSubmit() {
@@ -25335,76 +25344,65 @@
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
-	      //pass off the selection object to compare using the algorithym
-	      var correctColor = this.compareSelection(selection);
+	      // var correctColor = this.compareSelection(selection);
+	      var correctColor = 'blue';
 	      var selectedRange = selection.getRangeAt(0);
-	      var selectedText = selectedRange.extractContents();
-
-	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-
-	      selectedRange.insertNode(highlightSpan[0]);
+	      this.state.selections.push(selectedRange);
+	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
 
-	      //can remove the console.log once it is tested over
-	      //the socket
-	      console.log({
-	        user: this.state.user,
-	        selection: highlightedText,
-	        color: correctColor
-	      });
-
 	      socket.emit('select', {
-	        user: this.state.user,
+	        student: this.state.student,
 	        selection: highlightedText,
 	        color: correctColor,
-	        id: this.state.user.id
+	        id: this.state.student.id
 	      });
 	    }
 	  },
-	  compareSelection: function compareSelection(selection) {
-	    var student_start = selection.anchorOffset;
-	    var student_end = selection.focusOffset;
-	    var correct_start = this.state.lesson.correct.start;
-	    var correct_end = this.state.lesson.correct.end;
+	  // compareSelection: function(selection){
+	  //   var student_start = selection.anchorOffset;
+	  //   var student_end = selection.focusOffset;
+	  //   var correct_start = this.state.lesson.correct.start;
+	  //   var correct_end = this.state.lesson.correct.end;
 
-	    //adjust start/end regardless of which way they highlight
-	    if (student_start > student_end) {
-	      student_start = selection.focusOffset;
-	      student_end = selection.anchorOffset;
-	    }
-	    if (correct_start > correct_end) {
-	      correct_start = this.state.lesson.correct.end;
-	      correct_end = this.state.lesson.correct.start;
-	    }
+	  //   //adjust start/end regardless of which way they highlight
+	  //   if(student_start > student_end){
+	  //     student_start = selection.focusOffset;
+	  //     student_end = selection.anchorOffset;
+	  //   }
+	  //   if(correct_start > correct_end){
+	  //     correct_start = this.state.lesson.correct.end;
+	  //     correct_end = this.state.lesson.correct.start;
+	  //   }
 
-	    var correct_length = correct_end - correct_start;
-	    var variance = Math.round(correct_length / 6);
-	    var correct_start_range_beginning = correct_start - variance;
-	    var correct_start_range_end = correct_start + variance;
-	    var correct_end_range_beginning = correct_end - variance;
-	    var correct_end_range_end = correct_end + variance;
+	  //   var correct_length = correct_end - correct_start;
+	  //   var variance = Math.round(correct_length / 6);
+	  //   var correct_start_range_beginning = correct_start - variance;
+	  //   var correct_start_range_end = correct_start + variance;
+	  //   var correct_end_range_beginning = correct_end - variance;
+	  //   var correct_end_range_end = correct_end + variance;
 
-	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
-	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = '#76EE00';
-	      } else {
-	        var color = 'blue';
-	      }
-	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	      var color = 'blue';
-	    } else if (student_start > correct_start && student_start < correct_end) {
-	      var color = 'blue';
-	    } else if (student_end > correct_start && student_end < correct_end) {
-	      var color = 'blue';
-	    } else if (student_start < correct_start && student_end > correct_end) {
-	      var color = 'blue';
-	    } else {
-	      var color = 'red';
-	    }
+	  //   if(student_start > correct_start_range_beginning && student_start < correct_start_range_end){
+	  //     if(student_end > correct_end_range_beginning && student_end < correct_end_range_end){
+	  //       var color = '#76EE00'
+	  //     } else {
+	  //       var color = 'blue'
+	  //     }
+	  //   } else if(student_end > correct_end_range_beginning && student_end < correct_end_range_end){
+	  //     var color = 'blue'
+	  //   } else if(student_start > correct_start && student_start < correct_end){
+	  //     var color = 'blue'
+	  //   } else if(student_end > correct_start && student_end < correct_end){
+	  //     var color = 'blue'
+	  //   } else if(student_start < correct_start && student_end > correct_end){
+	  //     var color = 'blue'
+	  //   } else {
+	  //     var color = 'red'
+	  //   }
 
-	    return color;
-	  },
+	  //   return color;
+	  // },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -25414,8 +25412,8 @@
 	        null,
 	        'Student View'
 	      ),
-	      React.createElement(MainText, { article: this.state.article, question: this.state.question, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { prompt: this.state.question.prompt, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
 	    );
 	  }
 	});
@@ -25441,7 +25439,7 @@
 	      React.createElement(
 	        "div",
 	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.prompt }),
+	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
 	        React.createElement(
 	          "div",
 	          { className: "button-group pa b0 r0" },
@@ -25498,41 +25496,92 @@
 /* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
 	var MainText = React.createClass({
-	  displayName: "MainText",
+	  displayName: 'MainText',
 
-	  componentDidMount: function componentDidMount() {
-	    document.addEventListener('mouseup', this.handleMouseUp);
+	  propTypes: {
+	    lesson: React.PropTypes.object.isRequired,
+	    onSelect: React.PropTypes.func.isRequired
 	  },
 	  handleMouseUp: function handleMouseUp() {
 	    var selection = window.getSelection();
 	    if (selection.isCollapsed === false) {
-	      this.props.selectText(selection);
+	      this.props.onSelect(selection);
 	    }
 	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+	  },
+	  getBeginning: function getBeginning(selections) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, selections[0].startOffset);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(selections) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(selections) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+
+	    var selections = this.props.selections;
+
+	    if (selections.length === 0) {
+
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          this.getBeginning(selections),
+	          React.createElement(
+	            'span',
+	            { className: 'highlight' },
+	            this.updateContent(selections)
+	          ),
+	          this.getEnd(selections)
+	        )
+	      );
+	    }
+
 	    return React.createElement(
-	      "div",
-	      { id: "mainText", className: "w60 p15px ml5" },
+	      'div',
+	      { id: 'mainText', className: 'w60 p15px ml5' },
 	      React.createElement(
-	        "h3",
-	        { id: "title" },
+	        'h3',
+	        { id: 'title' },
 	        this.props.article.title
 	      ),
 	      React.createElement(
-	        "p",
-	        { id: "author" },
+	        'p',
+	        { id: 'author' },
 	        this.props.article.author
 	      ),
-	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        this.props.article.content
-	      )
+	      paragraph
 	    );
 	  }
 	});
@@ -27106,6 +27155,8 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
+	      article: { author: "", title: "", content: "" },
+	      question: { prompt: "", green_start: null, green_end: null },
 	      students: [],
 	      clickable: true,
 	      tileBig: false
@@ -27129,7 +27180,6 @@
 	    $('#' + data.id).find('div').css("border-color", 'black');
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
-	    console.log('inside update');
 	    var textFromStudent = data.selection;
 	    var borderColor = data.color;
 	    $('#' + data.id).find('#content').html(textFromStudent);
@@ -27149,21 +27199,20 @@
 	  },
 	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(data.user);
+	    students.push(data.student);
 	    console.log('students array: ' + students);
 	    this.setState({
 	      students: students
 	    });
 	  },
 	  viewPrompt: function viewPrompt() {
-	    socket.emit('viewPrompt', this.props.question.prompt);
+	    socket.emit('viewPrompt', this.state.question);
 	  },
 	  disableStudents: function disableStudents() {
 	    socket.emit('finish');
 	  },
 	  render: function render() {
 
-	    var lesson = this.state.lesson;
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
@@ -27187,7 +27236,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { prompt: this.props.question.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { question: this.state.question, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
 	});
