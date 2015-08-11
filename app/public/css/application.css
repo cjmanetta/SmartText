@@ -85,6 +85,10 @@ body {
   font-size: 8px;
 }
 
+.fs10px{
+  font-size: 10px;
+}
+
 .highlight{
   background-color: yellow;
 }

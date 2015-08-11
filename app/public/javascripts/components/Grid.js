@@ -50,11 +50,11 @@ var Grid = React.createClass({
   handleTileClick: function(event){
 
     if (event.target.id === "clickable" && this.state.clickable){
-      $(event.target).animate({width: "900px", height: "600px"}, 1000).css("font-size", "20px")
+      $(event.target).animate({width: "900px", height: "600px", fontSize: "20px"}, 1000)
       this.state.clickable = false
       $(event.target).attr('id', "clickedBig")
     } else if (event.target.id === "clickedBig"){
-      $(event.target).animate({width: "250px", height: "350px"}, 1000).css("font-size", "8px")
+      $(event.target).animate({width: "250px", height: "350px", fontSize: "10px"}, 1000)
       $(event.target).attr('id', "clickable")
       this.state.clickable = true
     }
