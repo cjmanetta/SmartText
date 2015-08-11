@@ -7,7 +7,7 @@ var questionSchema = Schema({
   prompt: String,
   green_start: String,
   green_end: String,
-  blue_answer: String
+  blue_answer: String,
   answers: [{
     	type: Schema.Types.ObjectId,
     	ref: 'Answer'
