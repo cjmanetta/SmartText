@@ -9,6 +9,9 @@ var methodOverride = require('method-override');
 var Student = require('../models/student').Student
 var Klass = require('../models/klass').Klass
 
+// var socket = io.connect('http://localhost:8080');
+
+
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
   if (req.body && typeof req.body === 'object' && '_method' in req.body){
@@ -21,7 +24,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .post(function(req, res){
-  Student.findOne({"username" : req.body.username}, function(err, student){
+  Student.findOne({username : req.body.username}, function(err, student){
     console.log("student: " + student);
     Klass.findOne({_id: student._klass_id}, function(err, klass){
     console.log("klass: " + klass);

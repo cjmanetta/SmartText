@@ -59,6 +59,9 @@ io.on('connection', function(socket){
   socket.on('finish', function(){
   	io.emit('finish');
   });
+  socket.on('addStudent', function(data){
+    socket.emit('addStudent', data);
+  })
 })
 
 app.get("/", function(req, res){

@@ -25164,6 +25164,7 @@
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
 	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -25171,8 +25172,8 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "hello", id: '123' },
-	      highlightOn: true,
+	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '123' },
+	      highlightOn: false,
 	      prompt: ''
 	    };
 	  },
@@ -25191,7 +25192,8 @@
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data
+	      prompt: data,
+	      highlightOn: true
 	    });
 	  },
 	  handleClear: function handleClear() {
@@ -25260,18 +25262,18 @@
 
 	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = 'green';
+	        var color = '#76EE00';
 	      } else {
-	        var color = 'yellow';
+	        var color = 'blue';
 	      }
 	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start > correct_start && student_start < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_end > correct_start && student_end < correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else if (student_start < correct_start && student_end > correct_end) {
-	      var color = 'yellow';
+	      var color = 'blue';
 	    } else {
 	      var color = 'red';
 	    }
@@ -25523,8 +25525,7 @@
 	        { className: "navbar-text navbar-left" },
 	        teacher.first_name,
 	        " ",
-	        teacher.last_name,
-	        teacher._id
+	        teacher.last_name
 	      );
 	      buttons = React.createElement(
 	        "div",
@@ -25538,6 +25539,11 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "grid", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
+	          "teacher dashboard"
 	        )
 	      );
 	    } else if (student) {
@@ -25592,7 +25598,6 @@
 	    return React.createElement(
 	      "div",
 	      null,
-	      "// Duplication: Nick's code",
 	      React.createElement(
 	        "div",
 	        { className: "container" },
@@ -25603,12 +25608,10 @@
 	        ),
 	        React.createElement(LessonSelect, null)
 	      ),
-	      "// Duplication: Adam's code",
 	      React.createElement(
 	        "div",
 	        { className: "container" },
 	        "Lesson Panel",
-	        this.props.teacher.first_name,
 	        React.createElement(NewLesson, { teacher: this.props.teacher })
 	      )
 	    );
@@ -25690,7 +25693,6 @@
 	  handleSubmit: function handleSubmit(event) {
 	    var newLesson = this;
 	    event.preventDefault();
-	    debugger;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
 	    // var data = $(event.target).serialize();
@@ -25704,7 +25706,7 @@
 	      data: data,
 	      dataType: "json",
 	      success: function success(serverData) {
-	        debugger;
+
 	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
 	      },
 	      error: function error(serverData) {
@@ -25801,7 +25803,6 @@
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26091,7 +26092,6 @@
 
 	    request.done((function (serverData) {
 	      if (method === "post") {
-	        debugger;
 	        var newStudents = studentList.state.students.concat(serverData.student);
 	        studentList.setState({
 	          students: newStudents
@@ -26297,6 +26297,7 @@
 	//Sockets
 	var StudentTile = __webpack_require__(211);
 	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",
@@ -26305,23 +26306,29 @@
 	    return {
 	      lesson: { text: "", author: "", title: "" },
 	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      students: [{ username: 'ahines', first_name: 'Asha', last_initial: 'H' }, { username: 'amjacobo', first_name: 'Aaron', last_initial: 'J' }],
-	      prompt: 'Please look at the text and highlight the best example of a character showing caring.'
+	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
+	      students: []
+	      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}],
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.getLesson();
+	    var that = this;
 	    socket.on('select', this.updateStudentTile);
+	    socket.on('addStudent', function (data) {
+	      that.addStudent(data);
+	    });
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var textFromStudent = data.selection;
+	    var borderColor = data.color;
+
 	    $('#studentText').html(textFromStudent);
+	    $('#studentText').css("border-color", borderColor);
 	  },
-	  addStudent: function addStudent(studentData) {
-	    // not sure where to call addStudent yet, but
-	    // probably somewhere in the login component
+	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(studentData);
+	    students.push(data.username);
 	    this.setState({
 	      students: students
 	    });
@@ -26345,8 +26352,8 @@
 	    });
 	  },
 	  render: function render() {
-	    var teacher = { _id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234" };
-	    var student = { _id: "24", first_name: "robert", username: "robertb", password: "1234" };
+	    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+
 	    var lesson = this.state.lesson;
 
 	    var students = this.state.students.map(function (student) {
@@ -26359,7 +26366,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container" },
-	      React.createElement(Header, { teacher: teacher, student: student }),
+	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        "h3",
 	        null,
@@ -26392,7 +26399,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px" },
+	      { id: "studentText", className: "w20 p15px b1pxsb fs8px scrol h350px bcb" },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },
@@ -26479,7 +26486,6 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26488,7 +26494,7 @@
 	    });
 
 	    request.done(function (serverData) {
-	      debugger;
+
 	      if (serverData.teacher) {
 	        signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	      } else {
@@ -26496,7 +26502,7 @@
 	      }
 	    });
 	    request.fail(function (serverData) {
-	      debugger;
+
 	      console.log(serverData);
 	    });
 	  },
@@ -26668,7 +26674,7 @@
 	          React.createElement(
 	            'button',
 	            { type: 'submit', className: 'btn btn-default' },
-	            'Submit'
+	            'Log In'
 	          )
 	        )
 	      );

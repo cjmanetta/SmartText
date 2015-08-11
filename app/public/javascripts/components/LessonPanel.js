@@ -8,14 +8,11 @@ var LessonPanel = React.createClass({
 
     return (
       <div>
-        // Duplication: Nick's code
         <div className="container">
           <p>{ this.props.teacher.first_name }</p>
           <LessonSelect />
         </div>
-        // Duplication: Adam's code
         <div className="container">Lesson Panel
-        {this.props.teacher.first_name}
         <NewLesson teacher={this.props.teacher}/>
         </div>
       </div>
