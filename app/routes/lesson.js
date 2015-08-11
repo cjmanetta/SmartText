@@ -79,7 +79,6 @@ router.get('/:lesson_id/edit', function(req, res) {
 
 router.route('/:lesson_id')
 .get(function(req, res) {
-  console.log('got to get route for lesson')
   Lesson.findById(req.params.lesson_id, function(err, lesson) {
     if (err){
       return console.error(err);
