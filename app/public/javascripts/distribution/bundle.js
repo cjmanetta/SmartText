@@ -25171,15 +25171,23 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '1' },
+	      student: { first_name: "Aaron", last_name: "J", username: "Janet", id: '1' },
 	      teacher: {},
+	      klass: {},
+	      article: { content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni" },
 	      highlightOn: false,
-	      prompt: ''
+	      activeLesson: {},
+	      question: { prompt: "How are you?", green_start: 241, green_end: 284 },
+	      // lesson: new Lession(),
+	      selections: []
 	    };
 	  },
+	  // lessonChanged:function(){
+	  //   this.forceUpdate();
+	  // },
 	  componentDidMount: function componentDidMount() {
-	    this.getLesson();
+
+	    // this.state.lesson.on('change', this.lessonChanged)
 	    var that = this;
 	    socket.on('viewPrompt', function (data) {
 	      that.updatePrompt(data);
@@ -25192,15 +25200,16 @@
 	    });
 	    socket.emit('addStudent', { user: this.state.user });
 	  },
+	  // componentWillUnmount: function() {
+	  //   this.state.lesson.off('change', this.lessonChanged)
+	  // },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data,
+	      // question.prompt: data,
 	      highlightOn: true
 	    });
 	  },
 	  handleClear: function handleClear() {
-	    // $('.highlight').removeClass('highlight')
-	    $('#maintext').find('#content').html(this.state.lesson.text);
 	    socket.emit('studentClear', { id: this.state.user.id });
 	  },
 	  handleSubmit: function handleSubmit() {
@@ -25212,33 +25221,36 @@
 	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
-	    if (this.state.highlightOn) {
-	      //pass off the selection object to compare using the algorithym
-	      var correctColor = this.compareSelection(selection);
-	      var selectedRange = selection.getRangeAt(0);
-	      var selectedText = selectedRange.extractContents();
+	    // if (this.state.highlightOn){
+	    // var correctColor = this.compareSelection(selection);
+	    var selectedRange = selection.getRangeAt(0);
+	    this.state.selections.push(selectedRange);
+	    this.forceUpdate();
+	    debugger;
+	    // var selectedText = selectedRange.extractContents()
 
-	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
+	    // var highlightSpan = $("<span class='highlight'>" +
+	    //                     selectedText.textContent + "</span>");
 
-	      selectedRange.insertNode(highlightSpan[0]);
+	    // selectedRange.insertNode(highlightSpan[0]);
 
-	      var highlightedText = $('#content').html();
+	    // var highlightedText = $('#content').html()
 
-	      //can remove the console.log once it is tested over
-	      //the socket
-	      console.log({
-	        user: this.state.user,
-	        selection: highlightedText,
-	        color: correctColor
-	      });
+	    //can remove the console.log once it is tested over
+	    //the socket
+	    // console.log({
+	    //   user: this.state.user,
+	    //   selection: highlightedText,
+	    //   color: correctColor
+	    // });
 
-	      socket.emit('select', {
-	        user: this.state.user,
-	        selection: highlightedText,
-	        color: correctColor,
-	        id: this.state.user.id
-	      });
-	    }
+	    // socket.emit('select', {
+	    //   user: this.state.user,
+	    //   selection: highlightedText,
+	    //   color: correctColor,
+	    //   id: this.state.user.id
+	    // })
+	    // }
 	  },
 	  compareSelection: function compareSelection(selection) {
 	    var student_start = selection.anchorOffset;
@@ -25283,18 +25295,6 @@
 
 	    return color;
 	  },
-	  getLesson: function getLesson() {
-	    //here is where the api call would happen
-	    //to recieve the lesson which is active
-	    //for that class
-
-	    //stubbed for right now
-	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni", correct: { start: 241, end: 284, string: "A robinshrilled hidden in some trees nearby" } };
-
-	    this.setState({
-	      lesson: newLesson
-	    });
-	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -25304,8 +25304,8 @@
 	        null,
 	        'Student View'
 	      ),
-	      React.createElement(MainText, { lesson: this.state.lesson, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { prompt: this.state.prompt, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
 	    );
 	  }
 	});
@@ -25331,7 +25331,7 @@
 	      React.createElement(
 	        "div",
 	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.prompt }),
+	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
 	        React.createElement(
 	          "div",
 	          { className: "button-group pa b0 r0" },
@@ -25388,40 +25388,47 @@
 /* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
 	var MainText = React.createClass({
-	  displayName: "MainText",
+	  displayName: 'MainText',
 
-	  componentDidMount: function componentDidMount() {
-	    document.addEventListener('mouseup', this.handleMouseUp);
+	  propTypes: {
+	    lesson: React.PropTypes.object.isRequired,
+	    onSelect: React.PropTypes.func.isRequired
 	  },
 	  handleMouseUp: function handleMouseUp() {
 	    var selection = window.getSelection();
 	    if (selection.isCollapsed === false) {
-	      this.props.selectText(selection);
+	      this.props.onSelect(selection);
 	    }
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	  },
 	  render: function render() {
 	    return React.createElement(
-	      "div",
-	      { id: "mainText", className: "w60 p15px ml5" },
+	      'div',
+	      { id: 'mainText', className: 'w60 p15px ml5' },
 	      React.createElement(
-	        "h3",
-	        { id: "title" },
-	        this.props.lesson.title
+	        'h3',
+	        { id: 'title' },
+	        this.props.article.title
 	      ),
 	      React.createElement(
-	        "p",
-	        { id: "author" },
-	        this.props.lesson.author
+	        'p',
+	        { id: 'author' },
+	        this.props.article.author
 	      ),
 	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        this.props.lesson.text
+	        'p',
+	        { id: 'content' },
+	        this.props.article.content
 	      )
 	    );
 	  }

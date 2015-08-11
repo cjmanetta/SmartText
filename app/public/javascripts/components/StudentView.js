@@ -8,15 +8,23 @@ var socket = io();
 var StudentView = React.createClass({
   getInitialState: function(){
     return {
-      lesson: {text:"", author: "", title: ""},
-      user: {first_name: "Aaron", last_name: "J", username: "Janet", id: '1'},
+      student: {first_name: "Aaron", last_name: "J", username: "Janet", id: '1'},
       teacher: {},
+      klass: {},
+      article: {content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni"},
       highlightOn: false,
-      prompt: ''
+      activeLesson: {},
+      question: {prompt: "How are you?", green_start: 241, green_end: 284},
+      // lesson: new Lession(),
+      selections: [],
     }
   },
+  // lessonChanged:function(){
+  //   this.forceUpdate();
+  // },
   componentDidMount: function(){
-    this.getLesson();
+
+    // this.state.lesson.on('change', this.lessonChanged)
     var that = this;
     socket.on('viewPrompt', function(data){
       that.updatePrompt(data)
@@ -29,15 +37,16 @@ var StudentView = React.createClass({
     })
     socket.emit('addStudent', {user: this.state.user})
   },
+  // componentWillUnmount: function() {
+  //   this.state.lesson.off('change', this.lessonChanged)
+  // },
   updatePrompt: function(data){
     this.setState({
-      prompt: data,
+      // question.prompt: data,
       highlightOn: true
     })
   },
   handleClear: function(){
-    // $('.highlight').removeClass('highlight')
-    $('#maintext').find('#content').html(this.state.lesson.text)
     socket.emit('studentClear', {id: this.state.user.id})
   },
   handleSubmit: function(){
@@ -49,34 +58,36 @@ var StudentView = React.createClass({
   },
   handleSelect: function(selection){
     // var socket = io('/teacher')
-    if (this.state.highlightOn){
-      //pass off the selection object to compare using the algorithym
-      var correctColor = this.compareSelection(selection);
+    // if (this.state.highlightOn){
+      // var correctColor = this.compareSelection(selection);
       var selectedRange = selection.getRangeAt(0);
-      var selectedText = selectedRange.extractContents()
+      this.state.selections.push(selectedRange);
+      this.forceUpdate();
+      debugger
+      // var selectedText = selectedRange.extractContents()
 
-      var highlightSpan = $("<span class='highlight'>" +
-                          selectedText.textContent + "</span>");
+      // var highlightSpan = $("<span class='highlight'>" +
+      //                     selectedText.textContent + "</span>");
 
-      selectedRange.insertNode(highlightSpan[0]);
+      // selectedRange.insertNode(highlightSpan[0]);
 
-      var highlightedText = $('#content').html()
+      // var highlightedText = $('#content').html()
 
       //can remove the console.log once it is tested over
       //the socket
-      console.log({
-        user: this.state.user,
-        selection: highlightedText,
-        color: correctColor
-      });
+      // console.log({
+      //   user: this.state.user,
+      //   selection: highlightedText,
+      //   color: correctColor
+      // });
 
-      socket.emit('select', {
-        user: this.state.user,
-        selection: highlightedText,
-        color: correctColor,
-        id: this.state.user.id
-      })
-    }
+      // socket.emit('select', {
+      //   user: this.state.user,
+      //   selection: highlightedText,
+      //   color: correctColor,
+      //   id: this.state.user.id
+      // })
+    // }
   },
   compareSelection: function(selection){
     var student_start = selection.anchorOffset;
@@ -122,24 +133,12 @@ var StudentView = React.createClass({
 
     return color;
   },
-  getLesson: function(){
-    //here is where the api call would happen
-    //to recieve the lesson which is active
-    //for that class
-
-    //stubbed for right now
-    var newLesson = {text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni", correct: { start: 241, end: 284, string: "A robinshrilled hidden in some trees nearby"}}
-
-    this.setState({
-      lesson: newLesson
-    });
-  },
   render: function() {
     return (
       <div className="container">
         <h1>Student View</h1>
-        <MainText lesson={this.state.lesson} selectText={this.handleSelect}/>
-        <RightBar prompt={this.state.prompt} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
+        <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
+        <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
       </div>
     );
   },

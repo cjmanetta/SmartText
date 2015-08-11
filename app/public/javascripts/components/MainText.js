@@ -1,21 +1,28 @@
 var React = require("react");
 
 var MainText = React.createClass({
-  componentDidMount: function(){
-    document.addEventListener('mouseup', this.handleMouseUp);
+  propTypes: {
+    lesson: React.PropTypes.object.isRequired,
+    onSelect: React.PropTypes.func.isRequired,
   },
   handleMouseUp: function(){
     var selection = window.getSelection()
     if (selection.isCollapsed === false) {
-      this.props.selectText(selection)
+      this.props.onSelect(selection)
     }
+  },
+  componentDidMount: function(){
+    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+  },
+  componentWillUnmount: function(){
+    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
   },
   render: function() {
     return (
       <div id="mainText" className="w60 p15px ml5">
-        <h3 id="title">{this.props.lesson.title}</h3>
-        <p id="author">{this.props.lesson.author}</p>
-        <p id="content">{this.props.lesson.text}</p>
+        <h3 id="title">{this.props.article.title}</h3>
+        <p id="author">{this.props.article.author}</p>
+        <p id="content">{this.props.article.content}</p>
       </div>
     );
   },
