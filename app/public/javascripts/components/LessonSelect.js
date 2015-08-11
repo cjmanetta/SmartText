@@ -1,8 +1,8 @@
 var React = require("react");
-//var LessonSelector = require("./LessonSelector");
+var LessonBox = require("./LessonBox");
 
 var LessonSelect = React.createClass({
-  getInitialState: function(){
+  getInitialState: function() {
     return {
     lessons: [{title: "Herman Melville biography", date: "08/09/2015"}, {title: "Walt Whitman biography", date: "08/10/2010"}]
     }
@@ -11,9 +11,9 @@ var LessonSelect = React.createClass({
     var lessons = this.state.lessons.map(
       function(lesson){
         return(
-        <li className="list-group-item">{ lesson.title } { lesson.date }</li>
+        <LessonBox lesson={lesson} teacher={this.props.teacher }/>
         )
-      }
+      }.bind(this)
     );
 
     return (
