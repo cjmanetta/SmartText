@@ -10,10 +10,12 @@ var StudentTile = require('./StudentTile');
 var socket = io();
 
 var Grid = React.createClass({
+  mixins: [
+    Router.Navigation,
+    Router.State,
+  ],
   getInitialState: function(){
     return {
-      article: {author: "", title: "", content: ""},
-      question: {prompt: "", green_start: null, green_end: null},
       students: [],
       clickable: true,
       tileBig: false
@@ -63,7 +65,14 @@ var Grid = React.createClass({
     })
   },
   viewPrompt: function(){
-    socket.emit('viewPrompt', this.state.question)
+    socket.emit('viewPrompt', this.props.question)
+  },
+  handleFinish: function(){
+    socket.emit('finish');
+    this.transitionTo('reviewPanel', {
+                      id: this.props.teacher._id,
+                      lesson_id: this.props.activeLesson._id
+                    });
   },
   disableStudents: function(){
     socket.emit('finish')
@@ -86,7 +95,7 @@ var Grid = React.createClass({
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
           {students}
-        <RightBar question={this.state.question} actionOne={this.viewPrompt} actionTwo={this.disableStudents} labelOne="view question" labelTwo="finished"/>
+        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
       </div>
     );
   },

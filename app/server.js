@@ -21,16 +21,16 @@ var student_login_routes = require('./routes/studentLogin')
 var standards_routes = require('./routes/standard')
 
 app.use('/teachers', teachers_routes)
-app.use('/teachers/:id/klasses', klasses_routes)
-app.use('/teachers/:id/klasses/:klass_id/students', students_routes)
-app.use('/students/login', student_login_routes)
-app.use('/teachers/:id/klasses/:klass_id/students/:student_id/answers', answers_routes)
-
-
-app.use('/teachers/:id/lessons/', lessons_routes)
+app.use('/answers', answers_routes)
 app.use('/articles', articles_routes)
 app.use('/questions', questions_routes)
 app.use('/standards', standards_routes)
+app.use('/teachers/:id/klasses', klasses_routes)
+app.use('/teachers/:id/lessons/', lessons_routes)
+app.use('/teachers/:id/klasses/:klass_id/students', students_routes)
+app.use('/students/login', student_login_routes)
+
+
 
 
 app.use(express.static(path.join(__dirname, 'public')));
