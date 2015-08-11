@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 var questionSchema = Schema({
 	_lesson_id: String,
   prompt: String,
-  green_answer: String,
+  green_start: String,
+  green_end: String,
   blue_answer: String,
   answers: [{
     	type: Schema.Types.ObjectId,

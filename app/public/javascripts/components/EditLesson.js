@@ -2,25 +2,23 @@ var React = require('react');
 var Router = require('react-router');
 
 
-var NewLesson = React.createClass({
-  mixins: [
-    Router.Navigation,
-    Router.State,
-  ],
-  getInitialState: function() {
+var EditLesson = React.createClass({
+  getInitialState: function(){
     return {
-      lessons: []
+      lesson:  {}
     }
+
   },
+
   handleSubmit: function(event){
-    var newLesson = this;
+    var editLesson = this;
     event.preventDefault();
     var action = $(event.target).attr('action');
-    var method = $(event.target).attr('method');
+    var method = 'put';
     // var data = $(event.target).serialize();
     var title = $("#title").val();
     var date = $("#date").val();
-    var data = {title: title, date: date, teacher_id: this.props.teacher._id}
+    var data = {title: title, date: date}
 
     $.ajax({
       url: action,
@@ -28,28 +26,24 @@ var NewLesson = React.createClass({
       data: data,
       dataType: "json",
       success: function(serverData) {
-        var newLessons = newLesson.state.lessons.concat(serverData.lesson)
-        newLesson.setState({
-          lessons: newLessons
-        });
+        EditLesson.transitionTo('lessonPanel', {id: serverData.teacher._id});
+        EditLesson.setState({title: serverData.lesson.title})
 
       },
       error: function(serverData) {
         console.log(serverData);
       }
-    });
-
-
+    })
   },
   render: function() {
-    var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
+    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le
     return (
       <div className="row">
-        <h1>New Lesson</h1>
-        <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
+        <form id="EditLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
+          <input type="hidden" name="_method" value="put" />
           <div className="form-group">
             <label htmlFor="title">Lesson Title</label>
-            <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
+            <input type="text" className="form-control" name="title" id="title" value={this.state.lesson.title} />
           </div>
           <div className="form-group">
             <label htmlFor="date">Lesson Date</label>
@@ -63,4 +57,4 @@ var NewLesson = React.createClass({
   }
 })
 
-module.exports = NewLesson;
+module.exports = EditLesson;

@@ -1,12 +1,8 @@
-
-var $ = require('jquery');
-require('jquery-ui');
-require('jquery-ui/selectable')
 var React = require("react");
-//var LessonSelector = require("./LessonSelector");
+var LessonBox = require("./LessonBox");
 
 var LessonSelect = React.createClass({
-  getInitialState: function(){
+  getInitialState: function() {
     return {
     lessons: [{title: "Herman Melville biography", date: "08/09/2015"}, {title: "Walt Whitman biography", date: "08/10/2010"}]
     }
@@ -26,7 +22,9 @@ var LessonSelect = React.createClass({
         attributeId+= index;
         index+=1;
         return(
-        <li role="presentation" onClick={this.handleSelection} id={attributeId} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{ lesson.title }</span><span className="r-date">{ lesson.date }</span></a></li>
+
+        <LessonBox lesson={lesson} teacher={this.props.teacher }/>
+
         )
       }.bind(this)
     );
@@ -46,7 +44,3 @@ var LessonSelect = React.createClass({
 
 module.exports = LessonSelect;
 
-// $("list-group").on('click', function(){
-//   var selection = $('select-result').val();
-//   $('list-group-item').text(selection);
-// });
