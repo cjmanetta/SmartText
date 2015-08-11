@@ -23,8 +23,10 @@ var StudentView = React.createClass({
   //   this.forceUpdate();
   // },
   componentDidMount: function(){
-
     // this.state.lesson.on('change', this.lessonChanged)
+
+    this.getStudent();
+
     var that = this;
     socket.on('viewPrompt', function(data){
       that.updatePrompt(data)
@@ -45,6 +47,126 @@ var StudentView = React.createClass({
       question: data,
       highlightOn: true
     })
+  },
+  getStudent: function(){
+    var path = "/students/login/" + this.props.params.id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.getKlass(serverData.student._klass_id);
+      this.setState({
+        student: serverData.student
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find logged in student');
+      console.log( serverData);
+    });
+  },
+  getKlass: function(klass_id){
+    var path = "/students/login/klasses/" + klass_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.getTeacher(serverData.klass._teacher_id);
+      this.setState({
+        klass: serverData.klass
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find students klass');
+      console.log( serverData);
+    });
+  },
+  getTeacher: function(teacher_id){
+    var path = "/teachers/" + teacher_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.getActiveLesson(serverData.teacher._id, serverData.teacher.active_lesson);
+      this.setState({
+        teacher: serverData.teacher
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the students teacher');
+      console.log( serverData);
+    });
+  },
+  getActiveLesson: function(teacher_id, lesson_id){
+    var path = "/teachers/" + teacher_id + "/lessons/" + lesson_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.getArticle(serverData.lesson.article_id);
+      this.getQuestion(serverData.lesson.question_id);
+      this.setState({
+        activeLesson: serverData.lesson
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the active lesson');
+      console.log( serverData);
+    });
+  },
+  getArticle: function(article_id){
+    var path = "/articles/" + article_id
+    debugger
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        article: serverData.article
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the article');
+      console.log( serverData);
+    });
+  },
+  getQuestion: function(question_id){
+    var path = "/questions/" + question_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        question: serverData.question
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the question');
+      console.log( serverData);
+    });
   },
   handleClear: function(){
     socket.emit('studentClear', {id: this.state.user.id})
@@ -119,6 +241,8 @@ var StudentView = React.createClass({
 
   //   return color;
   // },
+    return color;
+  },
   render: function() {
     return (
       <div className="container">
