@@ -2,7 +2,7 @@ var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
 // var socket = io.connect('/localhost://8080');
-var socket = io.connect('/https://smartext.herokuapp.com/');
+var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 
 var StudentView = React.createClass({
