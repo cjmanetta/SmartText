@@ -1,7 +1,7 @@
 var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
-var socket = io.connect('http://localhost:8080');
+var socket = io();
 // var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 
@@ -9,7 +9,7 @@ var StudentView = React.createClass({
   getInitialState: function(){
     return {
       lesson: {text:"", author: "", title: ""},
-      user: {first_name: "Aaron", last_name: "J", username: "Janet", id: '123'},
+      user: {first_name: "Aaron", last_name: "J", username: "Janet", id: '1'},
       highlightOn: false,
       prompt: ''
     }
@@ -35,6 +35,7 @@ var StudentView = React.createClass({
   },
   handleClear: function(){
     $('.highlight').removeClass('highlight')
+    socket.emit('studentClear', {id: this.state.user.id})
   },
   handleSubmit: function(){
     if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
@@ -71,7 +72,8 @@ var StudentView = React.createClass({
       socket.emit('select', {
         user: this.state.user,
         selection: highlightedText,
-        color: correctColor
+        color: correctColor,
+        id: this.state.user.id
       })
     }
   },

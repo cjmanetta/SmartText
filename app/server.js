@@ -35,6 +35,7 @@ app.use('/standards', standards_routes)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('routes', __dirname + '/routes');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs')
@@ -60,7 +61,12 @@ io.on('connection', function(socket){
   	io.emit('finish');
   });
   socket.on('addStudent', function(data){
-    socket.emit('addStudent', data);
+    console.log(data)
+    io.emit('addStudent', data);
+  })
+  socket.on('studentClear', function(data){
+    console.log(data)
+    io.emit('studentClear', data);
   })
 })
 
