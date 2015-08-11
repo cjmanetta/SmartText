@@ -55,7 +55,6 @@ getInitialState: function() {
 
     request.done(function(serverData){
       if(method === "post"){
-        debugger
         var newStudents = studentList.state.students.concat(serverData.student)
         studentList.setState({
           students: newStudents

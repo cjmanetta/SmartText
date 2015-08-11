@@ -15,11 +15,12 @@ var Header = React.createClass({
     var buttons = null
 
     if (teacher) {
-      content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}{teacher._id}</p>
+      content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
       buttons = <div>
         <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Students Panel</Link>
         <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Lessons Panel</Link>
         <Link to="home" className="btn btn-default navbar-btn">Log Out</Link>
+        <Link to="grid" params={{id: teacher._id }} className="btn btn-default navbar-btn">teacher dashboard</Link>
       </div>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>

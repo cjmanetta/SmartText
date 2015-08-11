@@ -28,9 +28,8 @@ app.use('/teachers/:id/klasses/:klass_id/students/:student_id/answers', answers_
 
 
 app.use('/teachers/:id/lessons/', lessons_routes)
-app.use('/teachers/:id/lessons/:lesson_id/questions', questions_routes)
-
 app.use('/articles', articles_routes)
+app.use('/questions', questions_routes)
 app.use('/standards', standards_routes)
 
 
@@ -59,6 +58,9 @@ io.on('connection', function(socket){
   socket.on('finish', function(){
   	io.emit('finish');
   });
+  socket.on('addStudent', function(data){
+    socket.emit('addStudent', data);
+  })
 })
 
 app.get("/", function(req, res){

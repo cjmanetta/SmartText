@@ -8,29 +8,36 @@ var RightBar = require('./RightBar');
 //Sockets
 var StudentTile = require('./StudentTile');
 var socket = io.connect('http://localhost:8080');
+// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 var Grid = React.createClass({
   getInitialState: function(){
     return {
       lesson: {text:"", author: "", title: ""},
       user: {first_name: "TEACHER", last_name: "A", username: "hello", id: '123'},
-      students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}],
-      prompt: 'Please look at the text and highlight the best example of a character showing caring.'
+      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
+      students: []
+      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J'}],
     }
   },
   componentDidMount: function(){
     this.getLesson();
+    var that = this;
     socket.on('select', this.updateStudentTile)
+    socket.on('addStudent', function(data){
+      that.addStudent(data)
+    })
   },
   updateStudentTile: function(data){
     var textFromStudent = data.selection
+    var borderColor = data.color
+
     $('#studentText').html(textFromStudent);
+    $('#studentText').css("border-color", borderColor)
   },
-  addStudent: function(studentData){
-    // not sure where to call addStudent yet, but
-    // probably somewhere in the login component
+  addStudent: function(data){
    var students =  this.state.students;
-   students.push(studentData)
+   students.push(data.username)
    this.setState({
       students: students
     })
@@ -54,8 +61,8 @@ var Grid = React.createClass({
     });
   },
   render: function() {
-    var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
-    var student = {_id: "24", first_name: "robert", username: "robertb", password: "1234"}
+    // var teacher = {_id: "22", first_name: "sally", last_name: "bates", username: "sbates", password: "1234"}
+
     var lesson = this.state.lesson
 
     var students = this.state.students.map(function(student){
@@ -66,9 +73,8 @@ var Grid = React.createClass({
       )
     })
     return (
-
       <div className="container">
-        <Header teacher={teacher} student={student} />
+        <Header teacher={this.props.teacher} />
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
         <ul>
