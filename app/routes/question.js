@@ -109,8 +109,8 @@ router.route('/:id')
 			return console.error(err)
 		} else {
 			question.prompt = req.body.prompt;
-			question.green_answer = req.body.green_answer;
-			question.blue_answer = req.body.blue_answer;
+			question.green_start = req.body.green_start;
+			question.green_end = req.body.green_end;
 
 			question.save(function(err, question){
 				console.log('edited: ' + question);

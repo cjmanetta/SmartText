@@ -15,7 +15,7 @@ var MainText = React.createClass({
       <div id="mainText" className="w60 p15px ml5">
         <h3>{this.props.lesson.title}</h3>
         <p>{this.props.lesson.author}</p>
-        <p>{this.props.lesson.text}</p>
+        <p>{this.props.lesson.content}</p>
       </div>
     );
   },

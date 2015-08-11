@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 var questionSchema = mongoose.Schema({
   prompt: String,
-  green_answer: String,
+  green_start: String,
+  green_end: String,
   blue_answer: String
 })
 

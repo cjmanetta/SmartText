@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var lessonSchema = mongoose.Schema({
 	teacher_id: Number,
 	title: String,
-	date: Date
+	date: Date,
+  question: String
 
 })
 

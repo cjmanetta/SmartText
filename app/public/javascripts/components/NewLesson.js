@@ -7,6 +7,11 @@ var NewLesson = React.createClass({
     Router.Navigation,
     Router.State,
   ],
+  getInitialState: function() {
+    return {
+      lessons: []
+    }
+  },
   handleSubmit: function(event){
     var newLesson = this;
     event.preventDefault();
@@ -23,7 +28,10 @@ var NewLesson = React.createClass({
       data: data,
       dataType: "json",
       success: function(serverData) {
-        newLesson.transitionTo('lessonPanel', {id: newLesson.props.teacher._id});
+        var newLessons = newLesson.state.lessons.concat(serverData.lesson)
+        newLesson.setState({
+          lessons: newLessons
+        });
 
       },
       error: function(serverData) {
