@@ -26,6 +26,7 @@ var StudentView = React.createClass({
         highlightOn: false
       });
     })
+    socket.emit('addStudent', {user: this.state.user})
   },
   updatePrompt: function(data){
     this.setState({

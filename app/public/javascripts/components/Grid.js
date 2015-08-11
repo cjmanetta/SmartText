@@ -17,8 +17,8 @@ var Grid = React.createClass({
       article: {author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood."},
       user: {first_name: "TEACHER", last_name: "A", username: "hello", id: '123'},
       prompt: 'Please look at the text and highlight the best example of a character showing caring.',
-      // students: []
-      students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2'}],
+      students: [],
+      // students: [{username: 'ahines', first_name: 'Asha', last_initial: 'H', _id: '1'}, {username: 'amjacobo', first_name: 'Aaron', last_initial: 'J', _id: '2'}],
       clickable: true,
       tileBig: false
     }
@@ -30,6 +30,7 @@ var Grid = React.createClass({
       that.updateStudentTile(data)
     });
     socket.on('addStudent', function(data){
+      console.log('made it into the socket')
       that.addStudent(data)
     });
     socket.on('studentClear', function(data){
@@ -61,7 +62,8 @@ var Grid = React.createClass({
   },
   addStudent: function(data){
    var students =  this.state.students;
-   students.concat(data.username)
+   students.push(data.user)
+   console.log('students array: '+ students)
    this.setState({
       students: students
     })
