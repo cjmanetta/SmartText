@@ -13,8 +13,8 @@ var socket = io();
 var Grid = React.createClass({
   getInitialState: function(){
     return {
-      article: {author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood."},
-      question: {prompt: "How are you?", green_start: 241, green_end: 284},
+      article: {author: "", title: "", content: ""},
+      question: {prompt: "", green_start: null, green_end: null},
       students: [],
       clickable: true,
       tileBig: false
