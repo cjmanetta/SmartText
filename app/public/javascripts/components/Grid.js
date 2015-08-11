@@ -8,7 +8,6 @@ var RightBar = require('./RightBar');
 //Sockets
 var StudentTile = require('./StudentTile');
 var socket = io();
-// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 var Grid = React.createClass({
   mixins: [
@@ -66,7 +65,7 @@ var Grid = React.createClass({
     })
   },
   viewPrompt: function(){
-    socket.emit('viewPrompt', this.props.question.prompt)
+    socket.emit('viewPrompt', this.props.question)
   },
   handleFinish: function(){
     socket.emit('finish');

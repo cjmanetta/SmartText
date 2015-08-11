@@ -2,8 +2,6 @@ var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
 var socket = io();
-// var socket = io.connect('/https://smartext.herokuapp.com/#/');
-
 
 var StudentView = React.createClass({
   getInitialState: function(){
@@ -159,9 +157,6 @@ var StudentView = React.createClass({
       console.log( serverData);
     });
   },
-  handleClear: function(){
-    socket.emit('studentClear', {id: this.state.user.id})
-  },
   handleSubmit: function(){
     if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
       this.setState({
@@ -169,11 +164,17 @@ var StudentView = React.createClass({
       });
     }
   },
+  handleClear: function(){
+    socket.emit('studentClear', {id: this.state.student.id})
+    this.forceUpdate();
+    this.setState({
+      selections: []
+    })
+  },
   handleSelect: function(selection){
     // var socket = io('/teacher')
     if (this.state.highlightOn){
-      // var correctColor = this.compareSelection(selection);
-      var correctColor = 'blue'
+      var correctColor = this.compareSelection(selection);
       var selectedRange = selection.getRangeAt(0);
       this.state.selections.push(selectedRange);
       this.forceUpdate();

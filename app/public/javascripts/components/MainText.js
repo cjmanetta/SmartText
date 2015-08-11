@@ -7,8 +7,10 @@ var MainText = React.createClass({
   },
   handleMouseUp: function(){
     var selection = window.getSelection()
+
     if (selection.isCollapsed === false) {
       this.props.onSelect(selection)
+      this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
     }
   },
   componentDidMount: function(){
@@ -16,6 +18,9 @@ var MainText = React.createClass({
   },
   componentWillUnmount: function(){
     this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+  },
+  componentDidUpdate: function(){
+    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
   },
   getBeginning: function(selections) {
     var originalContent = this.props.article.content
@@ -37,7 +42,6 @@ var MainText = React.createClass({
     var selections = this.props.selections
 
     if (selections.length === 0 ){
-
       var content = this.props.article.content
       var paragraph = <div><p id="content">{content}</p></div>
     } else {
