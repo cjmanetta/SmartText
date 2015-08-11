@@ -13,9 +13,9 @@ var MainText = React.createClass({
   render: function() {
     return (
       <div id="mainText" className="w60 p15px ml5">
-        <h3 id="title">{this.props.lesson.title}</h3>
-        <p id="author">{this.props.lesson.author}</p>
-        <p id="content">{this.props.lesson.text}</p>
+        <h3 id="title">{this.props.article.title}</h3>
+        <p id="author">{this.props.article.author}</p>
+        <p id="content">{this.props.article.content}</p>
       </div>
     );
   },
