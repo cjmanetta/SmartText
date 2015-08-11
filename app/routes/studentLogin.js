@@ -48,4 +48,42 @@ router.route('/')
   })
 })
 
+router.route('/:id')
+.get(function(req, res) {
+  Student.findById(req.params.id, function(err, student){
+    console.log("Logged in student: " + student);
+    if (err){
+      return console.error(err);
+    } else {
+      res.format({
+        'text/html': function(){
+          res.render('./students/show', {id: req.params.id, klass_id: req.params.klass_id, students: students })
+        },
+        'application/json': function(){
+          res.send({student: student})
+        }
+      })
+    }
+  });
+})
+
+router.route('/klasses/:klass_id')
+.get(function(req, res){
+  Klass.findOne({_id: req.params.klass_id}, function(err, klass){
+    if (err){
+      return console.error(err);
+    } else {
+      console.log('klass: ' + klass)
+      res.format({
+        'text/html': function(){
+          res.render('./klasses/show', {klass: klass})
+        },
+        'application/json': function(){
+          res.send({klass: klass})
+        }
+      })
+    }
+  })
+})
+
 module.exports = router;
