@@ -25447,7 +25447,8 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      teacher: { _id: 0 }
+	      teacher: { _id: 0 },
+	      activeLesson: null
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25462,6 +25463,7 @@
 	    });
 
 	    request.done(function (serverData) {
+	      teacherView.getActiveLesson(serverData.teacher);
 	      teacherView.setState({
 	        teacher: serverData.teacher
 	      });
@@ -25477,6 +25479,46 @@
 	      teacher: serverData.teacher
 	    });
 	  },
+	  getActiveLesson: function getActiveLesson(teacher) {
+	    var teacherView = this;
+	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
+
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      teacherView.setState({
+	        activeLesson: serverData.lesson
+	      });
+	    });
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error getting the active lesson');
+	      console.log(serverData);
+	    });
+	  },
+	  setActiveLesson: function setActiveLesson(lesson_id) {
+	    var path = "/teachers/" + this.state.teacher._id + "/lessons/" + lesson_id + "/activate";
+	    var request = $.ajax({
+	      url: path,
+	      method: "get",
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        activeLesson: serverData.lesson
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('failed to set the active lesson');
+	      console.log(serverData);
+	    });
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      "div",
@@ -25488,7 +25530,10 @@
 	        "Welcome, ",
 	        this.state.teacher.first_name
 	      ),
-	      React.createElement(RouteHandler, { teacher: this.state.teacher, update: this.handleUpdateTeacher })
+	      React.createElement(RouteHandler, { teacher: this.state.teacher,
+	        update: this.handleUpdateTeacher,
+	        activeLesson: this.state.activeLesson,
+	        activate: this.setActiveLesson })
 	    );
 	  }
 	});
@@ -25590,10 +25635,14 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
 
 	var LessonSelect = __webpack_require__(204);
 	var NewLesson = __webpack_require__(207);
-	var Router = __webpack_require__(158);
 	var LessonBox = __webpack_require__(205);
 	var MainText = __webpack_require__(200);
 
@@ -25728,7 +25777,6 @@
 	    });
 	  },
 	  handleSelectedText: function handleSelectedText(selection) {
-	    debugger;
 	    var lessonPanel = this;
 	    var green_start = selection.anchorOffset;
 	    var green_end = selection.focusOffset;
@@ -25771,6 +25819,9 @@
 	    this.setState({
 	      lessonPills: $(event.target).text()
 	    });
+	  },
+	  setActiveLesson: function setActiveLesson(lesson_id) {
+	    this.props.activate(lesson_id);
 	  },
 	  render: function render() {
 	    if (this.state.article && this.state.answer) {
@@ -25857,8 +25908,42 @@
 	    }
 
 	    var lessons = this.state.lessons.map((function (lesson) {
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher, "delete": this.handleDeleteLesson });
+	      return React.createElement(LessonBox, { lesson: lesson,
+	        teacher: this.props.teacher,
+	        "delete": this.handleDeleteLesson,
+	        activate: this.setActiveLesson });
 	    }).bind(this));
+
+	    if (this.props.activeLesson) {
+	      var activeLesson = React.createElement(
+	        "div",
+	        { className: "panel panel-default" },
+	        React.createElement(
+	          "div",
+	          { className: "panel-heading" },
+	          React.createElement(
+	            "h5",
+	            { className: "panel-title" },
+	            "Current Active Lesson:",
+	            this.props.activeLesson.title
+	          ),
+	          React.createElement(
+	            "p",
+	            null,
+	            this.props.activeLesson.date
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "panel-body" },
+	            React.createElement(
+	              Link,
+	              { to: "grid", params: { id: this.props.teacher._id }, className: "btn btn-default navbar-btn" },
+	              "Go to Lesson"
+	            )
+	          )
+	        )
+	      );
+	    }
 
 	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
 	    if (this.state.lessonPills === 'Lessons') {
@@ -25890,6 +25975,7 @@
 	        React.createElement(
 	          "div",
 	          null,
+	          activeLesson,
 	          lessons
 	        )
 	      );
@@ -26050,9 +26136,10 @@
 	  deleteClick: function deleteClick() {
 	    this.props['delete'](this.props.lesson._id);
 	  },
+	  makeActive: function makeActive() {
+	    this.props.activate(this.props.lesson._id);
+	  },
 	  render: function render() {
-	    debugger;
-
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
@@ -26073,6 +26160,11 @@
 	          React.createElement(
 	            'div',
 	            { className: 'btn-group' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default', onClick: this.makeActive },
+	              'Make Active Lesson'
+	            ),
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default', onClick: this.editClick },

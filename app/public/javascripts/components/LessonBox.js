@@ -16,15 +16,17 @@ var LessonBox = React.createClass({
   deleteClick: function(){
     this.props.delete(this.props.lesson._id);
   },
+  makeActive: function(){
+    this.props.activate(this.props.lesson._id);
+  },
   render: function() {
-    debugger
-
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
           <div className="panel-heading">
             <h5 className="panel-title">{ this.props.lesson.title }</h5>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
+              <button type="button" className="btn btn-default" onClick={this.makeActive}>Make Active Lesson</button>
               <button type="button" className="btn btn-default" onClick={this.editClick}>Edit</button>
               <button type="button" className="btn btn-default" onClick={this.deleteClick}>Delete</button>
           </div>

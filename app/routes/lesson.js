@@ -7,6 +7,7 @@ var bodyParser = require('body-parser'); //parses information from POST
 var methodOverride = require('method-override');
 
 var Lesson = require('../models/lesson').Lesson
+var Teacher = require('../models/teacher').Teacher
 
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(methodOverride(function(req, res){
@@ -70,15 +71,16 @@ router.get('/new', function(req, res) {
   res.render('./lessons/new')
 })
 
-router.get('/:id/edit', function(req, res) {
-  Lesson.findById(req.params.id, function(err, lesson) {
+router.get('/:lesson_id/edit', function(req, res) {
+  Lesson.findById(req.params.lesson_id, function(err, lesson) {
     res.render('./lessons/edit', { lesson: lesson })
   })
 })
 
-router.route('/:id')
+router.route('/:lesson_id')
 .get(function(req, res) {
-  Lesson.findById(req.params.id, function(err, lesson) {
+  console.log('got to get route for lesson')
+  Lesson.findById(req.params.lesson_id, function(err, lesson) {
     if (err){
       return console.error(err);
     } else {
@@ -128,15 +130,35 @@ router.route('/:id')
           res.redirect('/lessons')
         },
         'application/json': function(){
-          res.sendStatus(200)
+          res.send({status: 200})
         }
       })
     }
   })
 })
 
-
-
-
+router.route('/:lesson_id/activate')
+.get(function(req, res) {
+  Lesson.findById(req.params.lesson_id, function(err, lesson) {
+    if (err){
+      return console.error(err);
+    } else {
+      Teacher.findById(req.params.id, function(err, teacher){
+        teacher.active_lesson = lesson._id
+        teacher.save(function(err, teacher){
+          console.log('Active lesson for teacher is: ' + teacher);
+          res.format({
+            'text/html': function(){
+              res.redirect('/lessons')
+            },
+            'application/json': function(){
+              res.send({lesson: lesson})
+            }
+          })
+        });
+      })
+    }
+  })
+})
 
 module.exports = router

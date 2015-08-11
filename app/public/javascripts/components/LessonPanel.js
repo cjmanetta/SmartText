@@ -1,8 +1,9 @@
 var React = require("react");
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var LessonSelect = require("./LessonSelect");
 var NewLesson = require("./NewLesson");
-var Router = require('react-router');
 var LessonBox = require("./LessonBox");
 var MainText = require("./MainText");
 
@@ -20,7 +21,7 @@ var LessonPanel = React.createClass({
       answer: null,
       question: null,
       answered: false,
-      lessonPills: 'Lessons'
+      lessonPills: 'Lessons',
     }
   },
   componentDidMount: function() {
@@ -92,7 +93,6 @@ var LessonPanel = React.createClass({
   },
   handleAddArticleClick: function() {
     this.setState({textBox: "input"})
-
   },
   handleArticleSubmit: function(event) {
 
@@ -145,7 +145,6 @@ var LessonPanel = React.createClass({
 
   },
   handleSelectedText: function(selection) {
-    debugger
     var lessonPanel = this;
     var green_start = selection.anchorOffset;
     var green_end = selection.focusOffset;
@@ -188,6 +187,9 @@ var LessonPanel = React.createClass({
     this.setState({
       lessonPills: $(event.target).text()
     })
+  },
+  setActiveLesson: function(lesson_id){
+    this.props.activate(lesson_id);
   },
   render: function(){
     if (this.state.article && this.state.answer) {
@@ -234,10 +236,25 @@ var LessonPanel = React.createClass({
     var lessons = this.state.lessons.map(
       function(lesson){
         return(
-        <LessonBox lesson={lesson} teacher={this.props.teacher } delete={this.handleDeleteLesson} />
+        <LessonBox lesson={lesson}
+                   teacher={this.props.teacher }
+                   delete={this.handleDeleteLesson}
+                   activate={this.setActiveLesson} />
         )
       }.bind(this)
     );
+
+    if(this.props.activeLesson){
+      var activeLesson = <div className="panel panel-default">
+          <div className="panel-heading">
+            <h5 className="panel-title">Current Active Lesson:{ this.props.activeLesson.title }</h5>
+            <p>{ this.props.activeLesson.date }</p>
+            <div className="panel-body">
+              <Link to="grid" params={{id: this.props.teacher._id }} className="btn btn-default navbar-btn">Go to Lesson</Link>
+            </div>
+          </div>
+      </div>
+    }
 
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
     if(this.state.lessonPills === 'Lessons'){
@@ -248,6 +265,7 @@ var LessonPanel = React.createClass({
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
         </ul>
         <div>
+          {activeLesson}
           {lessons}
         </div>
       </div>
