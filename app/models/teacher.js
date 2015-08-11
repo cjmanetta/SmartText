@@ -7,6 +7,7 @@ var teacherSchema = Schema({
 	password: String,
 	first_name: String,
 	last_name: String,
+	active_lesson: String,
 	klasses: [{
 		type: Schema.Types.ObjectId,
 		ref: 'Klass'
