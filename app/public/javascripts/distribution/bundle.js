@@ -25172,7 +25172,8 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '123' },
+	      teacher: {},
+	      student: {},
 	      highlightOn: false,
 	      prompt: ''
 	    };
