@@ -19,6 +19,9 @@ var MainText = React.createClass({
   componentWillUnmount: function(){
     this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
   },
+  componentDidUpdate: function(){
+    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+  },
   getBeginning: function(selections) {
     var originalContent = this.props.article.content
     var beginningText = originalContent.slice(0,selections[0].startOffset)

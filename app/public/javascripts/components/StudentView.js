@@ -47,7 +47,11 @@ var StudentView = React.createClass({
     })
   },
   handleClear: function(){
-    socket.emit('studentClear', {id: this.state.user.id})
+    socket.emit('studentClear', {id: this.state.student.id})
+    this.forceUpdate();
+    this.setState({
+      selections: []
+    })
   },
   handleSubmit: function(){
     if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')){
@@ -58,15 +62,13 @@ var StudentView = React.createClass({
   },
   handleSelect: function(selection){
     // var socket = io('/teacher')
+
     if (this.state.highlightOn){
       // var correctColor = this.compareSelection(selection);
       var correctColor = 'blue'
       var selectedRange = selection.getRangeAt(0);
       this.state.selections.push(selectedRange);
       this.forceUpdate();
-      // this.setState({
-      //   highlightOn: false
-      // });
 
       var highlightedText = $('#content').html()
 

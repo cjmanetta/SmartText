@@ -25211,7 +25211,11 @@
 	    });
 	  },
 	  handleClear: function handleClear() {
-	    socket.emit('studentClear', { id: this.state.user.id });
+	    socket.emit('studentClear', { id: this.state.student.id });
+	    this.forceUpdate();
+	    this.setState({
+	      selections: []
+	    });
 	  },
 	  handleSubmit: function handleSubmit() {
 	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
@@ -25222,15 +25226,13 @@
 	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
+
 	    if (this.state.highlightOn) {
 	      // var correctColor = this.compareSelection(selection);
 	      var correctColor = 'blue';
 	      var selectedRange = selection.getRangeAt(0);
 	      this.state.selections.push(selectedRange);
 	      this.forceUpdate();
-	      // this.setState({
-	      //   highlightOn: false
-	      // });
 
 	      var highlightedText = $('#content').html();
 
@@ -25522,6 +25524,9 @@
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentDidUpdate: function componentDidUpdate() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
 	  getBeginning: function getBeginning(selections) {
 	    var originalContent = this.props.article.content;
@@ -27113,7 +27118,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      article: { author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood." },
+	      article: { author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knocking with hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robin shrilled hidden in some trees nearby, its chirping covered by the interrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face and arranging them behind his ears, then went on to hammer the nailinto the wood." },
 	      question: { prompt: "How are you?", green_start: 241, green_end: 284 },
 	      students: [],
 	      clickable: true,
