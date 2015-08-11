@@ -15,7 +15,8 @@ var LessonPanel = React.createClass({
       textBox: null,
       answer: null,
       question: null,
-      answered: false
+      answered: false,
+      lessonPills: 'Lessons'
     }
   },
   componentDidMount: function() {
@@ -49,7 +50,7 @@ var LessonPanel = React.createClass({
     event.preventDefault();
 
   //here is where we need to use the question and answers in state
-  //to make the lesson with all of the correct ids in it :-)'
+  //to make the lesson with all of the correct ids in it :-)
     var lessonPanel = this;
     var action = $(event.target).attr('action');
     var method = $(event.target).attr('method');
@@ -75,8 +76,10 @@ var LessonPanel = React.createClass({
           textBox: null,
           answer: null,
           question: null,
-          answered: false
+          answered: false,
+          lessonPills: 'Lessons'
         });
+
       },
       error: function(serverData) {
         console.log(serverData);
@@ -175,6 +178,12 @@ var LessonPanel = React.createClass({
       console.log(serverData);
     });
   },
+  handlePillClick: function(event){
+    event.preventDefault();
+    this.setState({
+      lessonPills: $(event.target).text()
+    })
+  },
   render: function(){
 
     if (this.state.article && this.state.answer) {
@@ -227,28 +236,44 @@ var LessonPanel = React.createClass({
     );
 
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
-
+    if(this.state.lessonPills === 'Lessons'){
+      var lessonPills =
+      <div>
+        <ul className="nav nav-pills">
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+        </ul>
+        <div>
+          {lessons}
+        </div>
+      </div>
+    } else if(this.state.lessonPills === 'New Lesson'){
+      var lessonPills =
+      <div>
+        <ul className="nav nav-pills">
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+        </ul>
+        <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="title">Lesson Title</label>
+            <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="date">Lesson Date</label>
+            <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
+          </div>
+          {submitButton}
+        </form>
+        {addButton}
+        {textBox}
+        {mainText}
+      </div>
+    }
     return (
-        <div className="container">
-          <div className="row">
-            <div>
-              {lessons}
-            </div>
-            <h1>New Lesson</h1>
-            <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="title">Lesson Title</label>
-                <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="date">Lesson Date</label>
-                <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
-              </div>
-              {submitButton}
-            </form>
-            {addButton}
-            {textBox}
-            {mainText}
+      <div className="container">
+        <div className="row">
+          {lessonPills}
         </div>
       </div>
     )

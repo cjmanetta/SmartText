@@ -25595,7 +25595,8 @@
 	      textBox: null,
 	      answer: null,
 	      question: null,
-	      answered: false
+	      answered: false,
+	      lessonPills: 'Lessons'
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25629,7 +25630,7 @@
 	    event.preventDefault();
 
 	    //here is where we need to use the question and answers in state
-	    //to make the lesson with all of the correct ids in it :-)'
+	    //to make the lesson with all of the correct ids in it :-)
 	    var lessonPanel = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
@@ -25655,7 +25656,8 @@
 	          textBox: null,
 	          answer: null,
 	          question: null,
-	          answered: false
+	          answered: false,
+	          lessonPills: 'Lessons'
 	        });
 	      },
 	      error: function error(serverData) {
@@ -25750,6 +25752,12 @@
 	      console.log(serverData);
 	    });
 	  },
+	  handlePillClick: function handlePillClick(event) {
+	    event.preventDefault();
+	    this.setState({
+	      lessonPills: $(event.target).text()
+	    });
+	  },
 	  render: function render() {
 
 	    if (this.state.article && this.state.answer) {
@@ -25840,22 +25848,63 @@
 	    }).bind(this));
 
 	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
-
-	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      React.createElement(
+	    if (this.state.lessonPills === 'Lessons') {
+	      var lessonPills = React.createElement(
 	        "div",
-	        { className: "row" },
+	        null,
+	        React.createElement(
+	          "ul",
+	          { className: "nav nav-pills" },
+	          React.createElement(
+	            "li",
+	            { role: "presentation", className: "active" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "Lessons"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Lesson"
+	            )
+	          )
+	        ),
 	        React.createElement(
 	          "div",
 	          null,
 	          lessons
-	        ),
+	        )
+	      );
+	    } else if (this.state.lessonPills === 'New Lesson') {
+	      var lessonPills = React.createElement(
+	        "div",
+	        null,
 	        React.createElement(
-	          "h1",
-	          null,
-	          "New Lesson"
+	          "ul",
+	          { className: "nav nav-pills" },
+	          React.createElement(
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "Lessons"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { role: "presentation", className: "active" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Lesson"
+	            )
+	          )
 	        ),
 	        React.createElement(
 	          "form",
@@ -25885,6 +25934,15 @@
 	        addButton,
 	        textBox,
 	        mainText
+	      );
+	    }
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(
+	        "div",
+	        { className: "row" },
+	        lessonPills
 	      )
 	    );
 	  }
