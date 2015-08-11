@@ -25628,6 +25628,8 @@
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
+	    //here is where we need to use the question and answers in state
+	    //to make the lesson with all of the correct ids in it :-)'
 	    var lessonPanel = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
@@ -25637,8 +25639,9 @@
 	    var text = $("#text").val();
 	    var question = $("#question").val();
 	    var answer = $("#answer").val();
-	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
-
+	    var article_id = this.state.article._id;
+	    var question_id = this.state.question._id;
+	    var data = { title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id };
 	    $.ajax({
 	      url: action,
 	      method: method,
@@ -25646,6 +25649,7 @@
 	      dataType: "json",
 	      success: function success(serverData) {
 	        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson);
+	        debugger;
 	        lessonPanel.setState({
 	          lessons: newLessons
 	        });
@@ -25659,8 +25663,7 @@
 	    this.setState({ textBox: "input" });
 	  },
 	  handleArticleSubmit: function handleArticleSubmit(event) {
-	    //ajax call to add the article
-	    //set this.state.articlestate on success to
+
 	    event.preventDefault();
 
 	    var lessonPanel = this;

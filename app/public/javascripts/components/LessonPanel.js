@@ -59,8 +59,9 @@ var LessonPanel = React.createClass({
     var text = $("#text").val();
     var question = $("#question").val();
     var answer = $("#answer").val();
-    var data = {title: title, date: date, teacher_id: this.props.teacher._id}
-
+    var article_id = this.state.article._id
+    var question_id = this.state.question._id
+    var data = {title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id}
     $.ajax({
       url: action,
       method: method,
@@ -68,6 +69,7 @@ var LessonPanel = React.createClass({
       dataType: "json",
       success: function(serverData) {
         var newLessons = lessonPanel.state.lessons.concat(serverData.lesson)
+        debugger
         lessonPanel.setState({
           lessons: newLessons
         });
@@ -83,8 +85,7 @@ var LessonPanel = React.createClass({
 
   },
   handleArticleSubmit: function(event) {
-   //ajax call to add the article
-  //set this.state.articlestate on success to
+
     event.preventDefault();
 
     var lessonPanel = this;

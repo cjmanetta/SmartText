@@ -38,10 +38,17 @@ router.route('/')
 .post(function(req, res){
   var title = req.body.title
   var date = req.body.date
+  var teacher_id = req.body.teacher_id
+  var article_id = req.body.article_id
+  var question_id = req.body.question_id
 
   Lesson.create({
     title: title,
-    date: date
+    date: date,
+    teacher_id: teacher_id,
+    article_id: article_id,
+    question_id: question_id
+
   }, function(err, lesson) {
     if (err) {
       console.log('error')
