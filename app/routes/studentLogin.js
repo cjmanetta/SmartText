@@ -24,7 +24,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .post(function(req, res){
-  Student.findOne({"username" : req.body.username}, function(err, student){
+  Student.findOne({username : req.body.username}, function(err, student){
     console.log("student: " + student);
     Klass.findOne({_id: student._klass_id}, function(err, klass){
     console.log("klass: " + klass);

@@ -25163,7 +25163,8 @@
 	var React = __webpack_require__(1);
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
-	var socket = io.connect('/');
+	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -25692,7 +25693,6 @@
 	  handleSubmit: function handleSubmit(event) {
 	    var newLesson = this;
 	    event.preventDefault();
-	    debugger;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
 	    // var data = $(event.target).serialize();
@@ -25706,7 +25706,7 @@
 	      data: data,
 	      dataType: "json",
 	      success: function success(serverData) {
-	        debugger;
+
 	        newLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
 	      },
 	      error: function error(serverData) {
@@ -25803,7 +25803,6 @@
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26093,7 +26092,6 @@
 
 	    request.done((function (serverData) {
 	      if (method === "post") {
-	        debugger;
 	        var newStudents = studentList.state.students.concat(serverData.student);
 	        studentList.setState({
 	          students: newStudents
@@ -26298,7 +26296,8 @@
 
 	//Sockets
 	var StudentTile = __webpack_require__(211);
-	var socket = io.connect('/');
+	var socket = io.connect('http://localhost:8080');
+	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",
@@ -26487,7 +26486,6 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
-	    debugger;
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -26496,7 +26494,7 @@
 	    });
 
 	    request.done(function (serverData) {
-	      debugger;
+
 	      if (serverData.teacher) {
 	        signUp.transitionTo('teachers', { id: serverData.teacher._id });
 	      } else {
@@ -26504,7 +26502,7 @@
 	      }
 	    });
 	    request.fail(function (serverData) {
-	      debugger;
+
 	      console.log(serverData);
 	    });
 	  },

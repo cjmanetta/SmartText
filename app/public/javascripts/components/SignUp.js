@@ -23,7 +23,6 @@ var SignUp = React.createClass({
     var password = $(event.target).find('#password').val()
     var pin = $(event.target).find('#pin').val()
     var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
-    debugger
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -32,7 +31,7 @@ var SignUp = React.createClass({
     });
 
     request.done(function(serverData){
-      debugger
+
       if(serverData.teacher){
         signUp.transitionTo('teachers', {id: serverData.teacher._id});
       } else {
@@ -40,7 +39,7 @@ var SignUp = React.createClass({
       }
     })
     request.fail(function(serverData){
-      debugger
+
       console.log(serverData);
     });
   },
