@@ -105,10 +105,9 @@ router.route('/:id')
     if (err) {
       return console.error(err)
     } else {
-      article.first_name = req.body.first_name;
-      article.last_name = req.body.last_name;
-      article.username = req.body.username;
-      article.password = req.body.password;
+      article.author = req.body.author;
+      article.title = req.body.trile;
+      article.content = req.body.content;
 
       article.save(function(err, article){
         console.log('edited: ' + article);
@@ -136,7 +135,7 @@ router.route('/:id')
           res.redirect('/articles')
         },
         'application/json': function(){
-          res.sendStatus(200)
+          res.send({article: 'deleted'})
         }
       })
     }

@@ -1,6 +1,7 @@
 var React = require("react");
 var KlassBox = require("./KlassBox");
 
+
 var StudentPanel = React.createClass({
   getInitialState: function() {
     return {
@@ -27,7 +28,7 @@ var StudentPanel = React.createClass({
     });
 
     request.fail(function(serverData){
-      console.log('there was an error getting the lessons')
+      console.log('there was an error getting the klasses')
       console.log(serverData);
     });
   },
@@ -42,6 +43,8 @@ var StudentPanel = React.createClass({
     var pin = $(event.target).find('#pin').val()
     var teacher_id = this.props.teacher._id
     var data = {name: name, grade: grade, pin: pin, teacher_id: teacher_id }
+
+    debugger
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -50,11 +53,15 @@ var StudentPanel = React.createClass({
     });
 
     request.done(function(serverData){
-      var newKlasses = studentPanel.state.klasses.concat(serverData.klass)
-      studentPanel.setState({
-        klasses: newKlasses
-      });
-    });
+      if(method === "post"){
+        var newKlasses = studentPanel.state.klasses.concat(serverData.klass)
+        studentPanel.setState({
+          klasses: newKlasses
+        });
+      } else if (method === "put"){
+        this.getKlassList();
+      }
+    }.bind(this));
 
     request.fail(function(serverData){
       console.log('there was an error creating that klass')
@@ -83,7 +90,10 @@ var StudentPanel = React.createClass({
     var klasses = this.state.klasses.map(function(klass){
       return (
         <div key={klass._id}>
-          <KlassBox klass={klass} delete={this.handleDeleteKlass} teacher={this.props.teacher }/>
+          <KlassBox klass={klass}
+                    delete={this.handleDeleteKlass}
+                    teacher={this.props.teacher}
+                    update={this.handleSubmit} />
         </div>
       )
     }.bind(this))
