@@ -57,10 +57,10 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(206);
+	var StudentPanel = __webpack_require__(208);
 	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(210);
-	var Home = __webpack_require__(212);
+	var Grid = __webpack_require__(212);
+	var Home = __webpack_require__(214);
 	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
@@ -25586,8 +25586,11 @@
 	"use strict";
 
 	var React = __webpack_require__(1);
+
+	var LessonSelect = __webpack_require__(204);
+	var NewLesson = __webpack_require__(207);
 	var Router = __webpack_require__(158);
-	var LessonBox = __webpack_require__(204);
+	var LessonBox = __webpack_require__(205);
 	var MainText = __webpack_require__(200);
 
 	var LessonPanel = React.createClass({
@@ -25766,7 +25769,6 @@
 	    });
 	  },
 	  render: function render() {
-
 	    if (this.state.article && this.state.answer) {
 	      var submitButton = React.createElement(
 	        "button",
@@ -25961,10 +25963,72 @@
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	var React = __webpack_require__(1);
+	var LessonBox = __webpack_require__(205);
+
+	var LessonSelect = React.createClass({
+	  displayName: "LessonSelect",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
+	    };
+	  },
+	  handleSelection: function handleSelection(event) {
+	    var selection = $(event.target).text();
+	    $('#select-result').text(selection);
+	  },
+	  render: function render() {
+	    var index = 0;
+	    console.log(this);
+	    var self = this;
+
+	    var lessons = this.state.lessons.map((function (lesson) {
+	      var attributeId = "list-group-item_";
+	      attributeId += index;
+	      index += 1;
+	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
+	    }).bind(this));
+
+	    return React.createElement(
+	      "div",
+	      { className: "container" },
+	      React.createElement(
+	        "p",
+	        { id: "feedback" },
+	        React.createElement(
+	          "span",
+	          null,
+	          "You have selected:"
+	        ),
+	        " ",
+	        React.createElement(
+	          "span",
+	          { id: "select-result" },
+	          "none"
+	        )
+	      ),
+	      React.createElement(
+	        "ul",
+	        { className: "nav nav-pills nav-stacked" },
+	        lessons
+	      )
+	    );
+	  }
+	});
+
+	module.exports = LessonSelect;
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var EditLesson = __webpack_require__(205);
+	var EditLesson = __webpack_require__(206);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -25975,7 +26039,6 @@
 	    };
 	  },
 	  editClick: function editClick() {
-	    debugger;
 	    this.setState({
 	      display: "edit"
 	    });
@@ -25984,6 +26047,8 @@
 	    this.props['delete'](this.props.lesson._id);
 	  },
 	  render: function render() {
+	    debugger;
+
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
@@ -26063,7 +26128,7 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26146,13 +26211,102 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 206 */
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(158);
+
+	var NewLesson = React.createClass({
+	  displayName: 'NewLesson',
+
+	  mixins: [Router.Navigation, Router.State],
+	  getInitialState: function getInitialState() {
+	    return {
+	      lessons: []
+	    };
+	  },
+	  handleSubmit: function handleSubmit(event) {
+	    var newLesson = this;
+	    event.preventDefault();
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    // var data = $(event.target).serialize();
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
+
+	    $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        var newLessons = newLesson.state.lessons.concat(serverData.lesson);
+	        newLesson.setState({
+	          lessons: newLessons
+	        });
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
+	  },
+	  render: function render() {
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
+	    return React.createElement(
+	      'div',
+	      { className: 'row' },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'New Lesson'
+	      ),
+	      React.createElement(
+	        'form',
+	        { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'title' },
+	            'Lesson Title'
+	          ),
+	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'date' },
+	            'Lesson Date'
+	          ),
+	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', className: 'btn btn-default' },
+	          'Submit'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = NewLesson;
+
+/***/ },
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var KlassBox = __webpack_require__(207);
+	var KlassBox = __webpack_require__(209);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26284,13 +26438,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 207 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentList = __webpack_require__(208);
+	var StudentList = __webpack_require__(210);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26427,13 +26581,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 208 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentBox = __webpack_require__(209);
+	var StudentBox = __webpack_require__(211);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -26560,7 +26714,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 209 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26674,7 +26828,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 210 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26690,7 +26844,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(211);
+	var StudentTile = __webpack_require__(213);
 	var socket = io.connect('http://localhost:8080');
 	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
@@ -26781,7 +26935,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 211 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26823,7 +26977,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 212 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26833,7 +26987,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(213);
+	var SignUp = __webpack_require__(215);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -26852,7 +27006,7 @@
 	//<Header />
 
 /***/ },
-/* 213 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

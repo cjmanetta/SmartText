@@ -1,7 +1,11 @@
 var React = require("react");
+
+var LessonSelect = require("./LessonSelect");
+var NewLesson = require("./NewLesson");
 var Router = require('react-router');
 var LessonBox = require("./LessonBox");
 var MainText = require("./MainText");
+
 
 var LessonPanel = React.createClass({
   mixins: [
@@ -186,7 +190,6 @@ var LessonPanel = React.createClass({
     })
   },
   render: function(){
-
     if (this.state.article && this.state.answer) {
       var submitButton = <button type="submit" className="btn btn-default">Submit</button>
       var addButton = null;
