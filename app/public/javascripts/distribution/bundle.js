@@ -25171,7 +25171,6 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-<<<<<<< HEAD
 	      student: { first_name: "Aaron", last_name: "J", username: "Janet", id: '1' },
 	      teacher: {},
 	      klass: {},
@@ -25181,27 +25180,16 @@
 	      question: { prompt: "", green_start: null, green_end: null },
 	      // lesson: new Lession(),
 	      selections: []
-=======
-	      student: {},
-	      teacher: {},
-	      klass: {},
-	      article: {},
-	      highlightOn: false,
-	      activeLesson: {},
-	      question: { prompt: "none" }
->>>>>>> master
 	    };
 	  },
 	  // lessonChanged:function(){
 	  //   this.forceUpdate();
 	  // },
 	  componentDidMount: function componentDidMount() {
-<<<<<<< HEAD
-
 	    // this.state.lesson.on('change', this.lessonChanged)
-=======
+
 	    this.getStudent();
->>>>>>> master
+
 	    var that = this;
 	    socket.on('viewPrompt', function (data) {
 	      that.updatePrompt(data);
@@ -25372,7 +25360,6 @@
 	      });
 	    }
 	  },
-<<<<<<< HEAD
 	  // compareSelection: function(selection){
 	  //   var student_start = selection.anchorOffset;
 	  //   var student_end = selection.focusOffset;
@@ -25416,51 +25403,6 @@
 
 	  //   return color;
 	  // },
-=======
-	  compareSelection: function compareSelection(selection) {
-	    var student_start = selection.anchorOffset;
-	    var student_end = selection.focusOffset;
-	    var correct_start = this.state.lesson.correct.start;
-	    var correct_end = this.state.lesson.correct.end;
-
-	    //adjust start/end regardless of which way they highlight
-	    if (student_start > student_end) {
-	      student_start = selection.focusOffset;
-	      student_end = selection.anchorOffset;
-	    }
-	    if (correct_start > correct_end) {
-	      correct_start = this.state.lesson.correct.end;
-	      correct_end = this.state.lesson.correct.start;
-	    }
-
-	    var correct_length = correct_end - correct_start;
-	    var variance = Math.round(correct_length / 6);
-	    var correct_start_range_beginning = correct_start - variance;
-	    var correct_start_range_end = correct_start + variance;
-	    var correct_end_range_beginning = correct_end - variance;
-	    var correct_end_range_end = correct_end + variance;
-
-	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
-	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = '#76EE00';
-	      } else {
-	        var color = 'blue';
-	      }
-	    } else if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	      var color = 'blue';
-	    } else if (student_start > correct_start && student_start < correct_end) {
-	      var color = 'blue';
-	    } else if (student_end > correct_start && student_end < correct_end) {
-	      var color = 'blue';
-	    } else if (student_start < correct_start && student_end > correct_end) {
-	      var color = 'blue';
-	    } else {
-	      var color = 'red';
-	    }
-
-	    return color;
-	  },
->>>>>>> master
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -25470,13 +25412,8 @@
 	        null,
 	        'Student View'
 	      ),
-<<<<<<< HEAD
 	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
 	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
-=======
-	      React.createElement(MainText, { article: this.state.article, question: this.state.question, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { prompt: this.state.question.prompt, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
->>>>>>> master
 	    );
 	  }
 	});
@@ -25635,7 +25572,6 @@
 	      'div',
 	      { id: 'mainText', className: 'w60 p15px ml5' },
 	      React.createElement(
-<<<<<<< HEAD
 	        'h3',
 	        { id: 'title' },
 	        this.props.article.title
@@ -25646,22 +25582,6 @@
 	        this.props.article.author
 	      ),
 	      paragraph
-=======
-	        "h3",
-	        { id: "title" },
-	        this.props.article.title
-	      ),
-	      React.createElement(
-	        "p",
-	        { id: "author" },
-	        this.props.article.author
-	      ),
-	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        this.props.article.content
-	      )
->>>>>>> master
 	    );
 	  }
 	});

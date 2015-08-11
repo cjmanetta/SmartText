@@ -241,8 +241,6 @@ var StudentView = React.createClass({
 
   //   return color;
   // },
-    return color;
-  },
   render: function() {
     return (
       <div className="container">
