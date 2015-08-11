@@ -7,6 +7,7 @@ var StudentView = require("./components/StudentView");
 var TeacherView = require("./components/TeacherView");
 var StudentPanel = require("./components/StudentPanel");
 var LessonPanel = require("./components/LessonPanel");
+var ReviewPanel = require("./components/ReviewPanel");
 var Grid = require("./components/Grid");
 var Home = require("./components/Home");
 var Header = require("./components/Header");
@@ -40,6 +41,7 @@ var routes = (
       <Route path="student-panel" name="studentPanel" handler={StudentPanel}/>
       <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel}/>
       <Route path="grid" name="grid" handler={Grid}/>
+      <Route path="lessons/:lesson_id" name="reviewPanel" handler={ReviewPanel} />
     </Route>
   </Route>
 );

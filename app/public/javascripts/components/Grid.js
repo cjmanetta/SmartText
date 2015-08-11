@@ -11,6 +11,10 @@ var socket = io();
 // var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 var Grid = React.createClass({
+  mixins: [
+    Router.Navigation,
+    Router.State,
+  ],
   getInitialState: function(){
     return {
       students: [],
@@ -65,8 +69,12 @@ var Grid = React.createClass({
   viewPrompt: function(){
     socket.emit('viewPrompt', this.props.question.prompt)
   },
-  disableStudents: function(){
-    socket.emit('finish')
+  handleFinish: function(){
+    socket.emit('finish');
+    this.transitionTo('reviewPanel', {
+                      id: this.props.teacher._id,
+                      lesson_id: this.props.activeLesson._id
+                    });
   },
   render: function() {
 
@@ -87,7 +95,7 @@ var Grid = React.createClass({
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
           {students}
-        <RightBar prompt={this.props.question.prompt} actionOne={this.viewPrompt} actionTwo={this.disableStudents} labelOne="view question" labelTwo="finished"/>
+        <RightBar prompt={this.props.question.prompt} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
       </div>
     );
   },

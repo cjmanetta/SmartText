@@ -59,8 +59,9 @@
 	var TeacherView = __webpack_require__(201);
 	var StudentPanel = __webpack_require__(208);
 	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(212);
-	var Home = __webpack_require__(214);
+	var ReviewPanel = __webpack_require__(212);
+	var Grid = __webpack_require__(213);
+	var Home = __webpack_require__(215);
 	var Header = __webpack_require__(202);
 
 	//functions defined in the global scope to be used in many components
@@ -94,7 +95,8 @@
 	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
 	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
 	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
-	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid })
+	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid }),
+	    React.createElement(Route, { path: "lessons/:lesson_id", name: "reviewPanel", handler: ReviewPanel })
 	  )
 	);
 
@@ -27084,6 +27086,29 @@
 /* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var ReviewPanel = React.createClass({
+	  displayName: 'ReviewPanel',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      'Review Panel'
+	    );
+	  }
+
+	});
+
+	module.exports = ReviewPanel;
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	var React = __webpack_require__(1);
@@ -27097,13 +27122,14 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(213);
+	var StudentTile = __webpack_require__(214);
 	var socket = io();
 	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",
 
+	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
 	      students: [],
@@ -27158,8 +27184,12 @@
 	  viewPrompt: function viewPrompt() {
 	    socket.emit('viewPrompt', this.props.question.prompt);
 	  },
-	  disableStudents: function disableStudents() {
+	  handleFinish: function handleFinish() {
 	    socket.emit('finish');
+	    this.transitionTo('reviewPanel', {
+	      id: this.props.teacher._id,
+	      lesson_id: this.props.activeLesson._id
+	    });
 	  },
 	  render: function render() {
 
@@ -27187,7 +27217,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { prompt: this.props.question.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { prompt: this.props.question.prompt, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
 	});
@@ -27195,7 +27225,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27237,7 +27267,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27247,7 +27277,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(215);
+	var SignUp = __webpack_require__(216);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27266,7 +27296,7 @@
 	//<Header />
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
