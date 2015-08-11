@@ -25226,7 +25226,6 @@
 	    var selectedRange = selection.getRangeAt(0);
 	    this.state.selections.push(selectedRange);
 	    this.forceUpdate();
-	    debugger;
 	    // var selectedText = selectedRange.extractContents()
 
 	    // var highlightSpan = $("<span class='highlight'>" +
@@ -25411,7 +25410,56 @@
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	  },
+	  getBeginning: function getBeginning(selections) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, selections[0].startOffset);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(selections) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(selections) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+
+	    var selections = this.props.selections;
+
+	    if (selections.length === 0) {
+
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          this.getBeginning(selections),
+	          React.createElement(
+	            'span',
+	            { className: 'highlight' },
+	            this.updateContent(selections)
+	          ),
+	          this.getEnd(selections)
+	        )
+	      );
+	      debugger;
+	    }
+
 	    return React.createElement(
 	      'div',
 	      { id: 'mainText', className: 'w60 p15px ml5' },
@@ -25425,11 +25473,7 @@
 	        { id: 'author' },
 	        this.props.article.author
 	      ),
-	      React.createElement(
-	        'p',
-	        { id: 'content' },
-	        this.props.article.content
-	      )
+	      paragraph
 	    );
 	  }
 	});

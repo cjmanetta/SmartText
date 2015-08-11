@@ -63,7 +63,6 @@ var StudentView = React.createClass({
       var selectedRange = selection.getRangeAt(0);
       this.state.selections.push(selectedRange);
       this.forceUpdate();
-      debugger
       // var selectedText = selectedRange.extractContents()
 
       // var highlightSpan = $("<span class='highlight'>" +
