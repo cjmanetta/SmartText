@@ -25219,9 +25219,9 @@
 	  },
 	  handleSubmit: function handleSubmit() {
 	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
-	      this.setState({
-	        highlightOn: false
-	      });
+	      // this.setState({
+	      //   highlightOn: false
+	      // });
 	    }
 	  },
 	  handleSelect: function handleSelect(selection) {
