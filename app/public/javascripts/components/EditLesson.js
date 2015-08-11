@@ -5,7 +5,7 @@ var Router = require('react-router');
 var EditLesson = React.createClass({
   getInitialState: function(){
     return {
-      lesson:  {title: "Character Traits", date: "11/24/2015", teacher_id: "0"}
+      lesson:  {}
     }
 
   },
@@ -18,7 +18,7 @@ var EditLesson = React.createClass({
     // var data = $(event.target).serialize();
     var title = $("#title").val();
     var date = $("#date").val();
-    var data = {title: title, date: date, teacher_id: this.props.teacher._id}
+    var data = {title: title, date: date}
 
     $.ajax({
       url: action,
@@ -34,10 +34,9 @@ var EditLesson = React.createClass({
         console.log(serverData);
       }
     })
-
   },
   render: function() {
-    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/55c76b967cb7dabcaaccd7e3'
+    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le
     return (
       <div className="row">
         <form id="EditLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
