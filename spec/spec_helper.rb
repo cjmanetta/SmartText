@@ -7,8 +7,10 @@ require 'capybara/rspec'
 # Capybara.register_driver :selenium do |app|
 #   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 # end
-
 Capybara.current_driver = :selenium
+Capybara.default_driver = :selenium
+Capybara.app_host = "http://localhost:8080"
+Capybara.run_server = false
 
 RSpec.configure do |config|
   # config.expect_with :rspec do |expectations|

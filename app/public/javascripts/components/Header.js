@@ -8,7 +8,6 @@ var Header = React.createClass({
     Router.Navigation,
     Router.State,
   ],
-
   render: function(){
     var teacher = this.props.teacher
     var student = this.props.student
@@ -20,6 +19,7 @@ var Header = React.createClass({
       buttons = <div>
         <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">student panel</Link>
         <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">lesson panel</Link>
+        <Link to="home" className="btn btn-default navbar-btn">Log Out</Link>
       </div>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>

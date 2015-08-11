@@ -25510,7 +25510,6 @@
 	  displayName: "Header",
 
 	  mixins: [Router.Navigation, Router.State],
-
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25538,6 +25537,11 @@
 	          Link,
 	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
 	          "lesson panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "home", className: "btn btn-default navbar-btn" },
+	          "Log Out"
 	        )
 	      );
 	    } else if (student) {
@@ -26464,7 +26468,7 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      authBox: 'Teachers'
+	      authBox: 'Students'
 	    };
 	  },
 	  handleSubmit: function handleSubmit(event) {
