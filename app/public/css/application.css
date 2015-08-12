@@ -33,6 +33,10 @@ body {
   margin-right: 5px;
 }
 
+.clear {
+  clear: both;
+}
+
 .lesson {
   position: relative;
 }
