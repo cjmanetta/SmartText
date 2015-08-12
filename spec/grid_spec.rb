@@ -13,11 +13,11 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
     click_link 'Lessons Panel'
     expect(page).to have_selector '#lessonPanel'
   end
-  context 'and on the students panel' do
+  context 'on the grid panel' do
     before(:each){
       click_link 'Lessons Panel'
     }
-    it 'I can make a new lesson' do
+    it 'I can view the grid for my lesson' do
       click_link "New Lesson"
       expect(page).to have_selector '#newLesson'
       within 'form#newLesson' do
@@ -45,20 +45,17 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
 
       expect(page).to have_content 'Current Active Lesson:Selecting Character Traits'
 
-      click_button 'Edit'
+      click_link 'Go to Lesson'
 
-      within  'form#EditLesson' do
-        fill_in 'Lesson Title', with: 'Sample Title'
-        fill_in 'Lesson Date', with: '12/12/1212'
-      end
-      click_button 'Submit'
-
-      expect(page).to have_content 'Sample Title'
+      expect(page).to have_content 'Teacher Dashboard'
+      expect(page).to have_selector 'div#rightBar'
+      expect(page).to have_selector 'div#questionBox'
+      expect(page).to have_content 'Select the test?'
       expect(page).to_not have_selector 'form#EditLesson'
 
+      click_link 'Lessons Panel'
       click_button 'Delete'
-
-      expect(page).to_not have_content 'Sample Title'
+      expect(page).to_not have_content 'Selecting Character Traits'
     end
   end
 end

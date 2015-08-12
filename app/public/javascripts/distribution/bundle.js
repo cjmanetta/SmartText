@@ -25669,11 +25669,19 @@
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
 
 	    Call.call(path, 'get').then((function (serverData) {
-	      this.getArticle(serverData.lesson.article_id);
-	      this.getQuestion(serverData.lesson.question_id);
-	      this.setState({
-	        activeLesson: serverData.lesson
-	      });
+	      if (serverData.lesson) {
+	        this.getArticle(serverData.lesson.article_id);
+	        this.getQuestion(serverData.lesson.question_id);
+	        this.setState({
+	          activeLesson: serverData.lesson
+	        });
+	      } else {
+	        this.setState({
+	          activeLesson: null,
+	          article: null,
+	          question: null
+	        });
+	      }
 	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the active lesson');
 	      console.log(serverData);
@@ -25726,6 +25734,7 @@
 	  },
 	  newLesson: function newLesson(action, data) {
 	    Call.call(action, 'post', data).then((function (serverData) {
+	      this.getQuestion(serverData.lesson.question_id);
 	      var newLessons = this.state.lessons.concat(serverData.lesson);
 	      this.setState({
 	        lessons: newLessons
@@ -25742,6 +25751,9 @@
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
 	    this.getLessonsList(this.state.teacher);
+	  },
+	  handleGetActiveLesson: function handleGetActiveLesson() {
+	    this.getActiveLesson(this.state.teacher);
 	  },
 	  render: function render() {
 
@@ -25764,7 +25776,8 @@
 	        answers: this.state.answers,
 	        lessons: this.state.lessons,
 	        newLesson: this.newLesson,
-	        getLessonsList: this.handleGetLessonsList })
+	        getLessonsList: this.handleGetLessonsList,
+	        getActiveLesson: this.handleGetActiveLesson })
 	    );
 	  }
 	});
@@ -25811,8 +25824,8 @@
 	        'div',
 	        null,
 	        React.createElement(
-	          'div',
-	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
+	          Link,
+	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
 	          'Log Out'
 	        ),
 	        React.createElement(
@@ -25985,6 +25998,7 @@
 	    var action = '/teachers/' + this.props.teacher._id + "/lessons/" + lesson_id;
 	    var method = 'delete';
 	    Call.call(action, method).then((function (serverData) {
+	      this.props.getActiveLesson();
 	      this.props.getLessonsList();
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('there was an error deleting the class');
@@ -27183,7 +27197,7 @@
 /* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
@@ -27191,6 +27205,8 @@
 	var DefaultRoute = Router.DefaultRoute;
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
+
+	var Call = __webpack_require__(204);
 
 	var Header = __webpack_require__(202);
 	var RightBar = __webpack_require__(198);
@@ -27200,7 +27216,7 @@
 	var socket = io();
 
 	var Grid = React.createClass({
-	  displayName: "Grid",
+	  displayName: 'Grid',
 
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
@@ -27276,27 +27292,26 @@
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
-	          "li",
-	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          'li',
+	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
 	          React.createElement(StudentTile, { student: student, article: that.props.article })
 	        )
 	      );
 	    });
 	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      React.createElement(Header, { teacher: this.props.teacher }),
+	      'div',
+	      { className: 'container' },
 	      React.createElement(
-	        "h3",
+	        'h3',
 	        null,
-	        "Teacher Dashboard"
+	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
 	    );
 	  }
 	});
