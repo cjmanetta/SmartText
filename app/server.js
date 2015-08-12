@@ -8,6 +8,8 @@ var io = require('socket.io').listen(server);
 var port = process.env.PORT || 8080;
 var path = require('path')
 
+
+
 server.listen(port);
 
 var teachers_routes = require('./routes/teacher')

@@ -1,7 +1,7 @@
 var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
-var Auth = require('../auth.js')
+var auth = require('../auth.js')
 
 var Header = React.createClass({
 
@@ -10,9 +10,7 @@ var Header = React.createClass({
     Router.State,
   ],
   confirmLogout: function(){
-    if (confirm("Are you sure you want to log out?")){
-      Auth.logout();
-    }
+    auth.logout();
   },
   render: function(){
     var teacher = this.props.teacher

@@ -100,6 +100,7 @@ router.route('/login')
 		if (err){
 			return console.error(err);
 		} else if (teacher.password === req.body.password){
+
 			res.format({
 				'text/html': function(){
 					res.render('./teachers/show', {teacher: teacher})

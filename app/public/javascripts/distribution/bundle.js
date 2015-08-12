@@ -63,13 +63,36 @@
 	var Grid = __webpack_require__(215);
 	var Home = __webpack_require__(217);
 	var Header = __webpack_require__(202);
+<<<<<<< HEAD
+	var auth = __webpack_require__(203);
+=======
 	var Auth = __webpack_require__(203);
 	var Call = __webpack_require__(205);
+>>>>>>> master
 	//functions defined in the global scope to be used in many components
 
+<<<<<<< HEAD
+	// var requireAuth = function(component){
+	//   statics: {
+	//     willTransitionTo: function(transition) {
+	//       if (!auth.loggedIn()) {
+	//         transition.redirect('/', {}, {'nextPath' : transition.path});
+	//       }
+	//     },
+	//   },
+	//   render () {
+	//     console.log('inside requireAuth')
+	//     return <Component {...this.props}/>
+	//   }
+	// }
+
+	//add this to the desired route
+	// handler={requireAuth}
+=======
 	function requireAuth(nextState, redirectTo) {
 	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
 	}
+>>>>>>> master
 
 	//Routes for the react router
 	var routes = React.createElement(
@@ -79,7 +102,7 @@
 	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
-	    { path: "teachers/:id", name: "teachers", handler: TeacherView, onEnter: requireAuth },
+	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
 	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
 	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
 	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid }),
@@ -92,7 +115,17 @@
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
+	    loggedIn: auth.loggedIn();
 	    teacher: null;
+	  },
+	  setStateOnAuth: function setStateOnAuth() {
+	    this.setState({
+	      loggedIn: loggedIn
+	    });
+	  },
+	  componentWillMount: function componentWillMount() {
+	    auth.onChange = this.setStateOnAuth.bind(this);
+	    auth.login();
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -25627,8 +25660,12 @@
 
 	var Header = __webpack_require__(202);
 	var LessonPanel = __webpack_require__(204);
+<<<<<<< HEAD
+	var auth = __webpack_require__(203);
+=======
 	var Auth = __webpack_require__(203);
 	var Call = __webpack_require__(205);
+>>>>>>> master
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25640,9 +25677,18 @@
 	      article: {},
 	      question: { prompt: "none" },
 	      answers: [],
-	      loggedIn: Auth.loggedIn(),
+	      loggedIn: auth.loggedIn(),
 	      lessons: []
 	    };
+	  },
+	  updateAuth: function updateAuth(loggedIn) {
+	    this.setState({
+	      loggedIn: !!loggedIn
+	    });
+	  },
+	  componentWillMount: function componentWillMount() {
+	    auth.onChange = this.updateAuth;
+	    auth.login();
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var action = '/teachers/' + this.props.params.id;
@@ -25673,7 +25719,18 @@
 	  },
 	  getActiveLesson: function getActiveLesson(teacher) {
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
+<<<<<<< HEAD
+
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+=======
 	    Call.call(path, 'get').then((function (serverData) {
+>>>>>>> master
 	      this.getArticle(serverData.lesson.article_id);
 	      this.getQuestion(serverData.lesson.question_id);
 	      this.setState({
@@ -25789,16 +25846,14 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Auth = __webpack_require__(203);
+	var auth = __webpack_require__(203);
 
 	var Header = React.createClass({
 	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
 	  confirmLogout: function confirmLogout() {
-	    if (confirm("Are you sure you want to log out?")) {
-	      Auth.logout();
-	    }
+	    auth.logout();
 	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
@@ -25829,6 +25884,16 @@
 	        ),
 	        React.createElement(
 	          Link,
+<<<<<<< HEAD
+	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Teacher Dashboard'
+	        ),
+	        React.createElement(
+	          'div',
+	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
+	          'Log Out'
+	        )
+=======
 	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
 	          'Students Panel'
 	        ),
@@ -25838,6 +25903,7 @@
 	          'Lessons Panel'
 	        ),
 	        React.createElement('span', { className: 'clear' })
+>>>>>>> master
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25878,27 +25944,47 @@
 
 	'use strict';
 
-	module.exports = {
-	  login: function login(username, pass) {
-	    if (localStorage.token) {
-	      this.onChange(true);
-	      return;
-	    }
-	  },
-	  getToken: function getToken() {
-	    return localStorage.token;
-	  },
-	  logout: function logout(cd) {
-	    delete localStorage.token;
-	    this.onChange(false);
-	  },
-	  loggedIn: function loggedIn() {
-	    console.log('in login');
-	    console.log(localStorage.token);
-	    return !!localStorage.token;
-	  },
-	  onChange: function onChange() {}
-	};
+	var localstorage = window.localStorage;
+
+	function login(email, password) {
+	  if (localStorage.token) {
+	    this.onChange(true);
+	    return;
+	  }
+	  logInRequest();
+	}
+
+	function getToken() {
+	  return localStorage.token;
+	}
+
+	function logout() {
+	  console.log('before delete:' + localStorage.token);
+	  delete localStorage.token;
+	  console.log('after delete:' + localStorage.token);
+	  console.log('logout');
+	  this.onChange(false);
+	}
+
+	function loggedIn() {
+	  return !!localStorage.token;
+	}
+
+	function onChange() {}
+
+	function logInRequest() {
+	  setTimeout(function () {
+	    localstorage.token = Math.random().toString(36).substring(7);
+	    console.log('login token:' + localstorage.token);
+	  }, 0);
+	}
+
+	exports.login = login;
+	exports.getToken = getToken;
+	exports.logout = logout;
+	exports.loggedIn = loggedIn;
+	exports.onChange = onChange;
+	exports.logInRequest = logInRequest;
 
 /***/ },
 /* 204 */
@@ -26165,6 +26251,23 @@
 	          'ul',
 	          { className: 'nav nav-pills' },
 	          React.createElement(
+<<<<<<< HEAD
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Lesson"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { role: "presentation", className: "active" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "Lessons"
+=======
 	            'li',
 	            { role: 'presentation', className: 'active' },
 	            React.createElement(
@@ -26180,6 +26283,7 @@
 	              'a',
 	              { href: '#', onClick: this.handlePillClick },
 	              'New Lesson'
+>>>>>>> master
 	            )
 	          )
 	        ),
@@ -26198,6 +26302,23 @@
 	          'ul',
 	          { className: 'nav nav-pills' },
 	          React.createElement(
+<<<<<<< HEAD
+	            "li",
+	            { role: "presentation", className: "active" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Lesson"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "Lessons"
+=======
 	            'li',
 	            { role: 'presentation' },
 	            React.createElement(
@@ -26213,6 +26334,7 @@
 	              'a',
 	              { href: '#', onClick: this.handlePillClick },
 	              'New Lesson'
+>>>>>>> master
 	            )
 	          )
 	        ),
@@ -27258,7 +27380,8 @@
 	    return {
 	      students: [],
 	      clickable: true,
-	      tileBig: false
+	      tileBig: false,
+	      student_ids: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -27297,11 +27420,16 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
-	    var students = this.state.students;
-	    students.push(data.student);
-	    this.setState({
-	      students: students
-	    });
+	    if (!!this.state.student_ids.indexOf(data.student._id)) {
+	      var student_ids = this.state.student_ids;
+	      var students = this.state.students;
+	      student_ids.push(data.student._id);
+	      students.push(data.student);
+	      this.setState({
+	        students: students,
+	        student_ids: student_ids
+	      });
+	    }
 	  },
 	  viewPrompt: function viewPrompt() {
 	    socket.emit('viewPrompt', this.props.question);
@@ -27427,6 +27555,7 @@
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
+	var auth = __webpack_require__(203);
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -27434,11 +27563,11 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      authBox: 'Students'
+	      authBox: 'Students',
+	      error: false
 	    };
 	  },
 	  handleSubmit: function handleSubmit(event) {
-
 	    event.preventDefault();
 	    var signUp = this;
 	    var action = $(event.target).attr('action');
@@ -27449,6 +27578,18 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
+
+	    auth.login(username, password, function (loggedIn) {
+	      if (!loggedIn) {
+	        return this.setState({ error: true });
+	      }
+	      if (nextPath) {
+	        Router.replaceWith(nextPath);
+	      } else {
+	        Route.replaceWith('/');
+	      }
+	    });
+
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -27465,7 +27606,6 @@
 	      }
 	    });
 	    request.fail(function (serverData) {
-
 	      console.log(serverData);
 	    });
 	  },
