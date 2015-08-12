@@ -26687,6 +26687,7 @@
 
 	var React = __webpack_require__(2);
 	var KlassBox = __webpack_require__(211);
+	var Call = __webpack_require__(205);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26702,20 +26703,11 @@
 	  getKlassList: function getKlassList() {
 	    var studentPanel = this;
 	    var path = "/teachers/" + this.props.params.id + "/klasses";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      var newKlasses = serverData.klasses;
-	      studentPanel.setState({
-	        klasses: newKlasses
+	    Call.call(path, 'get').then((function (serverData) {
+	      this.setState({
+	        klasses: serverData.klasses
 	      });
-	    });
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the klasses');
 	      console.log(serverData);
 	    });
@@ -26723,53 +26715,37 @@
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
-	    var studentPanel = this;
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    var name = $(event.target).find('#name').val();
-	    var grade = $(event.target).find("#grade").val();
-	    var pin = $(event.target).find('#pin').val();
+	    var form = event.target;
+	    var action = $(form).attr('action');
+	    var method = $(form).attr('method');
+	    var name = $(form).find('#name').val();
+	    var grade = $(form).find("#grade").val();
+	    var pin = $(form).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
+	      form.reset();
 	      if (method === "post") {
-	        var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
-	        studentPanel.setState({
+	        var newKlasses = this.state.klasses.concat(serverData.klass);
+	        this.setState({
 	          klasses: newKlasses
 	        });
 	      } else if (method === "put") {
 	        this.getKlassList();
 	      }
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error creating that klass');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error creating the class');
 	      console.log(serverData);
 	    });
 	  },
 	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
 	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + klass_id;
-	    var method = 'delete';
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, 'delete').then((function (serverData) {
 	      this.getKlassList();
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error deleting the class');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error deleting the klass');
 	      console.log(serverData);
 	    });
 	  },
