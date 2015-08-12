@@ -18,7 +18,8 @@ var Grid = React.createClass({
     return {
       students: [],
       clickable: true,
-      tileBig: false
+      tileBig: false,
+      student_ids: []
     }
   },
   componentDidMount: function(){
@@ -57,11 +58,16 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
-   var students =  this.state.students;
-   students.push(data.student)
-   this.setState({
-      students: students
-    })
+    if (!!this.state.student_ids.indexOf(data.student._id)){
+      var student_ids = this.state.student_ids
+      var students = this.state.students;
+      student_ids.push(data.student._id)
+      students.push(data.student)
+      this.setState({
+        students: students,
+        student_ids: student_ids
+      })
+    }
   },
   viewPrompt: function(){
     socket.emit('viewPrompt', this.props.question)

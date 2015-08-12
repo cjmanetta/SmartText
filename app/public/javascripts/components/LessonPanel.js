@@ -8,21 +8,7 @@ var LessonBox = require("./LessonBox");
 var MainText = require("./MainText");
 
 
-var requireAuth = function(component){
- statics: {
-    willTransitionTo: function(transition) {
-      if (!auth.loggedIn()) {
-        transition.redirect('/', {}, {'nextPath' : transition.path});
-      }
-    }
-  },
-  render () {
-    console.log('inside requireAuth')
-    return <Component {...this.props}/>
-  }
-}
-
-var LessonPanel = requireAuth(React.createClass({
+var LessonPanel = React.createClass({
   mixins: [
     Router.Navigation,
     Router.State,
@@ -240,8 +226,8 @@ var LessonPanel = requireAuth(React.createClass({
       var lessonPills =
       <div>
         <ul className="nav nav-pills">
-          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
         <div>
           {activeLesson}
@@ -252,8 +238,8 @@ var LessonPanel = requireAuth(React.createClass({
       var lessonPills =
       <div>
         <ul className="nav nav-pills">
-          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
         <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
           <div className="form-group">
@@ -280,6 +266,6 @@ var LessonPanel = requireAuth(React.createClass({
     )
   }
 });
-)
+
 
 module.exports = LessonPanel;

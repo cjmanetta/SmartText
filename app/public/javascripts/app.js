@@ -33,19 +33,22 @@ var call = function(action, method, data){
 }
 
 
-var requireAuth = function(component){
-  statics: {
-    willTransitionTo: function(transition) {
-      if (!auth.loggedIn()) {
-        transition.redirect('/', {}, {'nextPath' : transition.path});
-      }
-    },
-  },
-  render () {
-    console.log('inside requireAuth')
-    return <Component {...this.props}/>
-  }
-}
+// var requireAuth = function(component){
+//   statics: {
+//     willTransitionTo: function(transition) {
+//       if (!auth.loggedIn()) {
+//         transition.redirect('/', {}, {'nextPath' : transition.path});
+//       }
+//     },
+//   },
+//   render () {
+//     console.log('inside requireAuth')
+//     return <Component {...this.props}/>
+//   }
+// }
+
+//add this to the desired route
+// handler={requireAuth}
 
 //Routes for the react router
 var routes = (
@@ -54,7 +57,7 @@ var routes = (
     <Route path="/students/:id" name="students" handler={StudentView}/>
     <Route path="teachers/:id" name="teachers" handler={TeacherView}>
       <Route path="student-panel" name="studentPanel" handler={StudentPanel}/>
-      <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel} handler={requireAuth}/>
+      <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel} />
       <Route path="grid" name="grid" handler={Grid} />
       <Route path="lessons/:lesson_id" name="reviewPanel" handler={ReviewPanel} />
     </Route>
