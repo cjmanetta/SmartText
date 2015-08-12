@@ -57,38 +57,19 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(209);
+	var StudentPanel = __webpack_require__(210);
 	var LessonPanel = __webpack_require__(204);
-	var ReviewPanel = __webpack_require__(213);
-	var Grid = __webpack_require__(214);
-	var Home = __webpack_require__(216);
+	var ReviewPanel = __webpack_require__(214);
+	var Grid = __webpack_require__(215);
+	var Home = __webpack_require__(217);
 	var Header = __webpack_require__(202);
 	var Auth = __webpack_require__(203);
+	var Call = __webpack_require__(209);
 	//functions defined in the global scope to be used in many components
-	var call = function call(action, method, data) {
-	  return new Promise(function (resolve, reject) {
-	    request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      resolve(serverData);
-	    });
-
-	    request.fail(function (serverData) {
-	      reject(serverData);
-	    });
-	  });
-	};
 
 	function requireAuth(nextState, redirectTo) {
 	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
 	}
-
-	// var history = createHistory();
 
 	//Routes for the react router
 	var routes = React.createElement(
@@ -25648,6 +25629,7 @@
 	var Header = __webpack_require__(202);
 	var LessonPanel = __webpack_require__(204);
 	var Auth = __webpack_require__(203);
+	var Call = __webpack_require__(209);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25667,167 +25649,101 @@
 	    var action = '/teachers/' + this.props.params.id;
 	    var method = 'get';
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, method).then((function (serverData) {
 	      this.getActiveLesson(serverData.teacher);
 	      this.getLessonsList(serverData.teacher);
 	      this.setState({
 	        teacher: serverData.teacher
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('There was an error getting the teacher');
 	      console.log(serverData);
 	    });
 	  },
-	  handleUpdateTeacher: function handleUpdateTeacher(serverData) {
-	    this.setState({
-	      teacher: serverData.teacher
-	    });
-	  },
 	  getLessonsList: function getLessonsList(teacher) {
 	    var path = "/teachers/" + teacher._id + "/lessons";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, "get").then((function (serverData) {
 	      var newLessons = serverData.lessons;
 	      this.setState({
 	        lessons: newLessons
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the lessons');
 	      console.log(serverData);
 	    });
 	  },
 	  getActiveLesson: function getActiveLesson(teacher) {
-	    var teacherView = this;
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
-
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, 'get').then((function (serverData) {
 	      this.getArticle(serverData.lesson.article_id);
 	      this.getQuestion(serverData.lesson.question_id);
 	      this.setState({
 	        activeLesson: serverData.lesson
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the active lesson');
 	      console.log(serverData);
 	    });
 	  },
 	  getArticle: function getArticle(article_id) {
 	    var path = "/articles/" + article_id;
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: 'json'
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, get).then((function (serverData) {
 	      this.setState({
 	        article: serverData.article
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('Failed to find the article');
 	      console.log(serverData);
 	    });
 	  },
 	  getQuestion: function getQuestion(question_id) {
 	    var path = "/questions/" + question_id;
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: 'json'
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, 'get').then((function (serverData) {
 	      this.getAnswers(serverData.question._id);
 	      this.setState({
 	        question: serverData.question
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('Failed to find the question');
 	      console.log(serverData);
 	    });
 	  },
 	  getAnswers: function getAnswers(question_id) {
 	    var path = "/answers/question/" + question_id;
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: 'json'
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, 'get').then((function (serverData) {
 	      this.setState({
 	        answers: serverData.answers
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('Failed to find answers');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('Failed to find the answers');
 	      console.log(serverData);
 	    });
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
 	    var path = "/teachers/" + this.state.teacher._id + "/lessons/" + lesson_id + "/activate";
-	    var request = $.ajax({
-	      url: path,
-	      method: "get",
-	      dataType: 'json'
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(path, 'get').then((function (serverData) {
 	      this.setState({
 	        activeLesson: serverData.lesson
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('failed to set the active lesson');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('Failed to set the active lesson');
 	      console.log(serverData);
 	    });
 	  },
 	  newLesson: function newLesson(action, data) {
-	    var request = $.ajax({
-	      url: action,
-	      method: 'post',
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, 'post', data).then((function (serverData) {
 	      var newLessons = this.state.lessons.concat(serverData.lesson);
 	      this.setState({
 	        lessons: newLessons
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('failed to make new lesson');
 	      console.log(serverData);
+	    });
+	  },
+	  handleUpdateTeacher: function handleUpdateTeacher(serverData) {
+	    this.setState({
+	      teacher: serverData.teacher
 	    });
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
@@ -26035,7 +25951,7 @@
 	    var article_id = this.state.article._id;
 	    var question_id = this.state.question._id;
 	    var data = { title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id };
-	    debugger;
+
 	    this.props.newLesson(action, data);
 
 	    this.setState({
@@ -26718,12 +26634,37 @@
 
 /***/ },
 /* 209 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.call = function (action, method, data) {
+	  return new Promise(function (resolve, reject) {
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      resolve(serverData);
+	    });
+
+	    request.fail(function (serverData) {
+	      reject(serverData);
+	    });
+	  });
+	};
+
+/***/ },
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var KlassBox = __webpack_require__(210);
+	var KlassBox = __webpack_require__(211);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26855,13 +26796,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentList = __webpack_require__(211);
+	var StudentList = __webpack_require__(212);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26998,13 +26939,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentBox = __webpack_require__(212);
+	var StudentBox = __webpack_require__(213);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27131,7 +27072,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27245,7 +27186,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27311,7 +27252,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27327,7 +27268,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(215);
+	var StudentTile = __webpack_require__(216);
 	var socket = io();
 
 	var Grid = React.createClass({
@@ -27429,7 +27370,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27471,7 +27412,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27481,7 +27422,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(217);
+	var SignUp = __webpack_require__(218);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27500,7 +27441,7 @@
 	//<Header />
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

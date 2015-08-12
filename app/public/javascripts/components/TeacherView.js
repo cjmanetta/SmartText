@@ -5,6 +5,7 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
 var Auth = require('../auth.js')
+var Call = require('../call');
 
 var TeacherView = React.createClass({
   getInitialState: function(){
@@ -22,134 +23,90 @@ var TeacherView = React.createClass({
     var action = '/teachers/' + this.props.params.id;
     var method = 'get';
 
-
-    var request = $.ajax({
-      url:      action,
-      method:   method,
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      this.getActiveLesson(serverData.teacher);
-      this.getLessonsList(serverData.teacher);
-      this.setState({
-        teacher: serverData.teacher
-      });
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('There was an error getting the teacher')
-      console.log(serverData);
-    });
-  },
-  handleUpdateTeacher: function(serverData){
-    this.setState({
-      teacher: serverData.teacher
-    });
+    Call.call(action, method)
+        .then(function(serverData){
+          this.getActiveLesson(serverData.teacher);
+          this.getLessonsList(serverData.teacher);
+          this.setState({
+            teacher: serverData.teacher
+          });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('There was an error getting the teacher')
+          console.log(serverData);
+        });
   },
   getLessonsList: function(teacher){
     var path = "/teachers/" + teacher._id + "/lessons"
-    var request = $.ajax({
-      url:      path,
-      method:   'get',
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      var newLessons = serverData.lessons
-      this.setState({
-        lessons: newLessons
-      });
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('there was an error getting the lessons')
-      console.log(serverData);
-    });
+    Call.call(path, "get")
+        .then(function(serverData){
+          var newLessons = serverData.lessons
+          this.setState({
+            lessons: newLessons
+          });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('there was an error getting the lessons')
+          console.log(serverData);
+        });
   },
   getActiveLesson: function(teacher){
-    var teacherView = this;
     var path = "/teachers/"
                 + this.props.params.id
                 +"/lessons/"
                 + teacher.active_lesson
-
-    var request = $.ajax({
-      url:      path,
-      method:   'get',
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      this.getArticle(serverData.lesson.article_id);
-      this.getQuestion(serverData.lesson.question_id);
-      this.setState({
-        activeLesson: serverData.lesson
-      });
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('there was an error getting the active lesson')
-      console.log(serverData);
-    });
+    Call.call(path, 'get')
+        .then(function(serverData){
+          this.getArticle(serverData.lesson.article_id);
+          this.getQuestion(serverData.lesson.question_id);
+          this.setState({
+            activeLesson: serverData.lesson
+          });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('there was an error getting the active lesson')
+          console.log(serverData);
+        });
   },
   getArticle: function(article_id){
     var path = "/articles/" + article_id
-    var request = $.ajax({
-      url: path,
-      method: 'get',
-      dataType: 'json'
-    });
-
-    request.done(function(serverData){
-      this.setState({
-        article: serverData.article
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('Failed to find the article');
-      console.log( serverData);
-    });
+    Call.call(path, get)
+        .then(function(serverData){
+          this.setState({
+            article: serverData.article
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to find the article');
+          console.log( serverData);
+        });
   },
   getQuestion: function(question_id){
     var path = "/questions/" + question_id
-    var request = $.ajax({
-      url: path,
-      method: 'get',
-      dataType: 'json'
-    });
-
-    request.done(function(serverData){
-      this.getAnswers(serverData.question._id)
-      this.setState({
-        question: serverData.question
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('Failed to find the question');
-      console.log( serverData);
-    });
+    Call.call(path, 'get')
+        .then(function(serverData){
+          this.getAnswers(serverData.question._id)
+          this.setState({
+            question: serverData.question
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to find the question');
+          console.log(serverData)
+        });
   },
   getAnswers: function(question_id){
     var path = "/answers/question/" + question_id
-    var request = $.ajax({
-      url: path,
-      method: 'get',
-      dataType: 'json'
-    });
-
-    request.done(function(serverData){
-      this.setState({
-        answers: serverData.answers
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('Failed to find answers');
-      console.log(serverData);
-    });
+    Call.call(path, 'get')
+        .then(function(serverData){
+          this.setState({
+            answers: serverData.answers
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to find the answers');
+          console.log(serverData)
+        });
   },
   setActiveLesson: function(lesson_id){
     var path = "/teachers/"
@@ -157,40 +114,33 @@ var TeacherView = React.createClass({
                  + "/lessons/"
                  + lesson_id
                  + "/activate"
-    var request = $.ajax({
-      url: path,
-      method: "get",
-      dataType: 'json'
-    });
-
-    request.done(function(serverData){
-      this.setState({
-        activeLesson: serverData.lesson
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('failed to set the active lesson');
-      console.log(serverData);
-    });
+    Call.call(path, 'get')
+        .then(function(serverData){
+          this.setState({
+            activeLesson: serverData.lesson
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to set the active lesson');
+          console.log(serverData)
+        });
   },
   newLesson: function(action, data){
-    var request = $.ajax({
-      url: action,
-      method: 'post',
-      data: data,
-      dataType: "json"
-    });
-
-    request.done(function(serverData) {
-      var newLessons = this.state.lessons.concat(serverData.lesson)
-      this.setState({
-        lessons: newLessons,
-      });
-    }.bind(this));
-
-    request.fail(function(serverData) {
-        console.log(serverData);
+    Call.call(action, 'post', data)
+        .then(function(serverData) {
+          var newLessons = this.state.lessons.concat(serverData.lesson)
+          this.setState({
+            lessons: newLessons,
+          });
+        }.bind(this))
+        .catch(function(serverData) {
+          console.log('failed to make new lesson');
+          console.log(serverData);
+        });
+  },
+  handleUpdateTeacher: function(serverData){
+    this.setState({
+      teacher: serverData.teacher
     });
   },
   handleGetLessonsList: function(){

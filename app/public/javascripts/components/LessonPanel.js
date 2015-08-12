@@ -44,7 +44,7 @@ var LessonPanel = React.createClass({
     var article_id = this.state.article._id
     var question_id = this.state.question._id
     var data = {title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id}
-    debugger
+
     this.props.newLesson(action, data);
 
     this.setState({
