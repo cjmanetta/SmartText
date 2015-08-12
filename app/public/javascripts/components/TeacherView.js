@@ -14,11 +14,11 @@ var TeacherView = React.createClass({
       article: {},
       question: {prompt: "none"},
       answers: [],
-      loggedIn: Auth.loggedIn()
+      loggedIn: Auth.loggedIn(),
+      lessons: [],
     }
   },
   componentDidMount: function() {
-    var teacherView = this;
     var action = '/teachers/' + this.props.params.id;
     var method = 'get';
 
@@ -30,11 +30,12 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
-      teacherView.getActiveLesson(serverData.teacher);
-      teacherView.setState({
+      this.getActiveLesson(serverData.teacher);
+      this.getLessonsList(serverData.teacher);
+      this.setState({
         teacher: serverData.teacher
       });
-    });
+    }.bind(this));
 
     request.fail(function(serverData){
       console.log('There was an error getting the teacher')
@@ -44,6 +45,26 @@ var TeacherView = React.createClass({
   handleUpdateTeacher: function(serverData){
     this.setState({
       teacher: serverData.teacher
+    });
+  },
+  getLessonsList: function(teacher){
+    var path = "/lessons/teacher" + teacher._id
+    var request = $.ajax({
+      url:      path,
+      method:   'get',
+      dataType: "json"
+    });
+
+    request.done(function(serverData){
+      var newLessons = serverData.lessons
+      this.setState({
+        lessons: newLessons
+      });
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('there was an error getting the lessons')
+      console.log(serverData);
     });
   },
   getActiveLesson: function(teacher){
@@ -153,6 +174,26 @@ var TeacherView = React.createClass({
       console.log(serverData);
     });
   },
+  newLesson: function(action, data){
+    $.ajax({
+      url: action,
+      method: 'post',
+      data: data,
+      dataType: "json",
+      success: function(serverData) {
+        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson)
+        this.setState({
+          lessons: newLessons,
+        }.bind(this));
+      },
+      error: function(serverData) {
+        console.log(serverData);
+      }
+    });
+  },
+  handleGetLessonsList: function(){
+    this.getLessonsList(this.state.teacher._id);
+  },
   render: function() {
 
     return (
@@ -165,7 +206,10 @@ var TeacherView = React.createClass({
                       activate={this.setActiveLesson}
                       article={this.state.article}
                       question={this.state.question}
-                      answers={this.state.answers} />
+                      answers={this.state.answers}
+                      lessons={this.state.lessons}
+                      newLesson={this.newlesson}
+                      getLessonsList={this.handleGetLessonsList} />
       </div>
     );
   },

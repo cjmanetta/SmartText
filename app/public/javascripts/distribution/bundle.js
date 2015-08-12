@@ -25660,11 +25660,11 @@
 	      article: {},
 	      question: { prompt: "none" },
 	      answers: [],
-	      loggedIn: Auth.loggedIn()
+	      loggedIn: Auth.loggedIn(),
+	      lessons: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    var teacherView = this;
 	    var action = '/teachers/' + this.props.params.id;
 	    var method = 'get';
 
@@ -25674,12 +25674,13 @@
 	      dataType: "json"
 	    });
 
-	    request.done(function (serverData) {
-	      teacherView.getActiveLesson(serverData.teacher);
-	      teacherView.setState({
+	    request.done((function (serverData) {
+	      this.getActiveLesson(serverData.teacher);
+	      this.getLessonsList(serverData.teacher);
+	      this.setState({
 	        teacher: serverData.teacher
 	      });
-	    });
+	    }).bind(this));
 
 	    request.fail(function (serverData) {
 	      console.log('There was an error getting the teacher');
@@ -25689,6 +25690,26 @@
 	  handleUpdateTeacher: function handleUpdateTeacher(serverData) {
 	    this.setState({
 	      teacher: serverData.teacher
+	    });
+	  },
+	  getLessonsList: function getLessonsList(teacher) {
+	    var path = "/lessons/teacher" + teacher._id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      var newLessons = serverData.lessons;
+	      this.setState({
+	        lessons: newLessons
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('there was an error getting the lessons');
+	      console.log(serverData);
 	    });
 	  },
 	  getActiveLesson: function getActiveLesson(teacher) {
@@ -25791,6 +25812,26 @@
 	      console.log(serverData);
 	    });
 	  },
+	  newLesson: function newLesson(action, data) {
+	    $.ajax({
+	      url: action,
+	      method: 'post',
+	      data: data,
+	      dataType: "json",
+	      success: function success(serverData) {
+	        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson);
+	        this.setState(({
+	          lessons: newLessons
+	        }).bind(this));
+	      },
+	      error: function error(serverData) {
+	        console.log(serverData);
+	      }
+	    });
+	  },
+	  handleGetLessonsList: function handleGetLessonsList() {
+	    this.getLessonsList(this.state.teacher._id);
+	  },
 	  render: function render() {
 
 	    return React.createElement(
@@ -25809,7 +25850,10 @@
 	        activate: this.setActiveLesson,
 	        article: this.state.article,
 	        question: this.state.question,
-	        answers: this.state.answers })
+	        answers: this.state.answers,
+	        lessons: this.state.lessons,
+	        newLesson: this.newlesson,
+	        getLessonsList: this.handleGetLessonsList })
 	    );
 	  }
 	});
@@ -25961,7 +26005,6 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      lessons: [],
 	      article: null,
 	      textBox: null,
 	      answer: null,
@@ -25970,30 +26013,6 @@
 	      lessonPills: 'Lessons',
 	      selections: []
 	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.getLessonsList();
-	  },
-	  getLessonsList: function getLessonsList() {
-	    var lessonPanel = this;
-	    var path = "/teachers/" + this.props.params.id + "/lessons";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      var newLessons = serverData.lessons;
-	      lessonPanel.setState({
-	        lessons: newLessons
-	      });
-	    });
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error getting the lessons');
-	      console.log(serverData);
-	    });
 	  },
 	  getArticle: function getArticle() {
 	    var article = $("#article").val();
@@ -26015,26 +26034,16 @@
 	    var article_id = this.state.article._id;
 	    var question_id = this.state.question._id;
 	    var data = { title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id };
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson);
-	        lessonPanel.setState({
-	          lessons: newLessons,
-	          article: null,
-	          textBox: null,
-	          answer: null,
-	          question: null,
-	          answered: false,
-	          lessonPills: 'Lessons'
-	        });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
+
+	    this.props.newLesson(action, data);
+
+	    this.setState({
+	      article: null,
+	      textBox: null,
+	      answer: null,
+	      question: null,
+	      answered: false,
+	      lessonPills: 'Lessons'
 	    });
 	  },
 	  handleAddArticleClick: function handleAddArticleClick() {
@@ -26043,7 +26052,6 @@
 	  handleArticleSubmit: function handleArticleSubmit(event) {
 
 	    event.preventDefault();
-	    debugger;
 	    var lessonPanel = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
@@ -26058,10 +26066,9 @@
 	      data: { prompt: question },
 	      dataType: "json",
 	      success: function success(serverData) {
-
-	        lessonPanel.setState({
+	        this.setState(({
 	          question: serverData.question
-	        });
+	        }).bind(this));
 	      },
 	      error: function error(serverData) {
 	        console.log(serverData);
@@ -26118,7 +26125,7 @@
 	    });
 
 	    request.done((function (serverData) {
-	      this.getLessonsList();
+	      this.props.getLessonsList();
 	    }).bind(this));
 
 	    request.fail(function (serverData) {
@@ -26219,7 +26226,7 @@
 	      var textBox = React.createElement("div", null);
 	    }
 
-	    var lessons = this.state.lessons.map((function (lesson) {
+	    var lessons = this.props.lessons.map((function (lesson) {
 	      return React.createElement(LessonBox, { lesson: lesson,
 	        teacher: this.props.teacher,
 	        "delete": this.handleDeleteLesson,

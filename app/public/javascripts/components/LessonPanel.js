@@ -15,7 +15,6 @@ var LessonPanel = React.createClass({
   ],
   getInitialState: function() {
     return {
-      lessons: [],
       article: null,
       textBox: null,
       answer: null,
@@ -24,30 +23,6 @@ var LessonPanel = React.createClass({
       lessonPills: 'Lessons',
       selections: [],
     }
-  },
-  componentDidMount: function() {
-    this.getLessonsList();
-  },
-  getLessonsList: function(){
-    var lessonPanel = this;
-    var path = "/teachers/"+ this.props.params.id +"/lessons"
-    var request = $.ajax({
-      url:      path,
-      method:   'get',
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      var newLessons = serverData.lessons
-      lessonPanel.setState({
-        lessons: newLessons
-      });
-    });
-
-    request.fail(function(serverData){
-      console.log('there was an error getting the lessons')
-      console.log(serverData);
-    });
   },
   getArticle: function(){
     var article = $("#article").val();
@@ -69,27 +44,16 @@ var LessonPanel = React.createClass({
     var article_id = this.state.article._id
     var question_id = this.state.question._id
     var data = {title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id}
-    $.ajax({
-      url: action,
-      method: method,
-      data: data,
-      dataType: "json",
-      success: function(serverData) {
-        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson)
-        lessonPanel.setState({
-          lessons: newLessons,
-          article: null,
-          textBox: null,
-          answer: null,
-          question: null,
-          answered: false,
-          lessonPills: 'Lessons'
-        });
 
-      },
-      error: function(serverData) {
-        console.log(serverData);
-      }
+    this.props.newLesson(action, data);
+
+    this.setState({
+      article: null,
+      textBox: null,
+      answer: null,
+      question: null,
+      answered: false,
+      lessonPills: 'Lessons'
     });
   },
   handleAddArticleClick: function() {
@@ -98,7 +62,6 @@ var LessonPanel = React.createClass({
   handleArticleSubmit: function(event) {
 
     event.preventDefault();
-    debugger
     var lessonPanel = this;
     var action = $(event.target).attr('action');
     var method = $(event.target).attr('method');
@@ -114,11 +77,9 @@ var LessonPanel = React.createClass({
       data: {prompt: question},
       dataType: "json",
       success: function(serverData) {
-
-        lessonPanel.setState({
+        this.setState({
           question: serverData.question
-        });
-
+        }.bind(this));
       },
       error: function(serverData) {
         console.log(serverData);
@@ -126,9 +87,7 @@ var LessonPanel = React.createClass({
       }
     });
 
-
     var data = {title: title, author: author, content: content}
-
 
     $.ajax({
       url: action,
@@ -179,7 +138,7 @@ var LessonPanel = React.createClass({
     });
 
     request.done(function(serverData){
-      this.getLessonsList();
+      this.props.getLessonsList();
     }.bind(this));
 
     request.fail(function(serverData){
@@ -238,7 +197,7 @@ var LessonPanel = React.createClass({
       var textBox = <div></div>
     }
 
-    var lessons = this.state.lessons.map(
+    var lessons = this.props.lessons.map(
       function(lesson){
         return(
         <LessonBox lesson={lesson}
