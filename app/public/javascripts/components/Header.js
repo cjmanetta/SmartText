@@ -23,10 +23,11 @@ var Header = React.createClass({
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
       buttons = <div>
-        <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Students Panel</Link>
-        <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Lessons Panel</Link>
-        <div onClick={this.confirmLogout} className="btn btn-default navbar-btn">Log Out</div>
-        <Link to="grid" params={{id: teacher._id }} className="btn btn-default navbar-btn">teacher dashboard</Link>
+        <div onClick={this.confirmLogout} className="l-out btn btn-default navbar-btn">Log Out</div>
+        <Link to="grid" params={{id: teacher._id }} className="t-p btn btn-default navbar-btn">teacher dashboard</Link>
+        <Link to="studentPanel" params={{id: teacher._id }} className="s-p btn btn-default navbar-btn">Students Panel</Link>
+        <Link to="lessonPanel" params={{id: teacher._id }} className="l-p btn btn-default navbar-btn">Lessons Panel</Link>
+        <span className="clear"/>
       </div>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
@@ -38,7 +39,7 @@ var Header = React.createClass({
       //add full navbar components brand buttons etc
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">SmartText</a>
+          <a className="navbar-brand" href="#"><img src="../../../images/smartext_final.png" className="logo" alt="SmartText" /></a>
           {content}
           {buttons}
         </div>
