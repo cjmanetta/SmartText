@@ -25337,7 +25337,7 @@
 	    }
 	  },
 	  handleClear: function handleClear() {
-	    socket.emit('studentClear', { id: this.state.student.id });
+	    socket.emit('studentClear', { _id: this.state.student._id });
 	    this.forceUpdate();
 	    this.setState({
 	      selections: []
@@ -27368,7 +27368,6 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
-	    debugger;
 	    var students = this.state.students;
 	    students.push(data.student);
 	    this.setState({

@@ -57,7 +57,6 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
-  debugger
    var students =  this.state.students;
    students.push(data.student)
    this.setState({
