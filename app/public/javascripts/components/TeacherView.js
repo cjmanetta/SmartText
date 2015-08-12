@@ -70,7 +70,7 @@ var TeacherView = React.createClass({
   },
   getArticle: function(article_id){
     var path = "/articles/" + article_id
-    Call.call(path, get)
+    Call.call(path, "get")
         .then(function(serverData){
           this.setState({
             article: serverData.article
