@@ -25741,7 +25741,7 @@
 	    });
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
-	    this.getLessonsList(this.state.teacher._id);
+	    this.getLessonsList(this.state.teacher);
 	  },
 	  render: function render() {
 
@@ -26082,11 +26082,13 @@
 	    } else {
 	      var textBox = React.createElement('div', null);
 	    }
+
 	    var lessons = this.props.lessons.map((function (lesson) {
 	      return React.createElement(LessonBox, { lesson: lesson,
 	        teacher: this.props.teacher,
 	        'delete': this.handleDeleteLesson,
-	        activate: this.setActiveLesson });
+	        activate: this.setActiveLesson,
+	        getLessonsList: this.props.getLessonsList });
 	    }).bind(this));
 
 	    if (this.props.activeLesson) {
@@ -26344,6 +26346,11 @@
 	  makeActive: function makeActive() {
 	    this.props.activate(this.props.lesson._id);
 	  },
+	  handleSuccessfulUpdate: function handleSuccessfulUpdate() {
+	    this.setState({
+	      display: 'panel'
+	    });
+	  },
 	  render: function render() {
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
@@ -26413,7 +26420,10 @@
 	          React.createElement(
 	            'div',
 	            { className: 'panel-body' },
-	            React.createElement(EditLesson, { teacher: this.props.teacher })
+	            React.createElement(EditLesson, { teacher: this.props.teacher,
+	              lesson: this.props.lesson,
+	              getLessonsList: this.props.getLessonsList,
+	              successfulUpdate: this.handleSuccessfulUpdate })
 	          )
 	        )
 	      );
@@ -26436,6 +26446,7 @@
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
+	var Call = __webpack_require__(204);
 
 	var EditLesson = React.createClass({
 	  displayName: 'EditLesson',
@@ -26447,31 +26458,24 @@
 	  },
 
 	  handleSubmit: function handleSubmit(event) {
-	    var editLesson = this;
 	    event.preventDefault();
 	    var action = $(event.target).attr('action');
 	    var method = 'put';
-	    // var data = $(event.target).serialize();
 	    var title = $("#title").val();
 	    var date = $("#date").val();
 	    var data = { title: title, date: date };
 
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        EditLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
-	        EditLesson.setState({ title: serverData.lesson.title });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
+	      this.props.getLessonsList();
+	      this.props.successfulUpdate();
+	    }).bind(this))['catch'](function (serverData) {
+	      console.log('failed to update the lesson');
+	      console.log(serverData);
 	    });
 	  },
 	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le;
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.lesson._id;
 	    return React.createElement(
 	      'div',
 	      { className: 'row' },
@@ -26608,6 +26612,7 @@
 
 	var React = __webpack_require__(2);
 	var KlassBox = __webpack_require__(210);
+	var Call = __webpack_require__(204);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26623,20 +26628,11 @@
 	  getKlassList: function getKlassList() {
 	    var studentPanel = this;
 	    var path = "/teachers/" + this.props.params.id + "/klasses";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      var newKlasses = serverData.klasses;
-	      studentPanel.setState({
-	        klasses: newKlasses
+	    Call.call(path, 'get').then((function (serverData) {
+	      this.setState({
+	        klasses: serverData.klasses
 	      });
-	    });
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the klasses');
 	      console.log(serverData);
 	    });
@@ -26644,53 +26640,37 @@
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
-	    var studentPanel = this;
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    var name = $(event.target).find('#name').val();
-	    var grade = $(event.target).find("#grade").val();
-	    var pin = $(event.target).find('#pin').val();
+	    var form = event.target;
+	    var action = $(form).attr('action');
+	    var method = $(form).attr('method');
+	    var name = $(form).find('#name').val();
+	    var grade = $(form).find("#grade").val();
+	    var pin = $(form).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
+	      form.reset();
 	      if (method === "post") {
-	        var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
-	        studentPanel.setState({
+	        var newKlasses = this.state.klasses.concat(serverData.klass);
+	        this.setState({
 	          klasses: newKlasses
 	        });
 	      } else if (method === "put") {
 	        this.getKlassList();
 	      }
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error creating that klass');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error creating the class');
 	      console.log(serverData);
 	    });
 	  },
 	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
 	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + klass_id;
-	    var method = 'delete';
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, 'delete').then((function (serverData) {
 	      this.getKlassList();
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error deleting the class');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error deleting the klass');
 	      console.log(serverData);
 	    });
 	  },

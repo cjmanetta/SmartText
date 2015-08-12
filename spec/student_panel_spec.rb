@@ -8,7 +8,7 @@ describe 'As a teacher user I can', type: :feature do
     within "form#signUp" do
       fill_in 'first_name', with: 'Adam'
       fill_in 'last_name', with: 'Fluke'
-      fill_in 'username', with: 'jack222456789'
+      fill_in 'username', with: 'jack222226789'
       fill_in "password", with: 'abc123'
     end
     click_button 'Sign Up'
@@ -24,7 +24,7 @@ describe 'As a teacher user I can', type: :feature do
     click_link 'Teachers'
     expect(page).to have_selector '#teacherLoginForm'
     within "form#teacherLoginForm" do
-      fill_in 'username', with: 'jack222456789'
+      fill_in 'username', with: 'jack222226789'
       fill_in "password", with: 'abc123'
     end
     click_button 'Log In'
@@ -37,13 +37,13 @@ describe 'As a teacher user I can', type: :feature do
       click_link 'Teachers'
       expect(page).to have_selector '#teacherLoginForm'
       within "form#teacherLoginForm" do
-        fill_in 'username', with: 'jack222456789'
+        fill_in 'username', with: 'jack222226789'
         fill_in "password", with: 'abc123'
       end
       click_button 'Log In'
     }
     it 'log out' do
-      click_link 'Log Out'
+      click_button 'Log Out'
       expect(page).to have_selector '#main'
       expect(page).to have_selector "#authBox"
     end

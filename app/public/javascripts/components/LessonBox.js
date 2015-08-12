@@ -19,6 +19,11 @@ var LessonBox = React.createClass({
   makeActive: function(){
     this.props.activate(this.props.lesson._id);
   },
+  handleSuccessfulUpdate: function(){
+    this.setState({
+      display: 'panel'
+    });
+  },
   render: function() {
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
@@ -42,7 +47,10 @@ var LessonBox = React.createClass({
               <button type="button" className="btn btn-default">Delete</button>
             </div>
             <div className="panel-body">
-              <EditLesson teacher={this.props.teacher}/>
+              <EditLesson teacher={this.props.teacher}
+                          lesson={this.props.lesson}
+                          getLessonsList={this.props.getLessonsList}
+                          successfulUpdate={this.handleSuccessfulUpdate} />
             </div>
           </div>
       </div>

@@ -145,7 +145,7 @@ var TeacherView = React.createClass({
     });
   },
   handleGetLessonsList: function(){
-    this.getLessonsList(this.state.teacher._id);
+    this.getLessonsList(this.state.teacher);
   },
   render: function() {
 
