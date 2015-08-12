@@ -6,7 +6,8 @@ mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var port = process.env.PORT || 8080;
-var path = require('path')
+var path = require('path');
+var nodeSass = require('node-sass-middleware');
 
 // app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
 
@@ -16,6 +17,7 @@ var path = require('path')
 
 //   }
 // })
+
 
 var teachers_routes = require('./routes/teacher')
 var lessons_routes = require('./routes/lesson')
@@ -37,6 +39,19 @@ app.use('/teachers/:id/lessons/', lessons_routes)
 app.use('/teachers/:id/klasses/:klass_id/students', students_routes)
 app.use('/students/login', student_login_routes)
 
+
+var srcPath = __dirname + '/sass'
+var destPath = __dirname +'/public/css'
+
+app.use(
+  nodeSass({
+    src: srcPath,
+    dest: destPath,
+    debug: true,
+    outputStyle: "compresses",
+    prefix: "/css"
+  })
+)
 
 
 

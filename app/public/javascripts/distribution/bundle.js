@@ -56,13 +56,13 @@
 	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(201);
+	var TeacherView = __webpack_require__(202);
 	var StudentPanel = __webpack_require__(209);
 	var LessonPanel = __webpack_require__(203);
 	var ReviewPanel = __webpack_require__(213);
 	var Grid = __webpack_require__(214);
 	var Home = __webpack_require__(216);
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var Call = __webpack_require__(204);
 
 	//functions defined in the global scope to be used in many components
@@ -25148,6 +25148,7 @@
 	var React = __webpack_require__(2);
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
+	var Header = __webpack_require__(201);
 	var socket = io();
 
 	var StudentView = React.createClass({
@@ -25423,14 +25424,14 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'container' },
+	      null,
+	      React.createElement(Header, { student: this.state.student }),
 	      React.createElement(
-	        'h1',
-	        null,
-	        'Student View'
-	      ),
-	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
-	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	        'div',
+	        { className: 'container' },
+	        React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      )
 	    );
 	  }
 	});
@@ -25621,7 +25622,104 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(202);
+	var Header = React.createClass({
+	  displayName: "Header",
+
+	  mixins: [Router.Navigation, Router.State],
+	  render: function render() {
+	    var teacher = this.props.teacher;
+	    var student = this.props.student;
+	    var content = null;
+	    var buttons = null;
+	    var logo = null;
+
+	    if (teacher) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        teacher.first_name,
+	        " ",
+	        teacher.last_name
+	      );
+	      buttons = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: "/", className: "l-out btn btn-danger navbar-btn" },
+	          "Log Out"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-default navbar-btn" },
+	          "Teacher Dashboard"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-default navbar-btn" },
+	          "Students Panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-default navbar-btn" },
+	          "Lessons Panel"
+	        ),
+	        React.createElement("span", { className: "clear" })
+	      );
+	      logo = React.createElement(
+	        Link,
+	        { to: "lessonPanel", className: "navbar-brand", params: { id: teacher._id } },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    } else if (student) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        student.first_name
+	      );
+	      logo = React.createElement(
+	        Link,
+	        { to: "students", className: "navbar-brand", params: { id: student._id } },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    } else {
+	      logo = React.createElement(
+	        Link,
+	        { to: "/", className: "navbar-brand" },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    }
+
+	    return React.createElement(
+	      "nav",
+	      { className: "navbar navbar-default navbar-fixed-top" },
+	      React.createElement(
+	        "div",
+	        { className: "container-fluid" },
+	        logo,
+	        content,
+	        buttons
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = __webpack_require__(201);
 	var LessonPanel = __webpack_require__(203);
 	var Call = __webpack_require__(204);
 
@@ -25770,100 +25868,6 @@
 	});
 
 	module.exports = TeacherView;
-
-/***/ },
-/* 202 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(2);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
-
-	var Header = React.createClass({
-	  displayName: 'Header',
-
-	  mixins: [Router.Navigation, Router.State],
-	  confirmLogout: function confirmLogout() {
-	    if (confirm('Are you sure you want to logout?')) {
-	      this.transitionTo('/');
-	    }
-	  },
-	  render: function render() {
-	    var teacher = this.props.teacher;
-	    var student = this.props.student;
-	    var content = null;
-	    var buttons = null;
-
-	    if (teacher) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        teacher.first_name,
-	        ' ',
-	        teacher.last_name
-	      );
-	      buttons = React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'div',
-	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
-	          'Log Out'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
-	          'Teacher Dashboard'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
-	          'Students Panel'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
-	          'Lessons Panel'
-	        ),
-	        React.createElement('span', { className: 'clear' })
-	      );
-	    } else if (student) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        student.first_name
-	      );
-	    } else {
-	      content = null;
-	    }
-
-	    return(
-	      //add full navbar components brand buttons etc
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar navbar-default navbar-fixed-top' },
-	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
-	          React.createElement(
-	            'a',
-	            { className: 'navbar-brand', href: '#' },
-	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
-	          ),
-	          content,
-	          buttons
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Header;
 
 /***/ },
 /* 203 */
@@ -27192,7 +27196,7 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
@@ -27355,7 +27359,7 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
