@@ -60,6 +60,7 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
+      debugger
       this.getArticle(serverData.lesson.article_id);
       this.getQuestion(serverData.lesson.question_id);
       this.setState({

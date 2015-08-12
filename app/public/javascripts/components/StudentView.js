@@ -200,8 +200,8 @@ var StudentView = React.createClass({
       student_end = selection.anchorOffset;
     }
     if(correct_start > correct_end){
-      correct_start = this.state.lesson.question.green_end;
-      correct_end = this.state.lesson.question.green_start;
+      correct_start = this.state.question.green_end;
+      correct_end = this.state.question.green_start;
     }
 
     var correct_length = correct_end - correct_start;
