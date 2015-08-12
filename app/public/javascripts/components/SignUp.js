@@ -25,18 +25,6 @@ var SignUp = React.createClass({
     var pin = $(event.target).find('#pin').val()
     var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
 
-    auth.login(username, password, function(loggedIn){
-      if (!loggedIn){
-        return this.setState({error: true});
-      }
-      if (nextPath){
-        Router.replaceWith(nextPath);
-      } else {
-        Route.replaceWith('/')
-      }
-    })
-
-
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -46,10 +34,13 @@ var SignUp = React.createClass({
 
     request.done(function(serverData){
 
-      if(serverData.teacher){
-        signUp.transitionTo('teachers', {id: serverData.teacher._id});
-      } else {
+      if(serverData.teacher === null){
+        console.log('in first route')
+        signUp.transitionTo('/')
+      } else if (serverData.student) {
         signUp.transitionTo('students', {id: serverData.student._id});
+      } else {
+        signUp.transitionTo('teachers', {id: serverData.teacher._id});
       }
     })
     request.fail(function(serverData){
