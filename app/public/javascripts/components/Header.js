@@ -38,7 +38,7 @@ var Header = React.createClass({
       //add full navbar components brand buttons etc
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">SmartText</a>
+          <a className="navbar-brand" href="#"><img src="../../../images/smartext_final.png" className="logo" alt="SmartText" /></a>
           {content}
           {buttons}
         </div>

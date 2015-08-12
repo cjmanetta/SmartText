@@ -25899,7 +25899,7 @@
 	          React.createElement(
 	            'a',
 	            { className: 'navbar-brand', href: '#' },
-	            'SmartText'
+	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
 	          ),
 	          content,
 	          buttons
@@ -26391,30 +26391,7 @@
 	      var attributeId = "list-group-item_";
 	      attributeId += index;
 	      index += 1;
-	      return React.createElement(
-	        "li",
-	        { role: "presentation", id: attributeId, onClick: this.handleSelection, key: lesson.id, data: lesson },
-	        React.createElement(
-	          "a",
-	          { className: "lesson" },
-	          React.createElement(
-	            "span",
-	            { className: "l-title" },
-	            lesson.title
-	          ),
-	          React.createElement(
-	            "span",
-	            { className: "r-date" },
-	            lesson.date
-	          ),
-	          React.createElement(
-	            "span",
-	            null,
-	            "teacher=",
-	            this.props.teacher
-	          )
-	        )
-	      );
+	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
 	    }).bind(this));
 
 	    return React.createElement(
@@ -26445,6 +26422,11 @@
 	});
 
 	module.exports = LessonSelect;
+
+	/*
+	  <li role="presentation" id={attributeId} onClick={this.handleSelection} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{lesson.title}</span><span className="r-date">{lesson.date}</span><span>teacher={this.props.teacher }</span></a></li>
+	  )
+	*/
 
 /***/ },
 /* 206 */

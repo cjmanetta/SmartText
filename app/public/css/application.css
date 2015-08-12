@@ -3,6 +3,12 @@ body {
   font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
 }
 
+.logo {
+  position: relative;
+  top: -18px;
+  left: -5px;
+}
+
 .lesson {
   position: relative;
 }
