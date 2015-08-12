@@ -95,11 +95,15 @@ router.get('/:id/edit', function(req, res){
 
 router.route('/login')
 .post(function(req, res){
-	Teacher.findOne({"username" : req.body.username}, function(err, teacher){
-		console.log(teacher);
+	Teacher.findOne({username: req.body.username}, function(err, teacher){
 		if (err){
 			return console.error(err);
-		} else if (teacher.password === req.body.password){
+			res.format({
+				'application/json': function(){
+					res.send({teacher: null});
+				}
+			})
+		} else if (teacher && teacher.password === req.body.password){
 
 			res.format({
 				'text/html': function(){
@@ -110,7 +114,7 @@ router.route('/login')
 				}
 			})
 		} else {
-		  res.sendStatus(401);
+		  res.send({teacher: null});
 		}
 	})
 })

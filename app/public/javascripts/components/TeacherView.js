@@ -26,7 +26,6 @@ var TeacherView = React.createClass({
     })
   },
   componentWillMount: function(){
-    auth.onChange = this.updateAuth;
     auth.login();
   },
   componentDidMount: function() {
