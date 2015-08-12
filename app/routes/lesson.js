@@ -1,5 +1,4 @@
 var express = require('express');
-//not sure if webpack.router works
 var router = express.Router({mergeParams: true});
 var mongoose = require('mongoose'); //mongo connection
 mongoose.createConnection(process.env.MONGOHQ_URL || 'mongodb://localhost/test')
@@ -119,7 +118,7 @@ router.route('/:lesson_id')
   })
 })
 .delete(function(req, res){
-  Lesson.remove({_id: req.params.id}, function(err, lesson){
+  Lesson.remove({_id: req.params.lesson_id}, function(err, lesson){
     if (err) {
       return console.log(err)
     } else {
