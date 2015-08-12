@@ -25819,24 +25819,24 @@
 	        'div',
 	        null,
 	        React.createElement(
-	          Link,
-	          { to: 'studentPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
-	          'Students Panel'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
-	          'Lessons Panel'
-	        ),
-	        React.createElement(
 	          'div',
-	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
+	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
 	          'Log Out'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
 	          'teacher dashboard'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
+	          'Students Panel'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
+	          'Lessons Panel'
 	        )
 	      );
 	    } else if (student) {
@@ -25860,7 +25860,7 @@
 	          React.createElement(
 	            'a',
 	            { className: 'navbar-brand', href: '#' },
-	            'SmartText'
+	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
 	          ),
 	          content,
 	          buttons
@@ -26344,6 +26344,11 @@
 	});
 
 	module.exports = LessonSelect;
+
+	/*
+	  <li role="presentation" id={attributeId} onClick={this.handleSelection} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{lesson.title}</span><span className="r-date">{lesson.date}</span><span>teacher={this.props.teacher }</span></a></li>
+	  )
+	*/
 
 /***/ },
 /* 207 */
