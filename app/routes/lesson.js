@@ -95,14 +95,12 @@ router.route('/:lesson_id')
   })
 })
 .put(function(req, res){
-  Lesson.findById(req.params.id, function(err, lesson){
+  Lesson.findById(req.params.lesson_id, function(err, lesson){
     if (err) {
       return console.error(err)
     } else {
-      lesson.first_name = req.body.first_name;
-      lesson.last_name = req.body.last_name;
-      lesson.username = req.body.username;
-      lesson.password = req.body.password;
+      lesson.title = req.body.title;
+      lesson.data = req.body.date;
 
       lesson.save(function(err, lesson){
         console.log('edited: ' + lesson);

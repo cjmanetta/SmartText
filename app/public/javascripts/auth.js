@@ -1,11 +1,7 @@
-var localstorage = window.localStorage
+var localStorage = window.localStorage
 
-  function login(email, password) {
-    if (localStorage.token) {
-      this.onChange(true);
-      return;
-    }
-    logInRequest()
+  function login() {
+    localStorage.token = Math.random().toString(36).substring(7)
   }
 
   function getToken() {
@@ -24,18 +20,9 @@ var localstorage = window.localStorage
     return !!localStorage.token;
   }
 
-  function onChange() {}
-
-  function logInRequest() {
-    setTimeout(() => {
-      localstorage.token = Math.random().toString(36).substring(7)
-      console.log('login token:'+localstorage.token)
-    }, 0);
-  }
 
   exports.login = login;
   exports.getToken = getToken;
   exports.logout = logout;
   exports.loggedIn = loggedIn;
-  exports.onChange = onChange;
-  exports.logInRequest = logInRequest;
+

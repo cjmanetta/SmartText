@@ -4,7 +4,7 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
-var Auth = require('../auth')
+var auth = require('../auth')
 var Call = require('../call');
 
 
@@ -26,7 +26,6 @@ var TeacherView = React.createClass({
     })
   },
   componentWillMount: function(){
-    auth.onChange = this.updateAuth;
     auth.login();
   },
   componentDidMount: function() {
@@ -156,7 +155,7 @@ var TeacherView = React.createClass({
     });
   },
   handleGetLessonsList: function(){
-    this.getLessonsList(this.state.teacher._id);
+    this.getLessonsList(this.state.teacher);
   },
   render: function() {
 

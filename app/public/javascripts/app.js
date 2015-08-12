@@ -1,5 +1,5 @@
-var React = require("react");
 var _ = require("underscore");
+var React = require('react')
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link, State } = Router;
 
@@ -11,7 +11,6 @@ var ReviewPanel = require("./components/ReviewPanel");
 var Grid = require("./components/Grid");
 var Home = require("./components/Home");
 var Header = require("./components/Header");
-var Auth = require('./auth');
 var Call = require('./call');
 
 //functions defined in the global scope to be used in many components

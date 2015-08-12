@@ -173,13 +173,15 @@ var LessonPanel = React.createClass({
     } else {
       var textBox = <div></div>
     }
+
     var lessons = this.props.lessons.map(
       function(lesson){
         return(
         <LessonBox lesson={lesson}
                    teacher={this.props.teacher }
                    delete={this.handleDeleteLesson}
-                   activate={this.setActiveLesson} />
+                   activate={this.setActiveLesson}
+                   getLessonsList={this.props.getLessonsList}/>
         )
       }.bind(this)
     );
