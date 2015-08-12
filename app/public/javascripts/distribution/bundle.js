@@ -25333,7 +25333,6 @@
 	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
-	      debugger;
 	      socket.emit('select', {
 	        student: this.state.student,
 	        selection: highlightedText,
@@ -25354,8 +25353,8 @@
 	      student_end = selection.anchorOffset;
 	    }
 	    if (correct_start > correct_end) {
-	      correct_start = this.state.lesson.question.green_end;
-	      correct_end = this.state.lesson.question.green_start;
+	      correct_start = this.state.question.green_end;
+	      correct_end = this.state.question.green_start;
 	    }
 
 	    var correct_length = correct_end - correct_start;
@@ -25837,7 +25836,8 @@
 	          Link,
 	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
 	          'Lessons Panel'
-	        )
+	        ),
+	        React.createElement('span', { className: 'clear' })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -25876,7 +25876,7 @@
 /* 203 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	module.exports = {
 	  login: function login(username, pass) {
@@ -25893,6 +25893,8 @@
 	    this.onChange(false);
 	  },
 	  loggedIn: function loggedIn() {
+	    console.log('in login');
+	    console.log(localStorage.token);
 	    return !!localStorage.token;
 	  },
 	  onChange: function onChange() {}

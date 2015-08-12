@@ -13,6 +13,8 @@ module.exports = {
     this.onChange(false);
   },
   loggedIn: function(){
+    console.log('in login')
+    console.log(localStorage.token)
     return !!localStorage.token;
   },
   onChange: function(){}
