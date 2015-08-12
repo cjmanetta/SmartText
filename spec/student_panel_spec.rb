@@ -12,7 +12,6 @@ describe 'As a teacher user I can', type: :feature do
       fill_in "password", with: 'abc123'
     end
     click_button 'Sign Up'
-    expect(page).to have_selector '#main'
     expect(page).to_not have_selector "form#signUp"
     expect(page).to have_content "Welcome, Adam"
   end

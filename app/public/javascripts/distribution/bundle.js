@@ -25824,8 +25824,8 @@
 	        'div',
 	        null,
 	        React.createElement(
-	          'div',
-	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
+	          Link,
+	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
 	          'Log Out'
 	        ),
 	        React.createElement(
@@ -27206,7 +27206,7 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Call = __webpack_require__(205);
+	var Call = __webpack_require__(204);
 
 	var Header = __webpack_require__(202);
 	var RightBar = __webpack_require__(198);
