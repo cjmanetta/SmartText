@@ -1,5 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
+var auth = require('../auth')
 
 var SignUp = React.createClass({
   mixins: [
@@ -8,11 +9,11 @@ var SignUp = React.createClass({
   ],
   getInitialState: function() {
     return {
-      authBox: 'Students'
+      authBox: 'Students',
+      error: false
     };
   },
   handleSubmit: function(event){
-
     event.preventDefault();
     var signUp = this;
     var action = $(event.target).attr('action');
@@ -23,6 +24,19 @@ var SignUp = React.createClass({
     var password = $(event.target).find('#password').val()
     var pin = $(event.target).find('#pin').val()
     var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
+
+    auth.login(username, password, function(loggedIn){
+      if (!loggedIn){
+        return this.setState({error: true});
+      }
+      if (nextPath){
+        Router.replaceWith(nextPath);
+      } else {
+        Route.replaceWith('/')
+      }
+    })
+
+
     var request = $.ajax({
       url:      action,
       method:   method,
@@ -39,7 +53,6 @@ var SignUp = React.createClass({
       }
     })
     request.fail(function(serverData){
-
       console.log(serverData);
     });
   },
@@ -57,6 +70,7 @@ var SignUp = React.createClass({
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
         </ul>
         <div className="row">
+
           <form id="teacherLoginForm" className="col-sm-4 col-md-4 col-lg-4" action="/teachers/login" method="post" onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label htmlFor="username">Username</label>
@@ -68,6 +82,7 @@ var SignUp = React.createClass({
             </div>
             <button type="submit" className="btn btn-default">Log In</button>
           </form>
+
           <form id="signUp" className="col-sm-8 col-md-8 col-lg-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label htmlFor="first_name">First Name</label>

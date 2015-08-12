@@ -4,7 +4,7 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
-var Auth = require('../auth.js')
+var auth = require('../auth')
 
 var TeacherView = React.createClass({
   getInitialState: function(){
@@ -14,9 +14,18 @@ var TeacherView = React.createClass({
       article: {},
       question: {prompt: "none"},
       answers: [],
-      loggedIn: Auth.loggedIn(),
+      loggedIn: auth.loggedIn(),
       lessons: [],
     }
+  },
+  updateAuth(loggedIn){
+    this.setState({
+      loggedIn: !!loggedIn
+    })
+  },
+  componentWillMount: function(){
+    auth.onChange = this.updateAuth;
+    auth.login();
   },
   componentDidMount: function() {
     var action = '/teachers/' + this.props.params.id;
@@ -81,7 +90,6 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
-      debugger
       this.getArticle(serverData.lesson.article_id);
       this.getQuestion(serverData.lesson.question_id);
       this.setState({

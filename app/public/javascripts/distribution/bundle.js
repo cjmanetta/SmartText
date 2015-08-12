@@ -57,13 +57,13 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(209);
-	var LessonPanel = __webpack_require__(204);
-	var ReviewPanel = __webpack_require__(213);
-	var Grid = __webpack_require__(214);
-	var Home = __webpack_require__(216);
+	var StudentPanel = __webpack_require__(205);
+	var LessonPanel = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/LessonPanel\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var ReviewPanel = __webpack_require__(209);
+	var Grid = __webpack_require__(210);
+	var Home = __webpack_require__(212);
 	var Header = __webpack_require__(202);
-	var Auth = __webpack_require__(203);
+	var auth = __webpack_require__(203);
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
 	  return new Promise(function (resolve, reject) {
@@ -84,12 +84,6 @@
 	  });
 	};
 
-	function requireAuth(nextState, redirectTo) {
-	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
-	}
-
-	// var history = createHistory();
-
 	//Routes for the react router
 	var routes = React.createElement(
 	  Route,
@@ -98,9 +92,9 @@
 	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
-	    { path: "teachers/:id", name: "teachers", handler: TeacherView, onEnter: requireAuth },
+	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
 	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
-	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
+	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel, onEnter: requireAuth }),
 	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid }),
 	    React.createElement(Route, { path: "lessons/:lesson_id", name: "reviewPanel", handler: ReviewPanel })
 	  )
@@ -111,7 +105,17 @@
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
+	    loggedIn: auth.loggedIn();
 	    teacher: null;
+	  },
+	  setStateOnAuth: function setStateOnAuth() {
+	    this.setState({
+	      loggedIn: loggedIn
+	    });
+	  },
+	  componentWillMount: function componentWillMount() {
+	    auth.onChange = this.setStateOnAuth.bind(this);
+	    auth.login();
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -25645,8 +25649,8 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(204);
-	var Auth = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./LessonPanel\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var auth = __webpack_require__(203);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25658,9 +25662,18 @@
 	      article: {},
 	      question: { prompt: "none" },
 	      answers: [],
-	      loggedIn: Auth.loggedIn(),
+	      loggedIn: auth.loggedIn(),
 	      lessons: []
 	    };
+	  },
+	  updateAuth: function updateAuth(loggedIn) {
+	    this.setState({
+	      loggedIn: !!loggedIn
+	    });
+	  },
+	  componentWillMount: function componentWillMount() {
+	    auth.onChange = this.updateAuth;
+	    auth.login();
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var action = '/teachers/' + this.props.params.id;
@@ -25721,7 +25734,6 @@
 	    });
 
 	    request.done((function (serverData) {
-	      debugger;
 	      this.getArticle(serverData.lesson.article_id);
 	      this.getQuestion(serverData.lesson.question_id);
 	      this.setState({
@@ -25874,16 +25886,14 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Auth = __webpack_require__(203);
+	var auth = __webpack_require__(203);
 
 	var Header = React.createClass({
 	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
 	  confirmLogout: function confirmLogout() {
-	    if (confirm("Are you sure you want to log out?")) {
-	      Auth.logout();
-	    }
+	    auth.logout();
 	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
@@ -25913,14 +25923,14 @@
 	          'Lessons Panel'
 	        ),
 	        React.createElement(
+	          Link,
+	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Teacher Dashboard'
+	        ),
+	        React.createElement(
 	          'div',
 	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
 	          'Log Out'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
-	          'teacher dashboard'
 	        )
 	      );
 	    } else if (student) {
@@ -25962,770 +25972,57 @@
 
 	'use strict';
 
-	module.exports = {
-	  login: function login(username, pass) {
-	    if (localStorage.token) {
-	      this.onChange(true);
-	      return;
-	    }
-	  },
-	  getToken: function getToken() {
-	    return localStorage.token;
-	  },
-	  logout: function logout(cd) {
-	    delete localStorage.token;
-	    this.onChange(false);
-	  },
-	  loggedIn: function loggedIn() {
-	    console.log('in login');
-	    console.log(localStorage.token);
-	    return !!localStorage.token;
-	  },
-	  onChange: function onChange() {}
-	};
+	var localstorage = window.localStorage;
 
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
-
-	var LessonSelect = __webpack_require__(205);
-	var NewLesson = __webpack_require__(208);
-	var LessonBox = __webpack_require__(206);
-	var MainText = __webpack_require__(200);
-
-	var LessonPanel = React.createClass({
-	  displayName: "LessonPanel",
-
-	  mixins: [Router.Navigation, Router.State],
-	  getInitialState: function getInitialState() {
-	    return {
-	      article: null,
-	      textBox: null,
-	      answer: null,
-	      question: null,
-	      answered: false,
-	      lessonPills: 'Lessons',
-	      selections: []
-	    };
-	  },
-	  getArticle: function getArticle() {
-	    var article = $("#article").val();
-	  },
-	  handleSubmit: function handleSubmit(event) {
-	    event.preventDefault();
-
-	    //here is where we need to use the question and answers in state
-	    //to make the lesson with all of the correct ids in it :-)
-	    var lessonPanel = this;
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    var title = $("#title").val();
-	    var date = $("#date").val();
-	    // var standard = $("#standard").val();
-	    var text = $("#text").val();
-	    var question = $("#question").val();
-	    var answer = $("#answer").val();
-	    var article_id = this.state.article._id;
-	    var question_id = this.state.question._id;
-	    var data = { title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id };
-	    debugger;
-	    this.props.newLesson(action, data);
-
-	    this.setState({
-	      article: null,
-	      textBox: null,
-	      answer: null,
-	      question: null,
-	      answered: false,
-	      lessonPills: 'Lessons'
-	    });
-	  },
-	  handleAddArticleClick: function handleAddArticleClick() {
-	    this.setState({ textBox: "input" });
-	  },
-	  handleArticleSubmit: function handleArticleSubmit(event) {
-
-	    event.preventDefault();
-	    var lessonPanel = this;
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    var title = $(event.target).find('#title').val();
-	    var question = $(event.target).find('#question').val();
-	    var author = $("#author").val();
-	    var content = $(event.target).find('#articleBody').val();
-
-	    var request = $.ajax({
-	      url: '/questions',
-	      method: 'post',
-	      data: { prompt: question },
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
-	      this.setState({
-	        question: serverData.question
-	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log(serverData);
-	      console.log("failed to create question");
-	    });
-
-	    var data = { title: title, author: author, content: content };
-
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-
-	        lessonPanel.setState({
-	          article: serverData.article
-	        });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	        console.log("failed to create article");
-	      }
-	    });
-	  },
-	  handleSelect: function handleSelect(selection) {
-	    var lessonPanel = this;
-	    var green_start = selection.anchorOffset;
-	    var green_end = selection.focusOffset;
-	    var path = "/questions/" + this.state.question._id;
-	    var request = $.ajax({
-	      url: path,
-	      method: "put",
-	      data: { prompt: this.state.question.prompt, green_start: green_start, green_end: green_end },
-	      dataType: "json"
-	    }).done(function (serverData) {
-	      lessonPanel.setState({
-	        question: serverData.question,
-	        answered: true
-	      });
-	    }).fail(function (serverData) {
-	      console.log('You have failed to answer the quesiton');
-	      console.log(serverData);
-	    });
-	  },
-	  handleDeleteLesson: function handleDeleteLesson(lesson_id) {
-	    var action = '/teachers/' + this.props.teacher._id + "/lessons/" + lesson_id;
-	    var method = 'delete';
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
-	      this.props.getLessonsList();
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error deleting the class');
-	      console.log(serverData);
-	    });
-	  },
-	  handlePillClick: function handlePillClick(event) {
-	    event.preventDefault();
-	    this.setState({
-	      lessonPills: $(event.target).text()
-	    });
-	  },
-	  setActiveLesson: function setActiveLesson(lesson_id) {
-	    this.props.activate(lesson_id);
-	  },
-	  render: function render() {
-	    if (this.state.article && this.state.answer) {
-	      var submitButton = React.createElement(
-	        "button",
-	        { type: "submit", className: "btn btn-default" },
-	        "Submit"
-	      );
-	      var addButton = null;
-	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
-	      var submitButton = React.createElement(
-	        "button",
-	        { type: "submit", className: "btn btn-default" },
-	        "Submit"
-	      );
-	      var addButton = null;
-	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
-	      var submitButton = null;
-	      var addButton = null;
-	    } else {
-	      var addButton = React.createElement(
-	        "button",
-	        { onClick: this.handleAddArticleClick, className: "btn btn-default" },
-	        "Add Text"
-	      );
-	      var submitButton = null;
-	    }
-
-	    if (this.state.textBox === "input" && this.state.article === null) {
-
-	      var textBox = React.createElement(
-	        "form",
-	        { id: "newArticle", action: "/articles", method: "post", onSubmit: this.handleArticleSubmit },
-	        React.createElement(
-	          "div",
-	          { className: "form-group" },
-	          React.createElement(
-	            "label",
-	            { htmlFor: "title" },
-	            "Text Title"
-	          ),
-	          React.createElement("input", { type: "text", className: "form-control", name: "title", id: "title", placeholder: "Text Title" })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "form-group" },
-	          React.createElement(
-	            "label",
-	            { htmlFor: "author" },
-	            "Author"
-	          ),
-	          React.createElement("input", { type: "text", className: "form-control", name: "author", id: "author", placeholder: "Author Name" })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "form-group" },
-	          React.createElement(
-	            "label",
-	            { htmlFor: "author" },
-	            "Text"
-	          ),
-	          React.createElement("textarea", { className: "form-control", rows: "3", placeholder: "Text Body", name: "articleBody", id: "articleBody" })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "form-group" },
-	          React.createElement(
-	            "label",
-	            { htmlFor: "question" },
-	            "Question"
-	          ),
-	          React.createElement("input", { type: "text", className: "form-control", name: "question", id: "question", placeholder: "Question" })
-	        ),
-	        React.createElement(
-	          "button",
-	          { type: "submit", className: "btn btn-default" },
-	          "Submit Text"
-	        )
-	      );
-	    } else {
-	      var textBox = React.createElement("div", null);
-	    }
-	    var lessons = this.props.lessons.map((function (lesson) {
-	      return React.createElement(LessonBox, { lesson: lesson,
-	        teacher: this.props.teacher,
-	        "delete": this.handleDeleteLesson,
-	        activate: this.setActiveLesson });
-	    }).bind(this));
-
-	    if (this.props.activeLesson) {
-	      var activeLesson = React.createElement(
-	        "div",
-	        { className: "panel panel-default" },
-	        React.createElement(
-	          "div",
-	          { className: "panel-heading" },
-	          React.createElement(
-	            "h5",
-	            { className: "panel-title" },
-	            "Current Active Lesson:",
-	            this.props.activeLesson.title
-	          ),
-	          React.createElement(
-	            "p",
-	            null,
-	            this.props.activeLesson.date
-	          ),
-	          React.createElement(
-	            "div",
-	            { className: "panel-body" },
-	            React.createElement(
-	              Link,
-	              { to: "grid", params: { id: this.props.teacher._id }, className: "btn btn-default navbar-btn" },
-	              "Go to Lesson"
-	            )
-	          )
-	        )
-	      );
-	    }
-
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
-	    if (this.state.lessonPills === 'Lessons') {
-	      var lessonPills = React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "ul",
-	          { className: "nav nav-pills" },
-	          React.createElement(
-	            "li",
-	            { role: "presentation", className: "active" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "Lessons"
-	            )
-	          ),
-	          React.createElement(
-	            "li",
-	            { role: "presentation" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "New Lesson"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          null,
-	          activeLesson,
-	          lessons
-	        )
-	      );
-	    } else if (this.state.lessonPills === 'New Lesson') {
-	      var lessonPills = React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "ul",
-	          { className: "nav nav-pills" },
-	          React.createElement(
-	            "li",
-	            { role: "presentation" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "Lessons"
-	            )
-	          ),
-	          React.createElement(
-	            "li",
-	            { role: "presentation", className: "active" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "New Lesson"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "form",
-	          { id: "newLesson", action: formAction, method: "post", onSubmit: this.handleSubmit },
-	          React.createElement(
-	            "div",
-	            { className: "form-group" },
-	            React.createElement(
-	              "label",
-	              { htmlFor: "title" },
-	              "Lesson Title"
-	            ),
-	            React.createElement("input", { type: "text", className: "form-control", name: "title", id: "title", placeholder: "Lesson Title" })
-	          ),
-	          React.createElement(
-	            "div",
-	            { className: "form-group" },
-	            React.createElement(
-	              "label",
-	              { htmlFor: "date" },
-	              "Lesson Date"
-	            ),
-	            React.createElement("input", { type: "date", className: "form-control", name: "date", id: "date", placeholder: "MM/DD/YYYY" })
-	          ),
-	          submitButton
-	        ),
-	        addButton,
-	        textBox,
-	        mainText
-	      );
-	    }
-	    return React.createElement(
-	      "div",
-	      { id: "lessonPanel", className: "container" },
-	      React.createElement(
-	        "div",
-	        { className: "row" },
-	        lessonPills
-	      )
-	    );
+	function login(email, password) {
+	  if (localStorage.token) {
+	    this.onChange(true);
+	    return;
 	  }
-	});
+	  logInRequest();
+	}
 
-	module.exports = LessonPanel;
+	function getToken() {
+	  return localStorage.token;
+	}
+
+	function logout() {
+	  console.log('before delete:' + localStorage.token);
+	  delete localStorage.token;
+	  console.log('after delete:' + localStorage.token);
+	  console.log('logout');
+	  this.onChange(false);
+	}
+
+	function loggedIn() {
+	  return !!localStorage.token;
+	}
+
+	function onChange() {}
+
+	function logInRequest() {
+	  setTimeout(function () {
+	    localstorage.token = Math.random().toString(36).substring(7);
+	    console.log('login token:' + localstorage.token);
+	  }, 0);
+	}
+
+	exports.login = login;
+	exports.getToken = getToken;
+	exports.logout = logout;
+	exports.loggedIn = loggedIn;
+	exports.onChange = onChange;
+	exports.logInRequest = logInRequest;
 
 /***/ },
+/* 204 */,
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var LessonBox = __webpack_require__(206);
-
-	var LessonSelect = React.createClass({
-	  displayName: "LessonSelect",
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
-	    };
-	  },
-	  handleSelection: function handleSelection(event) {
-	    var selection = $(event.target).text();
-	    $('#select-result').text(selection);
-	  },
-	  render: function render() {
-	    var index = 0;
-	    console.log(this);
-	    var self = this;
-
-	    var lessons = this.state.lessons.map((function (lesson) {
-	      var attributeId = "list-group-item_";
-	      attributeId += index;
-	      index += 1;
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
-	    }).bind(this));
-
-	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      React.createElement(
-	        "p",
-	        { id: "feedback" },
-	        React.createElement(
-	          "span",
-	          null,
-	          "You have selected:"
-	        ),
-	        " ",
-	        React.createElement(
-	          "span",
-	          { id: "select-result" },
-	          "none"
-	        )
-	      ),
-	      React.createElement(
-	        "ul",
-	        { className: "nav nav-pills nav-stacked" },
-	        lessons
-	      )
-	    );
-	  }
-	});
-
-	module.exports = LessonSelect;
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var EditLesson = __webpack_require__(207);
-
-	var LessonBox = React.createClass({
-	  displayName: 'LessonBox',
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      display: 'panel'
-	    };
-	  },
-	  editClick: function editClick() {
-	    this.setState({
-	      display: "edit"
-	    });
-	  },
-	  deleteClick: function deleteClick() {
-	    this.props['delete'](this.props.lesson._id);
-	  },
-	  makeActive: function makeActive() {
-	    this.props.activate(this.props.lesson._id);
-	  },
-	  render: function render() {
-	    if (this.state.display === "panel") {
-	      var content = React.createElement(
-	        'div',
-	        { className: 'panel panel-default' },
-	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
-	            this.props.lesson.title
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            this.props.lesson.date
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'btn-group' },
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.makeActive },
-	              'Make Active Lesson'
-	            ),
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.editClick },
-	              'Edit'
-	            ),
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.deleteClick },
-	              'Delete'
-	            )
-	          )
-	        )
-	      );
-	    } else if (this.state.display === "edit") {
-	      var path = "/teachers/" + this.props.teacher._id + "/lessons" + this.props.lesson._id;
-	      var content = React.createElement(
-	        'div',
-	        { className: 'panel panel-default' },
-	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
-	            this.props.lesson.title
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            this.props.lesson.date
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'btn-group' },
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default' },
-	              'Delete'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'panel-body' },
-	            React.createElement(EditLesson, { teacher: this.props.teacher })
-	          )
-	        )
-	      );
-	    }
-	    return React.createElement(
-	      'div',
-	      { key: this.props.lesson._id },
-	      content
-	    );
-	  }
-	});
-
-	module.exports = LessonBox;
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(158);
-
-	var EditLesson = React.createClass({
-	  displayName: 'EditLesson',
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      lesson: {}
-	    };
-	  },
-
-	  handleSubmit: function handleSubmit(event) {
-	    var editLesson = this;
-	    event.preventDefault();
-	    var action = $(event.target).attr('action');
-	    var method = 'put';
-	    // var data = $(event.target).serialize();
-	    var title = $("#title").val();
-	    var date = $("#date").val();
-	    var data = { title: title, date: date };
-
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        EditLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
-	        EditLesson.setState({ title: serverData.lesson.title });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
-	    });
-	  },
-	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le;
-	    return React.createElement(
-	      'div',
-	      { className: 'row' },
-	      React.createElement(
-	        'form',
-	        { id: 'EditLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement('input', { type: 'hidden', name: '_method', value: 'put' }),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'title' },
-	            'Lesson Title'
-	          ),
-	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', value: this.state.lesson.title })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'date' },
-	            'Lesson Date'
-	          ),
-	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	        ),
-	        React.createElement(
-	          'button',
-	          { type: 'submit', className: 'btn btn-default' },
-	          'Submit'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = EditLesson;
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(158);
-
-	var NewLesson = React.createClass({
-	  displayName: 'NewLesson',
-
-	  mixins: [Router.Navigation, Router.State],
-	  getInitialState: function getInitialState() {
-	    return {
-	      lessons: []
-	    };
-	  },
-	  handleSubmit: function handleSubmit(event) {
-	    var newLesson = this;
-	    event.preventDefault();
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    // var data = $(event.target).serialize();
-	    var title = $("#title").val();
-	    var date = $("#date").val();
-	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
-
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        var newLessons = newLesson.state.lessons.concat(serverData.lesson);
-	        newLesson.setState({
-	          lessons: newLessons
-	        });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
-	    });
-	  },
-	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
-	    return React.createElement(
-	      'div',
-	      { className: 'row' },
-	      React.createElement(
-	        'h1',
-	        null,
-	        'New Lesson'
-	      ),
-	      React.createElement(
-	        'form',
-	        { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'title' },
-	            'Lesson Title'
-	          ),
-	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'date' },
-	            'Lesson Date'
-	          ),
-	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	        ),
-	        React.createElement(
-	          'button',
-	          { type: 'submit', className: 'btn btn-default' },
-	          'Submit'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = NewLesson;
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-	var KlassBox = __webpack_require__(210);
+	var KlassBox = __webpack_require__(206);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26857,13 +26154,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 210 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentList = __webpack_require__(211);
+	var StudentList = __webpack_require__(207);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -27000,13 +26297,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 211 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentBox = __webpack_require__(212);
+	var StudentBox = __webpack_require__(208);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27133,7 +26430,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 212 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27247,7 +26544,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 213 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27313,7 +26610,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 214 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27329,7 +26626,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(215);
+	var StudentTile = __webpack_require__(211);
 	var socket = io();
 
 	var Grid = React.createClass({
@@ -27431,7 +26728,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 215 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27473,7 +26770,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 216 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27483,7 +26780,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(217);
+	var SignUp = __webpack_require__(213);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27502,13 +26799,14 @@
 	//<Header />
 
 /***/ },
-/* 217 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
+	var auth = __webpack_require__(203);
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -27516,11 +26814,11 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      authBox: 'Students'
+	      authBox: 'Students',
+	      error: false
 	    };
 	  },
 	  handleSubmit: function handleSubmit(event) {
-
 	    event.preventDefault();
 	    var signUp = this;
 	    var action = $(event.target).attr('action');
@@ -27531,6 +26829,18 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
+
+	    auth.login(username, password, function (loggedIn) {
+	      if (!loggedIn) {
+	        return this.setState({ error: true });
+	      }
+	      if (nextPath) {
+	        Router.replaceWith(nextPath);
+	      } else {
+	        Route.replaceWith('/');
+	      }
+	    });
+
 	    var request = $.ajax({
 	      url: action,
 	      method: method,
@@ -27547,7 +26857,6 @@
 	      }
 	    });
 	    request.fail(function (serverData) {
-
 	      console.log(serverData);
 	    });
 	  },

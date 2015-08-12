@@ -8,7 +8,21 @@ var LessonBox = require("./LessonBox");
 var MainText = require("./MainText");
 
 
-var LessonPanel = React.createClass({
+var requireAuth = function(component){
+ statics: {
+    willTransitionTo: function(transition) {
+      if (!auth.loggedIn()) {
+        transition.redirect('/', {}, {'nextPath' : transition.path});
+      }
+    }
+  },
+  render () {
+    console.log('inside requireAuth')
+    return <Component {...this.props}/>
+  }
+}
+
+var LessonPanel = requireAuth(React.createClass({
   mixins: [
     Router.Navigation,
     Router.State,
@@ -266,5 +280,6 @@ var LessonPanel = React.createClass({
     )
   }
 });
+)
 
 module.exports = LessonPanel;
