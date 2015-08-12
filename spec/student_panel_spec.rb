@@ -42,7 +42,7 @@ describe 'As a teacher user I can', type: :feature do
       click_button 'Log In'
     }
     it 'log out' do
-      click_button 'Log Out'
+      click_link 'Log Out'
       expect(page).to have_selector '#main'
       expect(page).to have_selector "#authBox"
     end
