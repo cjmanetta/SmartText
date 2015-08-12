@@ -5,8 +5,32 @@ body {
 
 .logo {
   position: relative;
+  float: left;
   top: -18px;
   left: -5px;
+}
+
+.l-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.s-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.t-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.l-out {
+  float: right;
+  margin-right: 5px;
 }
 
 .lesson {
