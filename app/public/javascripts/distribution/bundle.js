@@ -25651,7 +25651,7 @@
 
 	var Header = __webpack_require__(202);
 	var LessonPanel = __webpack_require__(204);
-	var Auth = __webpack_require__(203);
+	var auth = __webpack_require__(203);
 	var Call = __webpack_require__(205);
 
 	var TeacherView = React.createClass({
@@ -25780,7 +25780,7 @@
 	    });
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
-	    this.getLessonsList(this.state.teacher._id);
+	    this.getLessonsList(this.state.teacher);
 	  },
 	  render: function render() {
 
@@ -26174,11 +26174,13 @@
 	    } else {
 	      var textBox = React.createElement('div', null);
 	    }
+
 	    var lessons = this.props.lessons.map((function (lesson) {
 	      return React.createElement(LessonBox, { lesson: lesson,
 	        teacher: this.props.teacher,
 	        'delete': this.handleDeleteLesson,
-	        activate: this.setActiveLesson });
+	        activate: this.setActiveLesson,
+	        getLessonsList: this.props.getLessonsList });
 	    }).bind(this));
 
 	    if (this.props.activeLesson) {
@@ -26436,6 +26438,11 @@
 	  makeActive: function makeActive() {
 	    this.props.activate(this.props.lesson._id);
 	  },
+	  handleSuccessfulUpdate: function handleSuccessfulUpdate() {
+	    this.setState({
+	      display: 'panel'
+	    });
+	  },
 	  render: function render() {
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
@@ -26505,7 +26512,10 @@
 	          React.createElement(
 	            'div',
 	            { className: 'panel-body' },
-	            React.createElement(EditLesson, { teacher: this.props.teacher })
+	            React.createElement(EditLesson, { teacher: this.props.teacher,
+	              lesson: this.props.lesson,
+	              getLessonsList: this.props.getLessonsList,
+	              successfulUpdate: this.handleSuccessfulUpdate })
 	          )
 	        )
 	      );
@@ -26528,6 +26538,7 @@
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
+	var Call = __webpack_require__(205);
 
 	var EditLesson = React.createClass({
 	  displayName: 'EditLesson',
@@ -26539,31 +26550,24 @@
 	  },
 
 	  handleSubmit: function handleSubmit(event) {
-	    var editLesson = this;
 	    event.preventDefault();
 	    var action = $(event.target).attr('action');
 	    var method = 'put';
-	    // var data = $(event.target).serialize();
 	    var title = $("#title").val();
 	    var date = $("#date").val();
 	    var data = { title: title, date: date };
 
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        EditLesson.transitionTo('lessonPanel', { id: serverData.teacher._id });
-	        EditLesson.setState({ title: serverData.lesson.title });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
+	      this.props.getLessonsList();
+	      this.props.successfulUpdate();
+	    }).bind(this))['catch'](function (serverData) {
+	      console.log('failed to update the lesson');
+	      console.log(serverData);
 	    });
 	  },
 	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le;
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.lesson._id;
 	    return React.createElement(
 	      'div',
 	      { className: 'row' },

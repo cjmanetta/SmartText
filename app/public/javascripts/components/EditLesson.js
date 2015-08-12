@@ -1,6 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
-
+var Call = require('../call');
 
 var EditLesson = React.createClass({
   getInitialState: function(){
@@ -11,32 +11,26 @@ var EditLesson = React.createClass({
   },
 
   handleSubmit: function(event){
-    var editLesson = this;
     event.preventDefault();
     var action = $(event.target).attr('action');
     var method = 'put';
-    // var data = $(event.target).serialize();
     var title = $("#title").val();
     var date = $("#date").val();
     var data = {title: title, date: date}
 
-    $.ajax({
-      url: action,
-      method: method,
-      data: data,
-      dataType: "json",
-      success: function(serverData) {
-        EditLesson.transitionTo('lessonPanel', {id: serverData.teacher._id});
-        EditLesson.setState({title: serverData.lesson.title})
-
-      },
-      error: function(serverData) {
-        console.log(serverData);
-      }
-    })
+    Call.call(action, method, data)
+        .then(function(serverData){
+          debugger
+          this.props.getLessonsList();
+          this.props.successfulUpdate();
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('failed to update the lesson');
+          console.log(serverData);
+        });
   },
   render: function() {
-    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.le
+    var formAction = '/teachers/' + this.props.teacher._id + '/lessons/' + this.props.lesson._id
     return (
       <div className="row">
         <form id="EditLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
