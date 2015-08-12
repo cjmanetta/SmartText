@@ -11,27 +11,10 @@ var ReviewPanel = require("./components/ReviewPanel");
 var Grid = require("./components/Grid");
 var Home = require("./components/Home");
 var Header = require("./components/Header");
-var auth = require('./auth')
+var Auth = require('./auth');
+var Call = require('./call');
+
 //functions defined in the global scope to be used in many components
-var call = function(action, method, data){
-  return new Promise(function(resolve, reject){
-    request = $.ajax({
-      url:      action,
-      method:   method,
-      data:     data,
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      resolve(serverData)
-    });
-
-    request.fail(function(serverData){
-      reject(serverData)
-    });
-  });
-}
-
 
 // var requireAuth = function(component){
 //   statics: {

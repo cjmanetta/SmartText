@@ -44,3 +44,8 @@ var LessonSelect = React.createClass({
 
 module.exports = LessonSelect;
 
+/*
+  <li role="presentation" id={attributeId} onClick={this.handleSelection} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{lesson.title}</span><span className="r-date">{lesson.date}</span><span>teacher={this.props.teacher }</span></a></li>
+  )
+*/
+

@@ -1,12 +1,12 @@
 var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
+var Call = require('../call');
 
 var LessonSelect = require("./LessonSelect");
 var NewLesson = require("./NewLesson");
 var LessonBox = require("./LessonBox");
 var MainText = require("./MainText");
-
 
 var LessonPanel = React.createClass({
   mixins: [
@@ -44,7 +44,7 @@ var LessonPanel = React.createClass({
     var article_id = this.state.article._id
     var question_id = this.state.question._id
     var data = {title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id}
-    debugger
+
     this.props.newLesson(action, data);
 
     this.setState({
@@ -70,83 +70,58 @@ var LessonPanel = React.createClass({
     var author = $("#author").val();
     var content = $(event.target).find('#articleBody').val()
 
-
-    var request = $.ajax({
-      url: '/questions',
-      method: 'post',
-      data: {prompt: question},
-      dataType: "json"
-    });
-
-    request.done(function(serverData) {
-        this.setState({
-          question: serverData.question
+    Call.call('/questions', 'post', {prompt: question})
+        .then(function(serverData){
+          this.setState({
+            question: serverData.question
+          });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log(serverData);
+          console.log("failed to create question");
         });
-      }.bind(this));
-
-    request.fail(function(serverData) {
-        console.log(serverData);
-        console.log("failed to create question");
-    });
 
     var data = {title: title, author: author, content: content}
 
-    $.ajax({
-      url: action,
-      method: method,
-      data: data,
-      dataType: "json",
-      success: function(serverData) {
-
-        lessonPanel.setState({
-          article: serverData.article
+    Call.call(action, method, data)
+        .then(function(serverData){
+          this.setState({
+            article: serverData.article
+          }.bind(this));
+        })
+        .catch(function(serverData){
+          console.log(serverData);
+          console.log("failed to create article");
         });
-
-      },
-      error: function(serverData) {
-        console.log(serverData);
-        console.log("failed to create article");
-      }
-    });
-
   },
   handleSelect: function(selection) {
-    var lessonPanel = this;
     var green_start = selection.anchorOffset;
     var green_end = selection.focusOffset;
-    var path = "/questions/" + this.state.question._id
-    var request = $.ajax({
-      url: path,
-      method: "put",
-      data: {prompt: this.state.question.prompt, green_start: green_start, green_end: green_end},
-      dataType: "json"
-    }).done(function(serverData){
-      lessonPanel.setState({
-        question: serverData.question,
-        answered: true
-      })
-    }).fail(function(serverData){
-      console.log('You have failed to answer the quesiton');
-      console.log(serverData);
-    });
+    var path = "/questions/" + this.state.question._id;
+    var data = {prompt: this.state.question.prompt, green_start: green_start, green_end: green_end};
+    Call.call(path, 'put', data)
+        .then(function(serverData){
+          this.setState({
+            question: serverData.question,
+            answered: true
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('You have failed to answer the quesiton');
+          console.log(serverData);
+        });
   },
   handleDeleteLesson: function(lesson_id){
     var action = '/teachers/' + this.props.teacher._id +"/lessons/" + lesson_id;
     var method = 'delete';
-    var request = $.ajax({
-      url:      action,
-      method:   method,
-      dataType: "json"
-    });
-
-    request.done(function(serverData){
-      this.props.getLessonsList();
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('there was an error deleting the class')
-      console.log(serverData);
-    });
+    Call.call(action, method)
+        .then(function(serverData){
+          this.props.getLessonsList();
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('there was an error deleting the class')
+          console.log(serverData);
+        });
   },
   handlePillClick: function(event){
     event.preventDefault();
