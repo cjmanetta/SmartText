@@ -1,6 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
-var auth = require('../auth')
+var AuthError = require('./AuthError')
 
 var SignUp = React.createClass({
   mixins: [
@@ -35,6 +35,9 @@ var SignUp = React.createClass({
     request.done(function(serverData){
 
       if(serverData.teacher === null || serverData.student === null){
+        signUp.setState({
+          error: true
+        })
         signUp.transitionTo('/')
       } else if (serverData.student) {
         signUp.transitionTo('students', {id: serverData.student._id});
@@ -113,10 +116,16 @@ var SignUp = React.createClass({
         </form>
       </div>
     }
+    if (this.state.error){
+      var authError = <AuthError/>
+    } else {
+      var authError = <div></div>
+    }
     return (
       <div>
         { authBox }
-      </div>
+        { authError }
+       </div>
     );
   }
 });
