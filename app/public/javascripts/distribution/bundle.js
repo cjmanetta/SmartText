@@ -25693,7 +25693,7 @@
 	    });
 	  },
 	  getLessonsList: function getLessonsList(teacher) {
-	    var path = "/lessons/teacher" + teacher._id;
+	    var path = "/teachers/" + teacher._id + "/lessons";
 	    var request = $.ajax({
 	      url: path,
 	      method: 'get',
@@ -26225,7 +26225,6 @@
 	    } else {
 	      var textBox = React.createElement("div", null);
 	    }
-
 	    var lessons = this.props.lessons.map((function (lesson) {
 	      return React.createElement(LessonBox, { lesson: lesson,
 	        teacher: this.props.teacher,

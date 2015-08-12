@@ -196,7 +196,6 @@ var LessonPanel = React.createClass({
     } else {
       var textBox = <div></div>
     }
-
     var lessons = this.props.lessons.map(
       function(lesson){
         return(

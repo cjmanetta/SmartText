@@ -20,7 +20,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Lesson.find({}, function(err, lessons){
+  Lesson.find({teacher_id: req.params.id}, function(err, lessons){
     if (err){
       return console.error(err);
     } else {
@@ -29,6 +29,7 @@ router.route('/')
           res.render('./lessons/index', { lessons: lessons});
         },
         'application/json': function(){
+          console.log("returning lessons: " + lessons)
           res.send({lessons: lessons})
         }
       })
@@ -64,24 +65,6 @@ router.route('/')
       })
     }
   })
-})
-
-router.route('/teacher/:teacher_id')
-.get(function(req, res) {
-  Lesson.find({teacher_id: req.params.teacher_id}, function(err, lessons){
-    if (err){
-      return console.error(err);
-    } else {
-      res.format({
-        'text/html': function(){
-          res.render('./lessons/index', { lessons: lessons});
-        },
-        'application/json': function(){
-          res.send({lessons: lessons})
-        }
-      })
-    }
-  });
 })
 
 router.get('/new', function(req, res) {

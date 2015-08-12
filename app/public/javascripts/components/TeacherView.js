@@ -48,7 +48,7 @@ var TeacherView = React.createClass({
     });
   },
   getLessonsList: function(teacher){
-    var path = "/lessons/teacher" + teacher._id
+    var path = "/teachers/" + teacher._id + "/lessons"
     var request = $.ajax({
       url:      path,
       method:   'get',
