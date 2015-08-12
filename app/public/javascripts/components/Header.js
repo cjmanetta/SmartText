@@ -1,6 +1,7 @@
 var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
+var Auth = require('../auth.js')
 
 var Header = React.createClass({
 
@@ -8,6 +9,11 @@ var Header = React.createClass({
     Router.Navigation,
     Router.State,
   ],
+  confirmLogout: function(){
+    if (confirm("Are you sure you want to log out?")){
+      Auth.logout();
+    }
+  },
   render: function(){
     var teacher = this.props.teacher
     var student = this.props.student
@@ -19,7 +25,7 @@ var Header = React.createClass({
       buttons = <div>
         <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Students Panel</Link>
         <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-default navbar-btn">Lessons Panel</Link>
-        <Link to="home" className="btn btn-default navbar-btn">Log Out</Link>
+        <div onClick={this.confirmLogout} className="btn btn-default navbar-btn">Log Out</div>
         <Link to="grid" params={{id: teacher._id }} className="btn btn-default navbar-btn">teacher dashboard</Link>
       </div>
     } else if (student) {
