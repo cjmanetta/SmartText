@@ -25576,6 +25576,7 @@
 	    return highlightedText;
 	  },
 	  getEnd: function getEnd(selections) {
+	    debugger;
 	    var originalContent = this.props.article.content;
 	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
 	    return endText;
@@ -25583,7 +25584,7 @@
 	  render: function render() {
 
 	    var selections = this.props.selections;
-
+	    debugger;
 	    if (selections.length === 0) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
@@ -25967,7 +25968,8 @@
 	      answer: null,
 	      question: null,
 	      answered: false,
-	      lessonPills: 'Lessons'
+	      lessonPills: 'Lessons',
+	      selections: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -26042,7 +26044,7 @@
 	  handleArticleSubmit: function handleArticleSubmit(event) {
 
 	    event.preventDefault();
-
+	    debugger;
 	    var lessonPanel = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
@@ -26057,6 +26059,7 @@
 	      data: { prompt: question },
 	      dataType: "json",
 	      success: function success(serverData) {
+
 	        lessonPanel.setState({
 	          question: serverData.question
 	        });
@@ -26075,6 +26078,7 @@
 	      data: data,
 	      dataType: "json",
 	      success: function success(serverData) {
+
 	        lessonPanel.setState({
 	          article: serverData.article
 	        });
@@ -26085,7 +26089,7 @@
 	      }
 	    });
 	  },
-	  handleSelectedText: function handleSelectedText(selection) {
+	  handleSelect: function handleSelect(selection) {
 	    var lessonPanel = this;
 	    var green_start = selection.anchorOffset;
 	    var green_end = selection.focusOffset;
@@ -26141,7 +26145,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { selectText: this.handleSelectedText, lesson: this.state.article });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        "button",
 	        { type: "submit", className: "btn btn-default" },
@@ -26149,7 +26153,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { selectText: this.handleSelectedText, lesson: this.state.article });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = null;
 	      var addButton = null;
 	    } else {
