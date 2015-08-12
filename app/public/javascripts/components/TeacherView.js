@@ -4,7 +4,6 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
-var auth = require('../auth')
 var Call = require('../call');
 
 
@@ -16,17 +15,8 @@ var TeacherView = React.createClass({
       article: {},
       question: {prompt: "none"},
       answers: [],
-      loggedIn: auth.loggedIn(),
       lessons: [],
     }
-  },
-  updateAuth(loggedIn){
-    this.setState({
-      loggedIn: !!loggedIn
-    })
-  },
-  componentWillMount: function(){
-    auth.login();
   },
   componentDidMount: function() {
     var action = '/teachers/' + this.props.params.id;
