@@ -2,7 +2,6 @@ var React = require("react");
 
 var MainText = React.createClass({
   propTypes: {
-    lesson: React.PropTypes.object.isRequired,
     onSelect: React.PropTypes.func.isRequired,
   },
   handleMouseUp: function(){
@@ -33,6 +32,7 @@ var MainText = React.createClass({
     return highlightedText
   },
   getEnd: function(selections) {
+    debugger
     var originalContent = this.props.article.content
     var endText = originalContent.slice(selections[0].endOffset, originalContent.length )
     return endText
@@ -40,7 +40,7 @@ var MainText = React.createClass({
   render: function() {
 
     var selections = this.props.selections
-
+    debugger
     if (selections.length === 0 ){
       var content = this.props.article.content
       var paragraph = <div><p id="content">{content}</p></div>
