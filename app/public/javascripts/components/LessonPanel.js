@@ -116,6 +116,7 @@ var LessonPanel = React.createClass({
     var method = 'delete';
     Call.call(action, method)
         .then(function(serverData){
+          this.props.getActiveLesson();
           this.props.getLessonsList();
         }.bind(this))
         .catch(function(serverData){

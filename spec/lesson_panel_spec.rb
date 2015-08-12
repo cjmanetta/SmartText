@@ -4,7 +4,7 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
     click_link 'Teachers'
     expect(page).to have_selector '#teacherLoginForm'
     within "form#teacherLoginForm" do
-      fill_in 'username', with: 'jack222226789'
+      fill_in 'username', with: 'jack222222229'
       fill_in "password", with: 'abc123'
     end
     click_button 'Log In'
