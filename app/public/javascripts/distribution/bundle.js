@@ -25767,11 +25767,19 @@
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
 
 	    Call.call(path, 'get').then((function (serverData) {
-	      this.getArticle(serverData.lesson.article_id);
-	      this.getQuestion(serverData.lesson.question_id);
-	      this.setState({
-	        activeLesson: serverData.lesson
-	      });
+	      if (serverData.lesson) {
+	        this.getArticle(serverData.lesson.article_id);
+	        this.getQuestion(serverData.lesson.question_id);
+	        this.setState({
+	          activeLesson: serverData.lesson
+	        });
+	      } else {
+	        this.setState({
+	          activeLesson: null,
+	          article: null,
+	          question: null
+	        });
+	      }
 	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the active lesson');
 	      console.log(serverData);
@@ -25824,6 +25832,7 @@
 	  },
 	  newLesson: function newLesson(action, data) {
 	    Call.call(action, 'post', data).then((function (serverData) {
+	      this.getQuestion(serverData.lesson.question_id);
 	      var newLessons = this.state.lessons.concat(serverData.lesson);
 	      this.setState({
 	        lessons: newLessons
@@ -25840,6 +25849,9 @@
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
 	    this.getLessonsList(this.state.teacher);
+	  },
+	  handleGetActiveLesson: function handleGetActiveLesson() {
+	    this.getActiveLesson(this.state.teacher);
 	  },
 	  render: function render() {
 
@@ -25862,7 +25874,8 @@
 	        answers: this.state.answers,
 	        lessons: this.state.lessons,
 	        newLesson: this.newLesson,
-	        getLessonsList: this.handleGetLessonsList })
+	        getLessonsList: this.handleGetLessonsList,
+	        getActiveLesson: this.handleGetActiveLesson })
 	    );
 	  }
 	});
@@ -25870,6 +25883,103 @@
 	module.exports = TeacherView;
 
 /***/ },
+<<<<<<< HEAD
+=======
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = React.createClass({
+	  displayName: 'Header',
+
+	  mixins: [Router.Navigation, Router.State],
+	  confirmLogout: function confirmLogout() {
+	    if (confirm('Are you sure you want to logout?')) {
+	      this.transitionTo('/');
+	    }
+	  },
+	  render: function render() {
+	    var teacher = this.props.teacher;
+	    var student = this.props.student;
+	    var content = null;
+	    var buttons = null;
+
+	    if (teacher) {
+	      content = React.createElement(
+	        'p',
+	        { className: 'navbar-text navbar-left' },
+	        teacher.first_name,
+	        ' ',
+	        teacher.last_name
+	      );
+	      buttons = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
+	          'Log Out'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
+	          'Teacher Dashboard'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
+	          'Students Panel'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
+	          'Lessons Panel'
+	        ),
+	        React.createElement('span', { className: 'clear' })
+	      );
+	    } else if (student) {
+	      content = React.createElement(
+	        'p',
+	        { className: 'navbar-text navbar-left' },
+	        student.first_name
+	      );
+	    } else {
+	      content = null;
+	    }
+
+	    return(
+	      //add full navbar components brand buttons etc
+	      React.createElement(
+	        'nav',
+	        { className: 'navbar navbar-default navbar-fixed-top' },
+	        React.createElement(
+	          'div',
+	          { className: 'container-fluid' },
+	          React.createElement(
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
+	          ),
+	          content,
+	          buttons
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+>>>>>>> master
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25989,6 +26099,7 @@
 	    var action = '/teachers/' + this.props.teacher._id + "/lessons/" + lesson_id;
 	    var method = 'delete';
 	    Call.call(action, method).then((function (serverData) {
+	      this.props.getActiveLesson();
 	      this.props.getLessonsList();
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('there was an error deleting the class');
@@ -27187,7 +27298,7 @@
 /* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
@@ -27196,7 +27307,13 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+<<<<<<< HEAD
 	var Header = __webpack_require__(201);
+=======
+	var Call = __webpack_require__(204);
+
+	var Header = __webpack_require__(202);
+>>>>>>> master
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
@@ -27204,7 +27321,7 @@
 	var socket = io();
 
 	var Grid = React.createClass({
-	  displayName: "Grid",
+	  displayName: 'Grid',
 
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
@@ -27280,27 +27397,26 @@
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
-	          "li",
-	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          'li',
+	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
 	          React.createElement(StudentTile, { student: student, article: that.props.article })
 	        )
 	      );
 	    });
 	    return React.createElement(
-	      "div",
-	      { className: "container" },
-	      React.createElement(Header, { teacher: this.props.teacher }),
+	      'div',
+	      { className: 'container' },
 	      React.createElement(
-	        "h3",
+	        'h3',
 	        null,
-	        "Teacher Dashboard"
+	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
 	    );
 	  }
 	});
