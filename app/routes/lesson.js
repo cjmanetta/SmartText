@@ -20,7 +20,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .get(function(req, res) {
-  Lesson.find({}, function(err, lessons){
+  Lesson.find({teacher_id: req.params.id}, function(err, lessons){
     if (err){
       return console.error(err);
     } else {
@@ -29,6 +29,7 @@ router.route('/')
           res.render('./lessons/index', { lessons: lessons});
         },
         'application/json': function(){
+          console.log("returning lessons: " + lessons)
           res.send({lessons: lessons})
         }
       })

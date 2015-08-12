@@ -36,6 +36,7 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
       click_button 'Submit Text'
 
       expect(page).to have_selector "div#mainText"
+      find('div#mainText').click
     end
   end
   #     it 'I can edit a klass' do

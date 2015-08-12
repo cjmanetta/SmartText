@@ -2,7 +2,6 @@ var React = require("react");
 
 var MainText = React.createClass({
   propTypes: {
-    lesson: React.PropTypes.object.isRequired,
     onSelect: React.PropTypes.func.isRequired,
   },
   handleMouseUp: function(){
