@@ -27505,8 +27505,7 @@
 
 	    request.done(function (serverData) {
 
-	      if (serverData.teacher === null) {
-	        console.log('in first route');
+	      if (serverData.teacher === null || serverData.student === null) {
 	        signUp.transitionTo('/');
 	      } else if (serverData.student) {
 	        signUp.transitionTo('students', { id: serverData.student._id });

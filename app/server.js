@@ -8,9 +8,14 @@ var io = require('socket.io').listen(server);
 var port = process.env.PORT || 8080;
 var path = require('path')
 
+// app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
+
+// app.use(function(req, res, next) {
+//   req.currentUser = function(callback){
 
 
-server.listen(port);
+//   }
+// })
 
 var teachers_routes = require('./routes/teacher')
 var lessons_routes = require('./routes/lesson')
@@ -76,3 +81,4 @@ app.get("/", function(req, res){
 });
 
 
+server.listen(port);
