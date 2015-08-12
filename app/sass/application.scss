@@ -1,0 +1,10 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+
+$green-color: #468966;
+
+nav {
+  a, button, .btn {
+    background-color: $green-color;
+    color: white;
+  }
+}

@@ -7,10 +7,11 @@ var StudentView = require("./components/StudentView");
 var TeacherView = require("./components/TeacherView");
 var StudentPanel = require("./components/StudentPanel");
 var LessonPanel = require("./components/LessonPanel");
+var ReviewPanel = require("./components/ReviewPanel");
 var Grid = require("./components/Grid");
 var Home = require("./components/Home");
 var Header = require("./components/Header");
-
+var Auth = require('./auth.js')
 //functions defined in the global scope to be used in many components
 var call = function(action, method, data){
   return new Promise(function(resolve, reject){
@@ -31,15 +32,24 @@ var call = function(action, method, data){
   });
 }
 
+function requireAuth(nextState, redirectTo) {
+  if (!auth.loggedIn())
+    redirectTo('/', null, { nextPathname: nextState.location.pathname });
+}
+
+// var history = createHistory();
+
+
 //Routes for the react router
 var routes = (
   <Route handler={App}>
     <Route path="/"         name="home"     handler={Home} />
     <Route path="/students/:id" name="students" handler={StudentView}/>
-    <Route path="teachers/:id" name="teachers" handler={TeacherView}>
+    <Route path="teachers/:id" name="teachers" handler={TeacherView} onEnter={requireAuth}>
       <Route path="student-panel" name="studentPanel" handler={StudentPanel}/>
       <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel}/>
       <Route path="grid" name="grid" handler={Grid}/>
+      <Route path="lessons/:lesson_id" name="reviewPanel" handler={ReviewPanel} />
     </Route>
   </Route>
 );

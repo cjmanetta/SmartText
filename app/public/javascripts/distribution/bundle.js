@@ -57,12 +57,13 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(208);
-	var LessonPanel = __webpack_require__(203);
-	var Grid = __webpack_require__(212);
-	var Home = __webpack_require__(214);
+	var StudentPanel = __webpack_require__(209);
+	var LessonPanel = __webpack_require__(204);
+	var ReviewPanel = __webpack_require__(213);
+	var Grid = __webpack_require__(214);
+	var Home = __webpack_require__(216);
 	var Header = __webpack_require__(202);
-
+	var Auth = __webpack_require__(203);
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
 	  return new Promise(function (resolve, reject) {
@@ -83,6 +84,12 @@
 	  });
 	};
 
+	function requireAuth(nextState, redirectTo) {
+	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
+	}
+
+	// var history = createHistory();
+
 	//Routes for the react router
 	var routes = React.createElement(
 	  Route,
@@ -91,10 +98,11 @@
 	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
-	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
+	    { path: "teachers/:id", name: "teachers", handler: TeacherView, onEnter: requireAuth },
 	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
 	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
-	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid })
+	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid }),
+	    React.createElement(Route, { path: "lessons/:lesson_id", name: "reviewPanel", handler: ReviewPanel })
 	  )
 	);
 
@@ -25164,44 +25172,162 @@
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
 	var socket = io();
-	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      lesson: { text: "", author: "", title: "" },
-	      user: { first_name: "Aaron", last_name: "J", username: "Janet", id: '1' },
+	      student: { first_name: "", last_name: "", username: "", _id: '' },
 	      teacher: {},
+	      klass: {},
+	      article: { content: "", author: "", title: "" },
 	      highlightOn: false,
-	      prompt: ''
+	      activeLesson: {},
+	      selections: [],
+	      question: { prompt: "", green_start: null, green_end: null }
 	    };
 	  },
+
 	  componentDidMount: function componentDidMount() {
-	    this.getLesson();
-	    var that = this;
-	    socket.on('viewPrompt', function (data) {
-	      that.updatePrompt(data);
-	    });
-	    socket.on('finish', function () {
+	    this.getStudent();
+
+	    socket.on('viewPrompt', (function (data) {
+	      this.updatePrompt(data);
+	    }).bind(this));
+	    socket.on('finish', (function () {
 	      alert('Your teacher has ended the session.');
-	      that.setState({
+	      this.saveAnswer();
+	      this.setState({
 	        highlightOn: false
 	      });
-	    });
-	    socket.emit('addStudent', { user: this.state.user });
+	    }).bind(this));
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      prompt: data,
+	      question: data,
 	      highlightOn: true
 	    });
 	  },
-	  handleClear: function handleClear() {
-	    // $('.highlight').removeClass('highlight')
-	    $('#maintext').find('#content').html(this.state.lesson.text);
-	    socket.emit('studentClear', { id: this.state.user.id });
+	  getStudent: function getStudent() {
+	    var path = "/students/login/" + this.props.params.id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.getKlass(serverData.student._klass_id);
+	      this.setState({
+	        student: serverData.student
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find logged in student');
+	      console.log(serverData);
+	    });
+	  },
+	  getKlass: function getKlass(klass_id) {
+	    var path = "/students/login/klasses/" + klass_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.getTeacher(serverData.klass._teacher_id);
+	      this.setState({
+	        klass: serverData.klass
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find students klass');
+	      console.log(serverData);
+	    });
+	  },
+	  getTeacher: function getTeacher(teacher_id) {
+	    var path = "/teachers/" + teacher_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.getActiveLesson(serverData.teacher._id, serverData.teacher.active_lesson);
+	      this.setState({
+	        teacher: serverData.teacher
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the students teacher');
+	      console.log(serverData);
+	    });
+	  },
+	  getActiveLesson: function getActiveLesson(teacher_id, lesson_id) {
+	    var path = "/teachers/" + teacher_id + "/lessons/" + lesson_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.getArticle(serverData.lesson.article_id);
+	      this.getQuestion(serverData.lesson.question_id);
+	      this.setState({
+	        activeLesson: serverData.lesson
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the active lesson');
+	      console.log(serverData);
+	    });
+	  },
+	  getArticle: function getArticle(article_id) {
+	    var path = "/articles/" + article_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        article: serverData.article
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the article');
+	      console.log(serverData);
+	    });
+	  },
+	  getQuestion: function getQuestion(question_id) {
+	    var path = "/questions/" + question_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        question: serverData.question
+	      });
+	      socket.emit('addStudent', { student: this.state.student });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the question');
+	      console.log(serverData);
+	    });
 	  },
 	  handleSubmit: function handleSubmit() {
 	    if (confirm('Are you sure you want to submit your answer?  You will not be able to change it.')) {
@@ -25210,41 +25336,36 @@
 	      });
 	    }
 	  },
+	  handleClear: function handleClear() {
+	    socket.emit('studentClear', { _id: this.state.student._id });
+	    this.forceUpdate();
+	    this.setState({
+	      selections: []
+	    });
+	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
-	      //pass off the selection object to compare using the algorithym
 	      var correctColor = this.compareSelection(selection);
 	      var selectedRange = selection.getRangeAt(0);
-	      var selectedText = selectedRange.extractContents();
-
-	      var highlightSpan = $("<span class='highlight'>" + selectedText.textContent + "</span>");
-
-	      selectedRange.insertNode(highlightSpan[0]);
+	      this.state.selections.push(selectedRange);
+	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
-
-	      //can remove the console.log once it is tested over
-	      //the socket
-	      console.log({
-	        user: this.state.user,
-	        selection: highlightedText,
-	        color: correctColor
-	      });
-
+	      debugger;
 	      socket.emit('select', {
-	        user: this.state.user,
+	        student: this.state.student,
 	        selection: highlightedText,
 	        color: correctColor,
-	        id: this.state.user.id
+	        _id: this.state.student._id
 	      });
 	    }
 	  },
 	  compareSelection: function compareSelection(selection) {
 	    var student_start = selection.anchorOffset;
 	    var student_end = selection.focusOffset;
-	    var correct_start = this.state.lesson.correct.start;
-	    var correct_end = this.state.lesson.correct.end;
+	    var correct_start = this.state.question.green_start;
+	    var correct_end = this.state.question.green_end;
 
 	    //adjust start/end regardless of which way they highlight
 	    if (student_start > student_end) {
@@ -25252,8 +25373,8 @@
 	      student_end = selection.anchorOffset;
 	    }
 	    if (correct_start > correct_end) {
-	      correct_start = this.state.lesson.correct.end;
-	      correct_end = this.state.lesson.correct.start;
+	      correct_start = this.state.lesson.question.green_end;
+	      correct_end = this.state.lesson.question.green_start;
 	    }
 
 	    var correct_length = correct_end - correct_start;
@@ -25283,16 +25404,44 @@
 
 	    return color;
 	  },
-	  getLesson: function getLesson() {
-	    //here is where the api call would happen
-	    //to recieve the lesson which is active
-	    //for that class
+	  saveAnswer: function saveAnswer() {
+	    if (this.state.selections.length !== 0) {
+	      var start = selections[0].anchorOffset;
+	      var stop = selections[0].focusOffset;
+	      var color = this.compareSelection(this.state.selections[0]);
+	      if (color == "green") {
+	        var correct = 2;
+	      } else if (color === "blue") {
+	        var correct = 1;
+	      } else {
+	        var correct = 0;
+	      }
+	    } else {
+	      var start = 0;
+	      var stop = 0;
+	      var correct = 0;
+	    }
+	    var _question_id = this.state.question._id;
+	    var _student_id = this.state.student._id;
 
-	    //stubbed for right now
-	    var newLesson = { text: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood.", author: "Charlotte Manetta", title: "The Amazing Zamboni", correct: { start: 241, end: 284, string: "A robinshrilled hidden in some trees nearby" } };
+	    var data = { start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id };
+	    var path = "/answers";
+	    var request = $.ajax({
+	      url: path,
+	      method: 'post',
+	      data: data,
+	      dataType: 'json'
+	    });
 
-	    this.setState({
-	      lesson: newLesson
+	    request.done((function (serverData) {
+	      this.setState({
+	        answer: serverData.answer
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to post the answer');
+	      console.log(serverData);
 	    });
 	  },
 	  render: function render() {
@@ -25304,8 +25453,8 @@
 	        null,
 	        'Student View'
 	      ),
-	      React.createElement(MainText, { lesson: this.state.lesson, selectText: this.handleSelect }),
-	      React.createElement(RightBar, { prompt: this.state.prompt, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
 	    );
 	  }
 	});
@@ -25331,7 +25480,7 @@
 	      React.createElement(
 	        "div",
 	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.prompt }),
+	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
 	        React.createElement(
 	          "div",
 	          { className: "button-group pa b0 r0" },
@@ -25388,41 +25537,96 @@
 /* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
 	var MainText = React.createClass({
-	  displayName: "MainText",
+	  displayName: 'MainText',
 
-	  componentDidMount: function componentDidMount() {
-	    document.addEventListener('mouseup', this.handleMouseUp);
+	  propTypes: {
+	    lesson: React.PropTypes.object.isRequired,
+	    onSelect: React.PropTypes.func.isRequired
 	  },
 	  handleMouseUp: function handleMouseUp() {
 	    var selection = window.getSelection();
+
 	    if (selection.isCollapsed === false) {
-	      this.props.selectText(selection);
+	      this.props.onSelect(selection);
+	      this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	    }
 	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
+	  },
+	  componentDidUpdate: function componentDidUpdate() {
+	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
+	  },
+	  getBeginning: function getBeginning(selections) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, selections[0].startOffset);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(selections) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(selections) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+
+	    var selections = this.props.selections;
+
+	    if (selections.length === 0) {
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { id: 'content' },
+	          this.getBeginning(selections),
+	          React.createElement(
+	            'span',
+	            { className: 'highlight' },
+	            this.updateContent(selections)
+	          ),
+	          this.getEnd(selections)
+	        )
+	      );
+	    }
+
 	    return React.createElement(
-	      "div",
-	      { id: "mainText", className: "w60 p15px ml5" },
+	      'div',
+	      { id: 'mainText', className: 'w60 p15px ml5' },
 	      React.createElement(
-	        "h3",
-	        { id: "title" },
-	        this.props.lesson.title
+	        'h3',
+	        { id: 'title' },
+	        this.props.article.title
 	      ),
 	      React.createElement(
-	        "p",
-	        { id: "author" },
-	        this.props.lesson.author
+	        'p',
+	        { id: 'author' },
+	        this.props.article.author
 	      ),
-	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        this.props.lesson.text
-	      )
+	      paragraph
 	    );
 	  }
 	});
@@ -25443,7 +25647,8 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
+	var Auth = __webpack_require__(203);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25451,7 +25656,11 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      teacher: { _id: 0 },
-	      activeLesson: null
+	      activeLesson: null,
+	      article: {},
+	      question: { prompt: "none" },
+	      answers: [],
+	      loggedIn: Auth.loggedIn()
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25492,14 +25701,74 @@
 	      dataType: "json"
 	    });
 
-	    request.done(function (serverData) {
-	      teacherView.setState({
+	    request.done((function (serverData) {
+	      this.getArticle(serverData.lesson.article_id);
+	      this.getQuestion(serverData.lesson.question_id);
+	      this.setState({
 	        activeLesson: serverData.lesson
 	      });
-	    });
+	    }).bind(this));
 
 	    request.fail(function (serverData) {
 	      console.log('there was an error getting the active lesson');
+	      console.log(serverData);
+	    });
+	  },
+	  getArticle: function getArticle(article_id) {
+	    var path = "/articles/" + article_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        article: serverData.article
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the article');
+	      console.log(serverData);
+	    });
+	  },
+	  getQuestion: function getQuestion(question_id) {
+	    var path = "/questions/" + question_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.getAnswers(serverData.question._id);
+	      this.setState({
+	        question: serverData.question
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find the question');
+	      console.log(serverData);
+	    });
+	  },
+	  getAnswers: function getAnswers(question_id) {
+	    var path = "/answers/question/" + question_id;
+	    var request = $.ajax({
+	      url: path,
+	      method: 'get',
+	      dataType: 'json'
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        answers: serverData.answers
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log('Failed to find answers');
 	      console.log(serverData);
 	    });
 	  },
@@ -25523,6 +25792,7 @@
 	    });
 	  },
 	  render: function render() {
+
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px" },
@@ -25536,7 +25806,10 @@
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
-	        activate: this.setActiveLesson })
+	        activate: this.setActiveLesson,
+	        article: this.state.article,
+	        question: this.state.question,
+	        answers: this.state.answers })
 	    );
 	  }
 	});
@@ -25547,7 +25820,7 @@
 /* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
@@ -25556,10 +25829,17 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+	var Auth = __webpack_require__(203);
+
 	var Header = React.createClass({
-	  displayName: "Header",
+	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
+	  confirmLogout: function confirmLogout() {
+	    if (confirm("Are you sure you want to log out?")) {
+	      Auth.logout();
+	    }
+	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25568,40 +25848,40 @@
 
 	    if (teacher) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        teacher.first_name,
-	        " ",
+	        ' ',
 	        teacher.last_name
 	      );
 	      buttons = React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "Students Panel"
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Students Panel'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "Lessons Panel"
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Lessons Panel'
+	        ),
+	        React.createElement(
+	          'div',
+	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
+	          'Log Out'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "home", className: "btn btn-default navbar-btn" },
-	          "Log Out"
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "teacher dashboard"
+	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'teacher dashboard'
 	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        student.first_name
 	      );
 	    } else {
@@ -25611,15 +25891,15 @@
 	    return(
 	      //add full navbar components brand buttons etc
 	      React.createElement(
-	        "nav",
-	        { className: "navbar navbar-default navbar-fixed-top" },
+	        'nav',
+	        { className: 'navbar navbar-default navbar-fixed-top' },
 	        React.createElement(
-	          "div",
-	          { className: "container-fluid" },
+	          'div',
+	          { className: 'container-fluid' },
 	          React.createElement(
-	            "a",
-	            { className: "navbar-brand", href: "#" },
-	            "SmartText"
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            'SmartText'
 	          ),
 	          content,
 	          buttons
@@ -25633,6 +25913,32 @@
 
 /***/ },
 /* 203 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  login: function login(username, pass) {
+	    if (localStorage.token) {
+	      this.onChange(true);
+	      return;
+	    }
+	  },
+	  getToken: function getToken() {
+	    return localStorage.token;
+	  },
+	  logout: function logout(cd) {
+	    delete localStorage.token;
+	    this.onChange(false);
+	  },
+	  loggedIn: function loggedIn() {
+	    return !!localStorage.token;
+	  },
+	  onChange: function onChange() {}
+	};
+
+/***/ },
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25644,9 +25950,9 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var LessonSelect = __webpack_require__(204);
-	var NewLesson = __webpack_require__(207);
-	var LessonBox = __webpack_require__(205);
+	var LessonSelect = __webpack_require__(205);
+	var NewLesson = __webpack_require__(208);
+	var LessonBox = __webpack_require__(206);
 	var MainText = __webpack_require__(200);
 
 	var LessonPanel = React.createClass({
@@ -25661,7 +25967,8 @@
 	      answer: null,
 	      question: null,
 	      answered: false,
-	      lessonPills: 'Lessons'
+	      lessonPills: 'Lessons',
+	      selections: []
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25736,7 +26043,7 @@
 	  handleArticleSubmit: function handleArticleSubmit(event) {
 
 	    event.preventDefault();
-
+	    debugger;
 	    var lessonPanel = this;
 	    var action = $(event.target).attr('action');
 	    var method = $(event.target).attr('method');
@@ -25751,6 +26058,7 @@
 	      data: { prompt: question },
 	      dataType: "json",
 	      success: function success(serverData) {
+
 	        lessonPanel.setState({
 	          question: serverData.question
 	        });
@@ -25769,6 +26077,7 @@
 	      data: data,
 	      dataType: "json",
 	      success: function success(serverData) {
+
 	        lessonPanel.setState({
 	          article: serverData.article
 	        });
@@ -25779,7 +26088,7 @@
 	      }
 	    });
 	  },
-	  handleSelectedText: function handleSelectedText(selection) {
+	  handleSelect: function handleSelect(selection) {
 	    var lessonPanel = this;
 	    var green_start = selection.anchorOffset;
 	    var green_end = selection.focusOffset;
@@ -25835,7 +26144,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { selectText: this.handleSelectedText, lesson: this.state.article });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        "button",
 	        { type: "submit", className: "btn btn-default" },
@@ -25843,7 +26152,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { selectText: this.handleSelectedText, lesson: this.state.article });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = null;
 	      var addButton = null;
 	    } else {
@@ -26053,13 +26362,13 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var LessonBox = __webpack_require__(205);
+	var LessonBox = __webpack_require__(206);
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
@@ -26138,13 +26447,13 @@
 	module.exports = LessonSelect;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var EditLesson = __webpack_require__(206);
+	var EditLesson = __webpack_require__(207);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26250,7 +26559,7 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26333,7 +26642,7 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26422,13 +26731,13 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var KlassBox = __webpack_require__(209);
+	var KlassBox = __webpack_require__(210);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26560,13 +26869,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentList = __webpack_require__(210);
+	var StudentList = __webpack_require__(211);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26703,13 +27012,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentBox = __webpack_require__(211);
+	var StudentBox = __webpack_require__(212);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -26836,7 +27145,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26950,7 +27259,73 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 212 */
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var ReviewPanel = React.createClass({
+	  displayName: 'ReviewPanel',
+
+	  render: function render() {
+	    var green = [];
+	    var blue = [];
+	    var red = [];
+	    debugger;
+	    if (this.props.answers) {
+	      this.props.answers.map(function (answer) {
+	        if (answer.correct === 2) {
+	          green.push(answer);
+	        } else if (answer.correct === 1) {
+	          blue.push(answer);
+	        } else {
+	          red.push(answer);
+	        }
+	      });
+	    }
+	    var redLi = red.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
+
+	    var blueLi = blue.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
+	    var greenLi = green.map(function (answer) {
+	      React.createElement(
+	        'li',
+	        null,
+	        'answer._id'
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'Review Panel'
+	      ),
+	      greenLi,
+	      blueLi,
+	      redLi
+	    );
+	  }
+	});
+
+	module.exports = ReviewPanel;
+
+/***/ },
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26966,25 +27341,21 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(213);
+	var StudentTile = __webpack_require__(215);
 	var socket = io();
-	// var socket = io.connect('/https://smartext.herokuapp.com/#/');
 
 	var Grid = React.createClass({
 	  displayName: "Grid",
 
+	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      article: { author: "Charlotte Manetta", title: "The Amazing Zamboni", content: "Lars Brandsson was up on the ladder, on the tall and abrupt roof of the house, with a couple of nails between his lips, knockingwith hammer in hand. The sun, gleaming in white hue, had justslid above the distant mountain ridges in the East. A robinshrilled hidden in some trees nearby, its chirping covered by theinterrupted pounding of the hammer. Trampling of hooves soundedfrom the road and a young man of about seventeen approached onhorse, dressed in thin linen shirt opened at the chest, with an axe girded at the waist and fishing utensils arrayed on the saddle. It was Helgi Dagsson. Lars Brandsson glanced to the sidea moment, wiping some loose strands of hair off his face andarranging them behind his ears, then went on to hammer the nailinto the wood." },
-	      user: { first_name: "TEACHER", last_name: "A", username: "hello", id: '123' },
-	      prompt: 'Please look at the text and highlight the best example of a character showing caring.',
 	      students: [],
 	      clickable: true,
 	      tileBig: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.getLesson();
 	    var that = this;
 	    socket.on('select', function (data) {
 	      that.updateStudentTile(data);
@@ -26998,15 +27369,14 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    $('#' + data.id).find('#content').html(this.state.article.content);
-	    $('#' + data.id).find('div').css("border-color", 'black');
+	    $('#' + data._id).find('#content').html(this.props.article.content);
+	    $('#' + data._id).find('div').css("border-color", 'black');
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
-	    console.log('inside update');
 	    var textFromStudent = data.selection;
 	    var borderColor = data.color;
-	    $('#' + data.id).find('#content').html(textFromStudent);
-	    $('#' + data.id).find('div').css("border-color", borderColor);
+	    $('#' + data._id).find('#content').html(textFromStudent);
+	    $('#' + data._id).find('div').css("border-color", borderColor);
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
@@ -27022,33 +27392,26 @@
 	  },
 	  addStudent: function addStudent(data) {
 	    var students = this.state.students;
-	    students.push(data.user);
-	    console.log('students array: ' + students);
+	    students.push(data.student);
 	    this.setState({
 	      students: students
 	    });
 	  },
 	  viewPrompt: function viewPrompt() {
-	    socket.emit('viewPrompt', this.state.prompt);
+	    socket.emit('viewPrompt', this.props.question);
+	  },
+	  handleFinish: function handleFinish() {
+	    socket.emit('finish');
+	    this.transitionTo('reviewPanel', {
+	      id: this.props.teacher._id,
+	      lesson_id: this.props.activeLesson._id
+	    });
 	  },
 	  disableStudents: function disableStudents() {
 	    socket.emit('finish');
 	  },
-	  getLesson: function getLesson() {
-	    //here is where the api call would happen
-	    //to recieve the lesson which is active
-	    //for that class
-
-	    //stubbed for right now
-	    var newLesson = {};
-
-	    this.setState({
-	      lesson: newLesson
-	    });
-	  },
 	  render: function render() {
 
-	    var lesson = this.state.lesson;
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
@@ -27056,8 +27419,8 @@
 	        null,
 	        React.createElement(
 	          "li",
-	          { id: student.id, className: "w20", onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.state.article })
+	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student, article: that.props.article })
 	        )
 	      );
 	    });
@@ -27072,7 +27435,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { prompt: this.state.prompt, actionOne: this.viewPrompt, actionTwo: this.disableStudents, labelOne: "view question", labelTwo: "finished" })
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
 	    );
 	  }
 	});
@@ -27080,7 +27443,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 213 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27122,7 +27485,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 214 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27132,7 +27495,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(215);
+	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27151,7 +27514,7 @@
 	//<Header />
 
 /***/ },
-/* 215 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

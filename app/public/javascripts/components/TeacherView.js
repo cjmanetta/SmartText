@@ -4,12 +4,17 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
+var Auth = require('../auth.js')
 
 var TeacherView = React.createClass({
   getInitialState: function(){
     return {
       teacher: { _id: 0 },
-      activeLesson: null
+      activeLesson: null,
+      article: {},
+      question: {prompt: "none"},
+      answers: [],
+      loggedIn: Auth.loggedIn()
     }
   },
   componentDidMount: function() {
@@ -55,13 +60,73 @@ var TeacherView = React.createClass({
     });
 
     request.done(function(serverData){
-      teacherView.setState({
+      this.getArticle(serverData.lesson.article_id);
+      this.getQuestion(serverData.lesson.question_id);
+      this.setState({
         activeLesson: serverData.lesson
       });
-    });
+    }.bind(this));
 
     request.fail(function(serverData){
       console.log('there was an error getting the active lesson')
+      console.log(serverData);
+    });
+  },
+  getArticle: function(article_id){
+    var path = "/articles/" + article_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        article: serverData.article
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the article');
+      console.log( serverData);
+    });
+  },
+  getQuestion: function(question_id){
+    var path = "/questions/" + question_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.getAnswers(serverData.question._id)
+      this.setState({
+        question: serverData.question
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find the question');
+      console.log( serverData);
+    });
+  },
+  getAnswers: function(question_id){
+    var path = "/answers/question/" + question_id
+    var request = $.ajax({
+      url: path,
+      method: 'get',
+      dataType: 'json'
+    });
+
+    request.done(function(serverData){
+      this.setState({
+        answers: serverData.answers
+      })
+    }.bind(this));
+
+    request.fail(function(serverData){
+      console.log('Failed to find answers');
       console.log(serverData);
     });
   },
@@ -89,6 +154,7 @@ var TeacherView = React.createClass({
     });
   },
   render: function() {
+
     return (
       <div className="container pt150px">
         <Header teacher={this.state.teacher}/>
@@ -96,7 +162,10 @@ var TeacherView = React.createClass({
         <RouteHandler teacher={this.state.teacher}
                       update={this.handleUpdateTeacher}
                       activeLesson={this.state.activeLesson}
-                      activate={this.setActiveLesson} />
+                      activate={this.setActiveLesson}
+                      article={this.state.article}
+                      question={this.state.question}
+                      answers={this.state.answers} />
       </div>
     );
   },
