@@ -44,7 +44,7 @@ var LessonPanel = React.createClass({
     var article_id = this.state.article._id
     var question_id = this.state.question._id
     var data = {title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id}
-
+    debugger
     this.props.newLesson(action, data);
 
     this.setState({
@@ -71,20 +71,22 @@ var LessonPanel = React.createClass({
     var content = $(event.target).find('#articleBody').val()
 
 
-    $.ajax({
+    var request = $.ajax({
       url: '/questions',
       method: 'post',
       data: {prompt: question},
-      dataType: "json",
-      success: function(serverData) {
+      dataType: "json"
+    });
+
+    request.done(function(serverData) {
         this.setState({
           question: serverData.question
-        }.bind(this));
-      },
-      error: function(serverData) {
+        });
+      }.bind(this));
+
+    request.fail(function(serverData) {
         console.log(serverData);
         console.log("failed to create question");
-      }
     });
 
     var data = {title: title, author: author, content: content}

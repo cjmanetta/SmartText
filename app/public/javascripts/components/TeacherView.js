@@ -175,20 +175,22 @@ var TeacherView = React.createClass({
     });
   },
   newLesson: function(action, data){
-    $.ajax({
+    var request = $.ajax({
       url: action,
       method: 'post',
       data: data,
-      dataType: "json",
-      success: function(serverData) {
-        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson)
-        this.setState({
-          lessons: newLessons,
-        }.bind(this));
-      },
-      error: function(serverData) {
+      dataType: "json"
+    });
+
+    request.done(function(serverData) {
+      var newLessons = this.state.lessons.concat(serverData.lesson)
+      this.setState({
+        lessons: newLessons,
+      });
+    }.bind(this));
+
+    request.fail(function(serverData) {
         console.log(serverData);
-      }
     });
   },
   handleGetLessonsList: function(){
@@ -208,7 +210,7 @@ var TeacherView = React.createClass({
                       question={this.state.question}
                       answers={this.state.answers}
                       lessons={this.state.lessons}
-                      newLesson={this.newlesson}
+                      newLesson={this.newLesson}
                       getLessonsList={this.handleGetLessonsList} />
       </div>
     );

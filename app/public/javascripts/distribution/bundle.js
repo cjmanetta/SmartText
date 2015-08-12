@@ -25545,7 +25545,6 @@
 	  displayName: 'MainText',
 
 	  propTypes: {
-	    lesson: React.PropTypes.object.isRequired,
 	    onSelect: React.PropTypes.func.isRequired
 	  },
 	  handleMouseUp: function handleMouseUp() {
@@ -25813,20 +25812,22 @@
 	    });
 	  },
 	  newLesson: function newLesson(action, data) {
-	    $.ajax({
+	    var request = $.ajax({
 	      url: action,
 	      method: 'post',
 	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        var newLessons = lessonPanel.state.lessons.concat(serverData.lesson);
-	        this.setState(({
-	          lessons: newLessons
-	        }).bind(this));
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      var newLessons = this.state.lessons.concat(serverData.lesson);
+	      this.setState({
+	        lessons: newLessons
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log(serverData);
 	    });
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
@@ -25852,7 +25853,7 @@
 	        question: this.state.question,
 	        answers: this.state.answers,
 	        lessons: this.state.lessons,
-	        newLesson: this.newlesson,
+	        newLesson: this.newLesson,
 	        getLessonsList: this.handleGetLessonsList })
 	    );
 	  }
@@ -26034,7 +26035,7 @@
 	    var article_id = this.state.article._id;
 	    var question_id = this.state.question._id;
 	    var data = { title: title, date: date, teacher_id: this.props.teacher._id, article_id: article_id, question_id: question_id };
-
+	    debugger;
 	    this.props.newLesson(action, data);
 
 	    this.setState({
@@ -26060,20 +26061,22 @@
 	    var author = $("#author").val();
 	    var content = $(event.target).find('#articleBody').val();
 
-	    $.ajax({
+	    var request = $.ajax({
 	      url: '/questions',
 	      method: 'post',
 	      data: { prompt: question },
-	      dataType: "json",
-	      success: function success(serverData) {
-	        this.setState(({
-	          question: serverData.question
-	        }).bind(this));
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	        console.log("failed to create question");
-	      }
+	      dataType: "json"
+	    });
+
+	    request.done((function (serverData) {
+	      this.setState({
+	        question: serverData.question
+	      });
+	    }).bind(this));
+
+	    request.fail(function (serverData) {
+	      console.log(serverData);
+	      console.log("failed to create question");
 	    });
 
 	    var data = { title: title, author: author, content: content };
