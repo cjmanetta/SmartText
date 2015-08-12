@@ -165,7 +165,7 @@ var StudentView = React.createClass({
     }
   },
   handleClear: function(){
-    socket.emit('studentClear', {id: this.state.student.id})
+    socket.emit('studentClear', {_id: this.state.student._id})
     this.forceUpdate();
     this.setState({
       selections: []
