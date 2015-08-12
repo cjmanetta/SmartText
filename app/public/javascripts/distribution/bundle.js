@@ -26082,7 +26082,30 @@
 	      var attributeId = "list-group-item_";
 	      attributeId += index;
 	      index += 1;
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
+	      return React.createElement(
+	        "li",
+	        { role: "presentation", id: attributeId, onClick: this.handleSelection, key: lesson.id, data: lesson },
+	        React.createElement(
+	          "a",
+	          { className: "lesson" },
+	          React.createElement(
+	            "span",
+	            { className: "l-title" },
+	            lesson.title
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "r-date" },
+	            lesson.date
+	          ),
+	          React.createElement(
+	            "span",
+	            null,
+	            "teacher=",
+	            this.props.teacher
+	          )
+	        )
+	      );
 	    }).bind(this));
 
 	    return React.createElement(
