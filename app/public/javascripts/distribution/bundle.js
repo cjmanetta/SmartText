@@ -57,13 +57,13 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(208);
-	var LessonPanel = __webpack_require__(203);
-	var ReviewPanel = __webpack_require__(212);
-	var Grid = __webpack_require__(213);
-	var Home = __webpack_require__(215);
+	var StudentPanel = __webpack_require__(209);
+	var LessonPanel = __webpack_require__(204);
+	var ReviewPanel = __webpack_require__(213);
+	var Grid = __webpack_require__(214);
+	var Home = __webpack_require__(216);
 	var Header = __webpack_require__(202);
-
+	var Auth = __webpack_require__(203);
 	//functions defined in the global scope to be used in many components
 	var call = function call(action, method, data) {
 	  return new Promise(function (resolve, reject) {
@@ -84,6 +84,12 @@
 	  });
 	};
 
+	function requireAuth(nextState, redirectTo) {
+	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
+	}
+
+	// var history = createHistory();
+
 	//Routes for the react router
 	var routes = React.createElement(
 	  Route,
@@ -92,7 +98,7 @@
 	  React.createElement(Route, { path: "/students/:id", name: "students", handler: StudentView }),
 	  React.createElement(
 	    Route,
-	    { path: "teachers/:id", name: "teachers", handler: TeacherView },
+	    { path: "teachers/:id", name: "teachers", handler: TeacherView, onEnter: requireAuth },
 	    React.createElement(Route, { path: "student-panel", name: "studentPanel", handler: StudentPanel }),
 	    React.createElement(Route, { path: "lesson-panel", name: "lessonPanel", handler: LessonPanel }),
 	    React.createElement(Route, { path: "grid", name: "grid", handler: Grid }),
@@ -25641,7 +25647,8 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
+	var Auth = __webpack_require__(203);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25652,7 +25659,8 @@
 	      activeLesson: null,
 	      article: {},
 	      question: { prompt: "none" },
-	      answers: []
+	      answers: [],
+	      loggedIn: Auth.loggedIn()
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -25812,7 +25820,7 @@
 /* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
@@ -25821,10 +25829,17 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+	var Auth = __webpack_require__(203);
+
 	var Header = React.createClass({
-	  displayName: "Header",
+	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
+	  confirmLogout: function confirmLogout() {
+	    if (confirm("Are you sure you want to log out?")) {
+	      Auth.logout();
+	    }
+	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25833,40 +25848,40 @@
 
 	    if (teacher) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        teacher.first_name,
-	        " ",
+	        ' ',
 	        teacher.last_name
 	      );
 	      buttons = React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "Students Panel"
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Students Panel'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "Lessons Panel"
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'Lessons Panel'
+	        ),
+	        React.createElement(
+	          'div',
+	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
+	          'Log Out'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "home", className: "btn btn-default navbar-btn" },
-	          "Log Out"
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "btn btn-default navbar-btn" },
-	          "teacher dashboard"
+	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
+	          'teacher dashboard'
 	        )
 	      );
 	    } else if (student) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        student.first_name
 	      );
 	    } else {
@@ -25876,15 +25891,15 @@
 	    return(
 	      //add full navbar components brand buttons etc
 	      React.createElement(
-	        "nav",
-	        { className: "navbar navbar-default navbar-fixed-top" },
+	        'nav',
+	        { className: 'navbar navbar-default navbar-fixed-top' },
 	        React.createElement(
-	          "div",
-	          { className: "container-fluid" },
+	          'div',
+	          { className: 'container-fluid' },
 	          React.createElement(
-	            "a",
-	            { className: "navbar-brand", href: "#" },
-	            "SmartText"
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            'SmartText'
 	          ),
 	          content,
 	          buttons
@@ -25898,6 +25913,32 @@
 
 /***/ },
 /* 203 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  login: function login(username, pass) {
+	    if (localStorage.token) {
+	      this.onChange(true);
+	      return;
+	    }
+	  },
+	  getToken: function getToken() {
+	    return localStorage.token;
+	  },
+	  logout: function logout(cd) {
+	    delete localStorage.token;
+	    this.onChange(false);
+	  },
+	  loggedIn: function loggedIn() {
+	    return !!localStorage.token;
+	  },
+	  onChange: function onChange() {}
+	};
+
+/***/ },
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25909,9 +25950,9 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var LessonSelect = __webpack_require__(204);
-	var NewLesson = __webpack_require__(207);
-	var LessonBox = __webpack_require__(205);
+	var LessonSelect = __webpack_require__(205);
+	var NewLesson = __webpack_require__(208);
+	var LessonBox = __webpack_require__(206);
 	var MainText = __webpack_require__(200);
 
 	var LessonPanel = React.createClass({
@@ -26318,13 +26359,13 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var LessonBox = __webpack_require__(205);
+	var LessonBox = __webpack_require__(206);
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
@@ -26380,13 +26421,13 @@
 	module.exports = LessonSelect;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var EditLesson = __webpack_require__(206);
+	var EditLesson = __webpack_require__(207);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26492,7 +26533,7 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26575,7 +26616,7 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26664,13 +26705,13 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
-	var KlassBox = __webpack_require__(209);
+	var KlassBox = __webpack_require__(210);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26802,13 +26843,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentList = __webpack_require__(210);
+	var StudentList = __webpack_require__(211);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26945,13 +26986,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var StudentBox = __webpack_require__(211);
+	var StudentBox = __webpack_require__(212);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27078,7 +27119,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27192,7 +27233,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27258,7 +27299,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27274,7 +27315,7 @@
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(214);
+	var StudentTile = __webpack_require__(215);
 	var socket = io();
 
 	var Grid = React.createClass({
@@ -27377,7 +27418,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27419,7 +27460,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27429,7 +27470,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(216);
+	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27448,7 +27489,7 @@
 	//<Header />
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
