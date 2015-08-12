@@ -4,7 +4,7 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
     click_link 'Teachers'
     expect(page).to have_selector '#teacherLoginForm'
     within "form#teacherLoginForm" do
-      fill_in 'username', with: 'jack123456789'
+      fill_in 'username', with: 'jack222456789'
       fill_in "password", with: 'abc123'
     end
     click_button 'Log In'
@@ -36,7 +36,16 @@ describe 'As a teacher user I can, if signed in,', type: :feature do
       click_button 'Submit Text'
 
       expect(page).to have_selector "div#mainText"
-      find('div#mainText').click
+
+      click_button 'Submit'
+
+      expect(page).to have_content 'Selecting Character Traits'
+
+      click_button 'Make Active Lesson'
+
+      expect(page).to have_content 'Current Active Lesson:Selecting Character Traits'
+
+      click_button 'Delete'
     end
   end
   #     it 'I can edit a klass' do

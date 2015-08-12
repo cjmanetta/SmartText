@@ -26027,11 +26027,11 @@
 
 	    var data = { title: title, author: author, content: content };
 
-	    Call.call(action, method, data).then(function (serverData) {
-	      this.setState(({
+	    Call.call(action, method, data).then((function (serverData) {
+	      this.setState({
 	        article: serverData.article
-	      }).bind(this));
-	    })['catch'](function (serverData) {
+	      });
+	    }).bind(this))['catch'](function (serverData) {
 	      console.log(serverData);
 	      console.log("failed to create article");
 	    });
@@ -26088,7 +26088,11 @@
 	      var addButton = null;
 	    } else if (this.state.article) {
 	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
-	      var submitButton = null;
+	      var submitButton = React.createElement(
+	        'button',
+	        { type: 'submit', className: 'btn btn-default' },
+	        'Submit'
+	      );
 	      var addButton = null;
 	    } else {
 	      var addButton = React.createElement(
