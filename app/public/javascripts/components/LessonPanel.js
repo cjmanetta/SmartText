@@ -201,8 +201,8 @@ var LessonPanel = React.createClass({
       var lessonPills =
       <div>
         <ul className="nav nav-pills">
-          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
         <div>
           {activeLesson}
@@ -213,8 +213,8 @@ var LessonPanel = React.createClass({
       var lessonPills =
       <div>
         <ul className="nav nav-pills">
-          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
+          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
         <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
           <div className="form-group">
@@ -241,5 +241,6 @@ var LessonPanel = React.createClass({
     )
   }
 });
+
 
 module.exports = LessonPanel;
