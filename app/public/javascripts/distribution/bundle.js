@@ -27489,7 +27489,7 @@
 
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(158);
-	var auth = __webpack_require__(203);
+	// var auth = require('../auth')
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -27502,6 +27502,7 @@
 	    };
 	  },
 	  handleSubmit: function handleSubmit(event) {
+	    debugger;
 	    event.preventDefault();
 	    var signUp = this;
 	    var action = $(event.target).attr('action');
@@ -27513,23 +27514,23 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
 
-	    auth.login(username, password, function (loggedIn) {
-	      if (!loggedIn) {
-	        return this.setState({ error: true });
-	      }
-	      if (nextPath) {
-	        Router.replaceWith(nextPath);
-	      } else {
-	        Route.replaceWith('/');
-	      }
-	    });
+	    // auth.login(username, password, function(loggedIn){
+	    //   if (!loggedIn){
+	    //     return this.setState({error: true});
+	    //   }
+	    //   if (nextPath){
+	    //     Router.replaceWith(nextPath);
+	    //   } else {
+	    //     Route.replaceWith('/')
+	    //   }
+	    // })
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
+	    // var request = $.ajax({
+	    //   url:      action,
+	    //   method:   method,
+	    //   data:     data,
+	    //   dataType: "json"
+	    // });
 
 	    request.done(function (serverData) {
 
