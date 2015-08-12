@@ -180,7 +180,6 @@ var StudentView = React.createClass({
       this.forceUpdate();
 
       var highlightedText = $('#content').html()
-      debugger
       socket.emit('select', {
         student: this.state.student,
         selection: highlightedText,

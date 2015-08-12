@@ -25352,7 +25352,6 @@
 	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
-	      debugger;
 	      socket.emit('select', {
 	        student: this.state.student,
 	        selection: highlightedText,
@@ -25915,7 +25914,7 @@
 /* 203 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	module.exports = {
 	  login: function login(username, pass) {
@@ -25932,6 +25931,8 @@
 	    this.onChange(false);
 	  },
 	  loggedIn: function loggedIn() {
+	    console.log('in login');
+	    console.log(localStorage.token);
 	    return !!localStorage.token;
 	  },
 	  onChange: function onChange() {}
