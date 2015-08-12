@@ -25178,7 +25178,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      student: { first_name: "", last_name: "", username: "", id: '' },
+	      student: { first_name: "", last_name: "", username: "", _id: '' },
 	      teacher: {},
 	      klass: {},
 	      article: { content: "", author: "", title: "" },
@@ -25193,7 +25193,7 @@
 	    this.getStudent();
 
 	    socket.on('viewPrompt', (function (data) {
-	      that.updatePrompt(data);
+	      this.updatePrompt(data);
 	    }).bind(this));
 	    socket.on('finish', (function () {
 	      alert('Your teacher has ended the session.');
@@ -25202,7 +25202,6 @@
 	        highlightOn: false
 	      });
 	    }).bind(this));
-	    socket.emit('addStudent', { student: this.state.student });
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
@@ -25322,6 +25321,7 @@
 	      this.setState({
 	        question: serverData.question
 	      });
+	      socket.emit('addStudent', { student: this.state.student });
 	    }).bind(this));
 
 	    request.fail(function (serverData) {
@@ -25352,20 +25352,20 @@
 	      this.forceUpdate();
 
 	      var highlightedText = $('#content').html();
-
+	      debugger;
 	      socket.emit('select', {
 	        student: this.state.student,
 	        selection: highlightedText,
 	        color: correctColor,
-	        id: this.state.student.id
+	        _id: this.state.student._id
 	      });
 	    }
 	  },
 	  compareSelection: function compareSelection(selection) {
 	    var student_start = selection.anchorOffset;
 	    var student_end = selection.focusOffset;
-	    var correct_start = this.state.lesson.correct.start;
-	    var correct_end = this.state.lesson.correct.end;
+	    var correct_start = this.state.question.green_start;
+	    var correct_end = this.state.question.green_end;
 
 	    //adjust start/end regardless of which way they highlight
 	    if (student_start > student_end) {
@@ -25373,8 +25373,8 @@
 	      student_end = selection.anchorOffset;
 	    }
 	    if (correct_start > correct_end) {
-	      correct_start = this.state.lesson.correct.end;
-	      correct_end = this.state.lesson.correct.start;
+	      correct_start = this.state.lesson.question.green_end;
+	      correct_end = this.state.lesson.question.green_start;
 	    }
 
 	    var correct_length = correct_end - correct_start;
@@ -25576,7 +25576,6 @@
 	    return highlightedText;
 	  },
 	  getEnd: function getEnd(selections) {
-	    debugger;
 	    var originalContent = this.props.article.content;
 	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
 	    return endText;
@@ -25584,7 +25583,7 @@
 	  render: function render() {
 
 	    var selections = this.props.selections;
-	    debugger;
+
 	    if (selections.length === 0) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
@@ -27347,7 +27346,7 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    $('#' + data.id).find('#content').html(this.state.article.content);
+	    $('#' + data.id).find('#content').html(this.props.article.content);
 	    $('#' + data.id).find('div').css("border-color", 'black');
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
@@ -27369,9 +27368,9 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
+	    debugger;
 	    var students = this.state.students;
 	    students.push(data.student);
-	    console.log('students array: ' + students);
 	    this.setState({
 	      students: students
 	    });
@@ -27398,8 +27397,8 @@
 	        null,
 	        React.createElement(
 	          "li",
-	          { id: student.id, className: "w20", onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.state.article })
+	          { id: student._id, className: "w20", onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student, article: that.props.article })
 	        )
 	      );
 	    });

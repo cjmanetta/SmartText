@@ -52,7 +52,7 @@ console.log('Listening on http://' + port)
 io.on('connection', function(socket){
   socket.on('select', function(data){
     console.log('inside select')
-    console.log('id: '+data.id)
+    console.log('highlighted data: '+data._id)
     io.emit('select', data);
   });
   socket.on('viewPrompt', function(data){
