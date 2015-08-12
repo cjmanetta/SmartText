@@ -25775,7 +25775,7 @@
 /* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
@@ -25785,9 +25785,14 @@
 	var Link = Router.Link;
 
 	var Header = React.createClass({
-	  displayName: "Header",
+	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
+	  confirmLogout: function confirmLogout() {
+	    if (confirm('Are you sure you want to logout?')) {
+	      this.transitionTo('/');
+	    }
+	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
@@ -25796,41 +25801,41 @@
 
 	    if (teacher) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        teacher.first_name,
-	        " ",
+	        ' ',
 	        teacher.last_name
 	      );
 	      buttons = React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
-	          "div",
-	          { onClick: this.confirmLogout, className: "l-out btn btn-default navbar-btn" },
-	          "Log Out"
+	          'div',
+	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
+	          'Log Out'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-default navbar-btn" },
-	          "teacher dashboard"
+	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
+	          'Teacher Dashboard'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-default navbar-btn" },
-	          "Students Panel"
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
+	          'Students Panel'
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-default navbar-btn" },
-	          "Lessons Panel"
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
+	          'Lessons Panel'
 	        ),
-	        React.createElement("span", { className: "clear" })
+	        React.createElement('span', { className: 'clear' })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        student.first_name
 	      );
 	    } else {
@@ -25840,15 +25845,15 @@
 	    return(
 	      //add full navbar components brand buttons etc
 	      React.createElement(
-	        "nav",
-	        { className: "navbar navbar-default navbar-fixed-top" },
+	        'nav',
+	        { className: 'navbar navbar-default navbar-fixed-top' },
 	        React.createElement(
-	          "div",
-	          { className: "container-fluid" },
+	          'div',
+	          { className: 'container-fluid' },
 	          React.createElement(
-	            "a",
-	            { className: "navbar-brand", href: "#" },
-	            React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
 	          ),
 	          content,
 	          buttons
