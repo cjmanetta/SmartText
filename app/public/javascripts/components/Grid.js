@@ -35,14 +35,14 @@ var Grid = React.createClass({
     })
   },
   clearStudentTile: function(data){
-    $('#'+data.id).find('#content').html(this.state.article.content);
-    $('#'+data.id).find('div').css("border-color", 'black')
+    $('#'+data._id).find('#content').html(this.props.article.content);
+    $('#'+data._id).find('div').css("border-color", 'black')
   },
   updateStudentTile: function(data){
     var textFromStudent = data.selection;
     var borderColor = data.color;
-    $('#'+data.id).find('#content').html(textFromStudent)
-    $('#'+data.id).find('div').css("border-color", borderColor)
+    $('#'+data._id).find('#content').html(textFromStudent)
+    $('#'+data._id).find('div').css("border-color", borderColor)
   },
   handleTileClick: function(event){
 
@@ -57,9 +57,9 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
+  debugger
    var students =  this.state.students;
    students.push(data.student)
-   console.log('students array: '+ students)
    this.setState({
       students: students
     })
@@ -83,8 +83,8 @@ var Grid = React.createClass({
     var students = this.state.students.map(function(student){
       return (
         <div  >
-          <li id={student.id} className="w20" onClick={that.handleTileClick}>
-            <StudentTile student={student} article={that.state.article}/>
+          <li id={student._id} className="w20" onClick={that.handleTileClick}>
+            <StudentTile student={student} article={that.props.article}/>
           </li>
         </div>
       )

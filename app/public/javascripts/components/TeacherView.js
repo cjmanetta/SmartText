@@ -4,6 +4,7 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
+var Auth = require('../auth.js')
 
 var TeacherView = React.createClass({
   getInitialState: function(){
@@ -13,6 +14,7 @@ var TeacherView = React.createClass({
       article: {},
       question: {prompt: "none"},
       answers: [],
+      loggedIn: Auth.loggedIn()
     }
   },
   componentDidMount: function() {
