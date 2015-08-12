@@ -27346,14 +27346,14 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    $('#' + data.id).find('#content').html(this.props.article.content);
-	    $('#' + data.id).find('div').css("border-color", 'black');
+	    $('#' + data._id).find('#content').html(this.props.article.content);
+	    $('#' + data._id).find('div').css("border-color", 'black');
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var textFromStudent = data.selection;
 	    var borderColor = data.color;
-	    $('#' + data.id).find('#content').html(textFromStudent);
-	    $('#' + data.id).find('div').css("border-color", borderColor);
+	    $('#' + data._id).find('#content').html(textFromStudent);
+	    $('#' + data._id).find('div').css("border-color", borderColor);
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
