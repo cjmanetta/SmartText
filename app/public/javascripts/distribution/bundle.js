@@ -63,15 +63,11 @@
 	var Grid = __webpack_require__(215);
 	var Home = __webpack_require__(217);
 	var Header = __webpack_require__(202);
-<<<<<<< HEAD
-	var auth = __webpack_require__(203);
-=======
 	var Auth = __webpack_require__(203);
 	var Call = __webpack_require__(205);
->>>>>>> master
+
 	//functions defined in the global scope to be used in many components
 
-<<<<<<< HEAD
 	// var requireAuth = function(component){
 	//   statics: {
 	//     willTransitionTo: function(transition) {
@@ -88,11 +84,6 @@
 
 	//add this to the desired route
 	// handler={requireAuth}
-=======
-	function requireAuth(nextState, redirectTo) {
-	  if (!auth.loggedIn()) redirectTo('/', null, { nextPathname: nextState.location.pathname });
-	}
->>>>>>> master
 
 	//Routes for the react router
 	var routes = React.createElement(
@@ -25660,12 +25651,8 @@
 
 	var Header = __webpack_require__(202);
 	var LessonPanel = __webpack_require__(204);
-<<<<<<< HEAD
-	var auth = __webpack_require__(203);
-=======
 	var Auth = __webpack_require__(203);
 	var Call = __webpack_require__(205);
->>>>>>> master
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25719,18 +25706,8 @@
 	  },
 	  getActiveLesson: function getActiveLesson(teacher) {
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
-<<<<<<< HEAD
 
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
-=======
 	    Call.call(path, 'get').then((function (serverData) {
->>>>>>> master
 	      this.getArticle(serverData.lesson.article_id);
 	      this.getQuestion(serverData.lesson.question_id);
 	      this.setState({
@@ -25884,16 +25861,6 @@
 	        ),
 	        React.createElement(
 	          Link,
-<<<<<<< HEAD
-	          { to: 'grid', params: { id: teacher._id }, className: 'btn btn-default navbar-btn' },
-	          'Teacher Dashboard'
-	        ),
-	        React.createElement(
-	          'div',
-	          { onClick: this.confirmLogout, className: 'btn btn-default navbar-btn' },
-	          'Log Out'
-	        )
-=======
 	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
 	          'Students Panel'
 	        ),
@@ -25903,7 +25870,6 @@
 	          'Lessons Panel'
 	        ),
 	        React.createElement('span', { className: 'clear' })
->>>>>>> master
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -26078,11 +26044,11 @@
 
 	    var data = { title: title, author: author, content: content };
 
-	    Call.call(action, method, data).then(function (serverData) {
-	      this.setState(({
+	    Call.call(action, method, data).then((function (serverData) {
+	      this.setState({
 	        article: serverData.article
-	      }).bind(this));
-	    })['catch'](function (serverData) {
+	      });
+	    }).bind(this))['catch'](function (serverData) {
 	      console.log(serverData);
 	      console.log("failed to create article");
 	    });
@@ -26139,7 +26105,11 @@
 	      var addButton = null;
 	    } else if (this.state.article) {
 	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
-	      var submitButton = null;
+	      var submitButton = React.createElement(
+	        'button',
+	        { type: 'submit', className: 'btn btn-default' },
+	        'Submit'
+	      );
 	      var addButton = null;
 	    } else {
 	      var addButton = React.createElement(
@@ -26251,39 +26221,21 @@
 	          'ul',
 	          { className: 'nav nav-pills' },
 	          React.createElement(
-<<<<<<< HEAD
-	            "li",
-	            { role: "presentation" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "New Lesson"
-	            )
-	          ),
-	          React.createElement(
-	            "li",
-	            { role: "presentation", className: "active" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "Lessons"
-=======
-	            'li',
-	            { role: 'presentation', className: 'active' },
-	            React.createElement(
-	              'a',
-	              { href: '#', onClick: this.handlePillClick },
-	              'Lessons'
-	            )
-	          ),
-	          React.createElement(
 	            'li',
 	            { role: 'presentation' },
 	            React.createElement(
 	              'a',
 	              { href: '#', onClick: this.handlePillClick },
 	              'New Lesson'
->>>>>>> master
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { role: 'presentation', className: 'active' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Lessons'
 	            )
 	          )
 	        ),
@@ -26302,39 +26254,21 @@
 	          'ul',
 	          { className: 'nav nav-pills' },
 	          React.createElement(
-<<<<<<< HEAD
-	            "li",
-	            { role: "presentation", className: "active" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "New Lesson"
-	            )
-	          ),
-	          React.createElement(
-	            "li",
-	            { role: "presentation" },
-	            React.createElement(
-	              "a",
-	              { href: "#", onClick: this.handlePillClick },
-	              "Lessons"
-=======
-	            'li',
-	            { role: 'presentation' },
-	            React.createElement(
-	              'a',
-	              { href: '#', onClick: this.handlePillClick },
-	              'Lessons'
-	            )
-	          ),
-	          React.createElement(
 	            'li',
 	            { role: 'presentation', className: 'active' },
 	            React.createElement(
 	              'a',
 	              { href: '#', onClick: this.handlePillClick },
 	              'New Lesson'
->>>>>>> master
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { role: 'presentation' },
+	            React.createElement(
+	              'a',
+	              { href: '#', onClick: this.handlePillClick },
+	              'Lessons'
 	            )
 	          )
 	        ),

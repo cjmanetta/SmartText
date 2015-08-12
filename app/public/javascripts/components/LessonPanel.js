@@ -87,8 +87,8 @@ var LessonPanel = React.createClass({
         .then(function(serverData){
           this.setState({
             article: serverData.article
-          }.bind(this));
-        })
+          });
+        }.bind(this))
         .catch(function(serverData){
           console.log(serverData);
           console.log("failed to create article");
@@ -142,7 +142,7 @@ var LessonPanel = React.createClass({
       var addButton = null;
     } else if (this.state.article) {
       var mainText = <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-      var submitButton = null;
+      var submitButton = <button type="submit" className="btn btn-default">Submit</button>;
       var addButton = null;
     } else {
       var addButton = <button onClick={this.handleAddArticleClick} className="btn btn-default">Add Text</button>;
