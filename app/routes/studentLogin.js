@@ -23,28 +23,28 @@ router.use(methodOverride(function(req, res){
 router.route('/')
 .post(function(req, res){
   Student.findOne({username : req.body.username}, function(err, student){
-    console.log("student: " + student);
-    Klass.findOne({_id: student._klass_id}, function(err, klass){
-    console.log("klass: " + klass);
-    console.log("klass pin: " + klass.pin);
-    console.log("submitted pin: " + req.body.pin);
+    if (student){
+      Klass.findOne({_id: student._klass_id}, function(err, klass){
 
-      if (err){
-        return console.error(err);
-      } else if ( klass.pin === req.body.pin){
+        if (err){
+          return console.error(err);
+        } else if ( klass.pin === req.body.pin){
 
-        res.format({
-          'text/html': function(){
-            res.render('./teachers/show', {student: student})
-          },
-          'application/json': function(){
-            res.send({student: student})
-          }
-        })
-      } else {
-        res.sendStatus(401);
-      }
-    })
+          res.format({
+            'text/html': function(){
+              res.render('./teachers/show', {student: student})
+            },
+            'application/json': function(){
+              res.send({student: student})
+            }
+          })
+        } else {
+          res.send({student: null});
+        }
+      })
+    } else {
+      res.send({student: null})
+    }
   })
 })
 
