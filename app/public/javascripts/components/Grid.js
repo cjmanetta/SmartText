@@ -100,7 +100,7 @@ var Grid = React.createClass({
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
           {students}
-        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
+        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="Display Question" labelTwo="Finish"/>
       </div>
     );
   },

@@ -1,18 +1,27 @@
-@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 nav div {
   background-color: white;
   color: black; }
 
+#rightBar .row {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
 body {
   background-color: rbg(232, 246, 255);
   font: "Trebuchet MS", "Helvetica", "Arial", "Verdana", sans-serif; }
+
+.bcy {
+  background-color: #FEFC4F; }
 
 .logo {
   position: relative;
   float: left;
   top: -18px;
   left: -5px; }
+
+.tp50px {
+  top: 70px; }
 
 .l-p {
   position: relative;
@@ -52,6 +61,14 @@ body {
 .pa {
   position: absolute; }
 
+.btns {
+  margin: 0;
+  padding: 0;
+  width: 270px; }
+
+.cntr {
+  text-align: center; }
+
 .w20 {
   width: 20%; }
 
@@ -61,11 +78,11 @@ body {
 .w60 {
   width: 60%; }
 
-.bcp {
-  background-color: #730ce8; }
+.bcg {
+  background-color: #E0E0E0; }
 
-.bcy {
-  background-color: #fff90d; }
+.borcy {
+  border: 5px solid #FEFC4F; }
 
 .tar {
   text-align: right; }
@@ -76,14 +93,36 @@ body {
 .r0 {
   right: 0; }
 
+.r5 {
+  right: 5px; }
+
 .b0 {
   bottom: 0; }
 
 .h100 {
   height: 100%; }
 
+.btnxl {
+  width: 230px;
+  font-size: 24px; }
+
 .h90 {
   height: 90%; }
+
+.h30 {
+  height: 30%; }
+
+.t20 {
+  bottom: 20px; }
+
+.t60 {
+  bottom: 60px; }
+
+.wf300px {
+  width: 300px; }
+
+.w100 {
+  width: 100%; }
 
 .p15px {
   padding: 15px; }

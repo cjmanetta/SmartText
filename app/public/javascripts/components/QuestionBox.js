@@ -3,7 +3,7 @@ var React = require("react");
 var QuestionBox = React.createClass({
   render: function() {
     return (
-      <div id="questionBox" className="p15px db bcy mt10">
+      <div id="questionBox" className="p15px db borcy">
         <h3>Question:</h3>
         <p>{this.props.prompt}</p>
       </div>

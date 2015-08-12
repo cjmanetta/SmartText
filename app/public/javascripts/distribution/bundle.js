@@ -25430,7 +25430,7 @@
 	        'div',
 	        { className: 'container' },
 	        React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
-	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'Clear', labelTwo: 'Submit' })
 	      )
 	    );
 	  }
@@ -25451,25 +25451,52 @@
 	  displayName: "RightBar",
 
 	  render: function render() {
+
+	    if (this.props.labelOne === "Display Question") {
+	      var buttonColor = "btn btnxl pr btn-success";
+	    } else {
+	      var buttonColor = "btn btnxl pr btn-primary";
+	    }
+
 	    return React.createElement(
 	      "div",
-	      { id: "rightBar", className: "pf w20 bcp tal t0 r0 h100 p15px" },
+	      { id: "rightBar", className: "pf wf300px bcg r5 tal h100 p15px tp50px" },
 	      React.createElement(
 	        "div",
-	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
+	        { className: "row" },
 	        React.createElement(
 	          "div",
-	          { className: "button-group pa b0 r0" },
+	          { className: "col-md-12" },
+	          React.createElement(QuestionBox, { prompt: this.props.question.prompt })
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "pa b0 h30 btns" },
+	        React.createElement(
+	          "div",
+	          { className: "row cntr" },
 	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionOne },
-	            this.props.labelOne
-	          ),
+	            "div",
+	            { className: "col-md-12" },
+	            React.createElement(
+	              "button",
+	              { className: buttonColor, onClick: this.props.actionOne },
+	              this.props.labelOne
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "row cntr" },
 	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionTwo },
-	            this.props.labelTwo
+	            "div",
+	            { className: "col-md-12" },
+	            React.createElement(
+	              "button",
+	              { className: "btn btn-danger btnxl pr", onClick: this.props.actionTwo },
+	              this.props.labelTwo
+	            )
 	          )
 	        )
 	      )
@@ -25493,7 +25520,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "questionBox", className: "p15px db bcy mt10" },
+	      { id: "questionBox", className: "p15px db borcy" },
 	      React.createElement(
 	        "h3",
 	        null,
@@ -25643,7 +25670,7 @@
 	      );
 	      buttons = React.createElement(
 	        "div",
-	        null,
+	        { id: "buttons" },
 	        React.createElement(
 	          Link,
 	          { to: "/", className: "l-out btn btn-danger navbar-btn" },
@@ -25651,17 +25678,17 @@
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-default navbar-btn" },
+	          { to: "grid", params: { id: teacher._id }, className: "bcy t-p btn navbar-btn" },
 	          "Teacher Dashboard"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-default navbar-btn" },
+	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn bcy navbar-btn" },
 	          "Students Panel"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-default navbar-btn" },
+	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn bcy navbar-btn" },
 	          "Lessons Panel"
 	        ),
 	        React.createElement("span", { className: "clear" })
@@ -25859,12 +25886,6 @@
 	      "div",
 	      { className: "container pt150px" },
 	      React.createElement(Header, { teacher: this.state.teacher }),
-	      React.createElement(
-	        "h3",
-	        null,
-	        "Welcome, ",
-	        this.state.teacher.first_name
-	      ),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -25883,103 +25904,6 @@
 	module.exports = TeacherView;
 
 /***/ },
-<<<<<<< HEAD
-=======
-/* 202 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(2);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
-
-	var Header = React.createClass({
-	  displayName: 'Header',
-
-	  mixins: [Router.Navigation, Router.State],
-	  confirmLogout: function confirmLogout() {
-	    if (confirm('Are you sure you want to logout?')) {
-	      this.transitionTo('/');
-	    }
-	  },
-	  render: function render() {
-	    var teacher = this.props.teacher;
-	    var student = this.props.student;
-	    var content = null;
-	    var buttons = null;
-
-	    if (teacher) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        teacher.first_name,
-	        ' ',
-	        teacher.last_name
-	      );
-	      buttons = React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
-	          'Log Out'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
-	          'Teacher Dashboard'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
-	          'Students Panel'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
-	          'Lessons Panel'
-	        ),
-	        React.createElement('span', { className: 'clear' })
-	      );
-	    } else if (student) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        student.first_name
-	      );
-	    } else {
-	      content = null;
-	    }
-
-	    return(
-	      //add full navbar components brand buttons etc
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar navbar-default navbar-fixed-top' },
-	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
-	          React.createElement(
-	            'a',
-	            { className: 'navbar-brand', href: '#' },
-	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
-	          ),
-	          content,
-	          buttons
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Header;
-
-/***/ },
->>>>>>> master
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27307,13 +27231,9 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-<<<<<<< HEAD
-	var Header = __webpack_require__(201);
-=======
 	var Call = __webpack_require__(204);
 
-	var Header = __webpack_require__(202);
->>>>>>> master
+	var Header = __webpack_require__(201);
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
@@ -27416,7 +27336,7 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'Display Question', labelTwo: 'Finish' })
 	    );
 	  }
 	});
