@@ -1,125 +1,149 @@
+@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
+nav div {
+  background-color: white;
+  color: black; }
+
+#rightBar .row {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
 body {
   background-color: rbg(232, 246, 255);
-  font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
-}
+  font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", sans-serif; }
+
+.bcy {
+  background-color: #FEFC4F; }
+
 
 .logo {
   position: relative;
   float: left;
   top: -18px;
-  left: -5px;
-}
+  left: -5px; }
+
+.tp50px {
+  top: 70px; }
 
 .l-p {
   position: relative;
   float: right;
-  margin-right: 5px;
-}
+  margin-right: 5px; }
 
 .s-p {
   position: relative;
   float: right;
-  margin-right: 5px;
-}
+  margin-right: 5px; }
 
 .t-p {
   position: relative;
   float: right;
-  margin-right: 5px;
-}
+  margin-right: 5px; }
 
 .l-out {
   float: right;
-  margin-right: 5px;
-}
+  margin-right: 5px; }
 
 .clear {
-  clear: both;
-}
+  clear: both; }
 
 .lesson {
-  position: relative;
-}
+  position: relative; }
 
 .r-date {
   position: absolute;
-  right: 50px;
-}
+  right: 50px; }
 
 .pf {
-  position: fixed;
-}
+  position: fixed; }
 
 .pr {
-  position: relative;
-}
+  position: relative; }
 
 .pa {
-  position: absolute;
+  position: absolute; }
+
+.btns {
+  margin: 0;
+  padding: 0;
+  width: 270px; }
+
+.cntr {
+  text-align: center; }
+.st-mini-txt {
+  min-width: 80px;
+  padding-right: 10px;
 }
 
 .w20 {
-  width: 20%
+  width: 20%;
 }
 
 .w80 {
-  width: 80%;
-}
+  width: 80%; }
 
 .w60 {
-  width: 60%;
-}
+  width: 60%; }
 
-.bcp {
-  background-color: rgb(115, 12, 232);
-}
+.bcg {
+  background-color: white; }
 
-.bcy {
-  background-color: rgb(255, 249, 13);
-}
+.borcy {
+  border: 5px solid #FEFC4F; }
 
 .tar {
-  text-align: right;
-}
+  text-align: right; }
 
 .t0 {
-  top: 0;
-}
+  top: 0; }
 
 .r0 {
-  right: 0;
-}
+  right: 0; }
+
+.r5 {
+  right: 5px; }
 
 .b0 {
-  bottom: 0;
-}
+  bottom: 0; }
 
 .h100 {
-  height: 100%
-}
+  height: 100%; }
+
+.btnxl {
+  width: 230px;
+  font-size: 24px; }
 
 .h90 {
-  height: 90%;
-}
+  height: 90%; }
+
+.h30 {
+  height: 30%; }
+
+.t20 {
+  bottom: 20px; }
+
+.t60 {
+  bottom: 60px; }
+
+.wf300px {
+  width: 300px; }
+
+.w100 {
+  width: 100%; }
+
 .p15px {
-  padding: 15px;
-}
+  padding: 15px; }
 
 .db {
-  display: block;
-}
+  display: block; }
 
 .mt10 {
-  margin-top: 10%;
-}
+  margin-top: 10%; }
 
 .ml5 {
-  margin-left: 5%;
-}
+  margin-left: 5%; }
 
 .tal {
-  text-align: left;
-}
+  text-align: left; }
 
 .b1pxsr{
   border: 1px solid red;
@@ -157,26 +181,54 @@ body {
   font-size: 10px;
 }
 
-.highlight{
-  background-color: yellow;
-}
+.fs8px {
+  font-size: 8px; }
 
+.fs10px {
+  font-size: 10px; }
+
+.highlight {
+  background-color: yellow; }
 
 .pt150px{
-  padding-top: 150px;
+  padding-top: 90px;
 }
 
-.scrol{
+.scrol {
   overflow-y: scroll;
-  overflow-x: hidden;
-}
+  overflow-x: hidden; }
 
-.h350px{
-  height: 350px;
-}
+.h350px {
+  height: 350px; }
 
-.fs14px{
-  font-size: 14px;
+.fs14px {
+  font-size: 14px; }
+
+.bcb {
+  border: 5px solid black; }
+
+.w250px {
+  width: 250px; }
+
+.btn-custom {
+  background-color: #857F87;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#525061), to(#525061));
+  background-image: -moz-linear-gradient(top, #525061, #525061);
+  background-image: -ms-linear-gradient(top, #525061, #525061);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #525061), color-stop(100%, #525061));
+  background-image: -webkit-linear-gradient(top, #525061, #525061);
+  background-image: -o-linear-gradient(top, #525061, #525061);
+  background-image: linear-gradient(#525061, #525061);
+  border-color: #525061 #525061 #b8d408;
+  color: white !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold; }
+
+.w80{
+  left: 0;
 }
 
 .bcb{
@@ -184,6 +236,7 @@ body {
 }
 
 .w250px{
+  min-width: 250px;
   width: 250px;
 }
 
@@ -198,3 +251,11 @@ body {
 .cr{
   background-color: red;
 }
+
+.m-r10px{
+  z-index: 1;
+  background-color: white;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+

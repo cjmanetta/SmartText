@@ -2,6 +2,7 @@ var React = require("react");
 var Call = require('../call');
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
+var Header = require('./Header');
 var socket = io();
 var StudentView = React.createClass({
   getInitialState: function(){
@@ -287,8 +288,8 @@ var StudentView = React.createClass({
         <RightBar question={this.state.question}
                   actionOne={this.handleClear}
                   actionTwo={this.handleSubmit}
-                  labelOne="clear"
-                  labelTwo="submit"
+                  labelOne="Clear"
+                  labelTwo="Submit"
                   show={this.state.showQuestion}/>
       </div>
     );

@@ -7,37 +7,34 @@ var Header = React.createClass({
     Router.Navigation,
     Router.State,
   ],
-  confirmLogout: function(){
-    if (confirm('Are you sure you want to logout?')){
-      this.transitionTo('/')
-    }
-  },
   render: function(){
     var teacher = this.props.teacher
     var student = this.props.student
     var content = null
     var buttons = null
+    var logo = null
 
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
-      buttons = <div>
-        <Link to='/' className="l-out btn btn-default navbar-btn">Log Out</Link>
-        <Link to="grid" params={{id: teacher._id }} className="t-p btn btn-default navbar-btn">Teacher Dashboard</Link>
-        <Link to="studentPanel" params={{id: teacher._id }} className="s-p btn btn-default navbar-btn">Students Panel</Link>
-        <Link to="lessonPanel" params={{id: teacher._id }} className="l-p btn btn-default navbar-btn">Lessons Panel</Link>
+      buttons = <div id="buttons">
+        <Link to="/" className="l-out btn btn-danger navbar-btn">Log Out</Link>
+        <Link to="grid" params={{id: teacher._id }} className="t-p btn btn-custom navbar-btn">Teacher Dashboard</Link>
+        <Link to="studentPanel" params={{id: teacher._id }} className="s-p btn btn-custom navbar-btn">Students Panel</Link>
+        <Link to="lessonPanel" params={{id: teacher._id }} className="l-p btn btn-custom navbar-btn">Lessons Panel</Link>
         <span className="clear"/>
       </div>
+      logo = <Link to='lessonPanel' className="navbar-brand" params={{id: teacher._id }}><img src="../../../images/smartext_final.png" className="logo" alt="SmartText" / ></Link>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
+      logo = <Link to='students' className="navbar-brand" params={{id: student._id }}><img src="../../../images/smartext_final.png" className="logo" alt="SmartText" / ></Link>
     } else {
-      content = null
+      logo = <Link to='/' className="navbar-brand"><img src="../../../images/smartext_final3.png" className="logo" alt="SmartText" / ></Link>
     }
 
     return (
-      //add full navbar components brand buttons etc
       <nav className="navbar navbar-default navbar-fixed-top">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#"><img src="../../../images/smartext_final.png" className="logo" alt="SmartText" /></a>
+          <a className="navbar-brand" href="#">{logo}</a>
           {content}
           {buttons}
         </div>

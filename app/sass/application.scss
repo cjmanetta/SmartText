@@ -1,13 +1,26 @@
-@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 
-$green-color: #468966;
+$blue: #7FFAFF;
+$yellow: #FEFC4F;
+$gray: #525061;
+$text-font: 'Libre Baskerville', serif;
+$default-font: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", sans-serif;
+
 
 nav {
-  a, button, .btn {
-    background-color: $green-color;
-    color: white;
+  div {
+    background-color: white;
+    color: black;
   }
 }
+
+#rightBar{
+  .row{
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
 
 .cg{
   background-color: green;
@@ -20,3 +33,238 @@ nav {
 .cr{
   background-color: red;
 }
+
+body {
+  background-color: rbg(232, 246, 255);
+  font-family: $default-font;
+}
+
+
+.bcy{
+  background-color: $yellow;
+}
+
+.logo {
+  position: relative;
+  float: left;
+  top: -18px;
+  left: -5px;
+}
+
+.tp50px{
+  top: 70px;
+}
+
+.l-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.s-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.t-p {
+  position: relative;
+  float: right;
+  margin-right: 5px;
+}
+
+.l-out {
+  float: right;
+  margin-right: 5px;
+}
+
+.clear {
+  clear: both;
+}
+
+.lesson {
+  position: relative;
+}
+
+.r-date {
+  position: absolute;
+  right: 50px;
+}
+
+.pf {
+  position: fixed;
+}
+
+.pr {
+  position: relative;
+}
+
+.pa {
+  position: absolute;
+}
+
+.btns {
+  margin:0;
+  padding:0;
+  width: 270px;
+}
+
+ .cntr {
+  text-align: center;
+ }
+
+.w20 {
+  width: 20%
+}
+
+.w80 {
+  width: 80%;
+}
+
+.w60 {
+  width: 60%;
+}
+
+.bcg {
+  background-color: white;
+}
+
+.borcy{
+  border: 5px solid $yellow;
+}
+
+.tar {
+  text-align: right;
+}
+
+.t0 {
+  top: 0;
+}
+
+.r0 {
+  right: 0;
+}
+
+.r5{
+  right: 5px;
+}
+
+.b0 {
+  bottom: 0;
+}
+
+.h100 {
+  height: 100%
+}
+
+.btnxl{
+  width: 230px;
+  font-size: 24px;
+}
+
+.h90 {
+  height: 90%;
+}
+
+.h30{
+  height: 30%;
+}
+
+.t20{
+  bottom: 20px;
+}
+
+.t60{
+  bottom: 60px;
+}
+
+.wf300px{
+  width: 300px;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.p15px {
+  padding: 15px;
+}
+
+.db {
+  display: block;
+}
+
+.mt10 {
+  margin-top: 10%;
+}
+
+.ml5 {
+  margin-left: 5%;
+}
+
+.tal {
+  text-align: left;
+}
+
+.b1pxsb{
+  border: 1px solid black;
+}
+
+.fs8px{
+  font-size: 8px;
+}
+
+.fs10px{
+  font-size: 10px;
+}
+
+.highlight{
+  background-color: yellow;
+}
+
+
+.pt150px{
+  padding-top: 150px;
+}
+
+.scrol{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.h350px{
+  height: 350px;
+}
+
+.fs14px{
+  font-size: 14px;
+}
+
+.bcb{
+  border: 5px solid black;
+}
+
+.w250px{
+  width: 250px;
+}
+
+
+.btn-custom {
+  background-color: #857F87;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
+  background-image: -khtml-gradient(linear, left top, left bottom, from($gray), to($gray));
+  background-image: -moz-linear-gradient(top, $gray, $gray);
+  background-image: -ms-linear-gradient(top, $gray, $gray);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $gray), color-stop(100%, $gray));
+  background-image: -webkit-linear-gradient(top, $gray, $gray);
+  background-image: -o-linear-gradient(top, $gray, $gray);
+  background-image: linear-gradient($gray, $gray);
+  border-color: $gray $gray hsl(68, 93%, 43%);
+  color: white !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+}
+
+

@@ -53,7 +53,7 @@ var Grid = React.createClass({
   handleTileClick: function(event){
 
     if (event.target.id === "clickable" && this.state.clickable){
-      $(event.target).animate({width: "900px", height: "600px", fontSize: "20px"}, 1000)
+      $(event.target).animate({position: "absolute", width: "900px", height: "600px", fontSize: "20px", backgroundColor: "white"}, 1000)
       this.state.clickable = false
       $(event.target).attr('id', "clickedBig")
     } else if (event.target.id === "clickedBig"){
@@ -98,28 +98,31 @@ var Grid = React.createClass({
   },
   render: function() {
 
-    var that = this
+    var that = this;
+
     var students = this.state.students.map(function(student){
       return (
-        <div  >
-          <li id={student._id} className="w20" onClick={that.handleTileClick}>
+        <div>
+          <li id={student._id} className='col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px' onClick={that.handleTileClick}>
             <StudentTile student={student}
                          article={that.props.article} />
           </li>
         </div>
       )
-    })
+    });
     return (
-      <div className="container">
-        <h3>Teacher Dashboard</h3>
+      <div>
+        <Header teacher={this.props.teacher} />
+        <h4>Teacher Dashboard</h4>
         <RouteHandler />
           {students}
         <RightBar question={this.props.question}
                   actionOne={this.viewPrompt}
                   actionTwo={this.handleFinish}
-                  labelOne="view question"
-                  labelTwo="finished"
+                  labelOne="Display Question"
+                  labelTwo="Finish"
                   show={this.state.showQuestion}/>
+
       </div>
     );
   },
