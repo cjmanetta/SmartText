@@ -21,6 +21,7 @@ var Grid = React.createClass({
       clickable: true,
       tileBig: false,
       showQuestion: true,
+      showAnswer: true,
     }
   },
   componentDidMount: function(){
@@ -121,7 +122,10 @@ var Grid = React.createClass({
                   actionTwo={this.handleFinish}
                   labelOne="Display Question"
                   labelTwo="Finish"
-                  show={this.state.showQuestion}/>
+                  show={this.state.showQuestion}
+                  showAnswer={this.state.showAnswer}
+                  teacher={this.props.teacher}
+                  article={this.props.article}/>
 
       </div>
     );
