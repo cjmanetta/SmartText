@@ -18,33 +18,30 @@ var MainText = React.createClass({
   componentWillUnmount: function(){
     this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
   },
-  getBeginning: function(range) {
+  getBeginning: function(start) {
     var originalContent = this.props.article.content
-    var beginningText = originalContent.slice(0, range.startOffset)
+    var beginningText = originalContent.slice(0, start)
     return beginningText
   },
-  updateContent: function(range){
+  updateContent: function(start, end){
     var originalContent = this.props.article.content
-    var highlightedText = originalContent.slice(range.startOffset, range.endOffset)
+    var highlightedText = originalContent.slice(start, end)
     return highlightedText
   },
-  getEnd: function(range) {
+  getEnd: function(end) {
     var originalContent = this.props.article.content
-    var endText = originalContent.slice(range.endOffset, originalContent.length )
+    var endText = originalContent.slice(end, originalContent.length )
     return endText
   },
   componentDidUpdate: function(){
     this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
   },
-  updateTeacher: function(){
-    var start = this.props.selections[0].getRangeAt(0).startOffset;
-    var end = this.props.selections[0].getRangeAt(0).endOffset;
-
+  updateTeacher: function(start, end){
     this.props.updateTeacher(start, end);
   },
   render: function() {
-    var selections = this.props.selections
-    if (selections.length === 0 ){
+    debugger
+    if (this.props.start === null ){
       var content = this.props.article.content
       var paragraph = <div>
                         <p id="content">
@@ -52,15 +49,15 @@ var MainText = React.createClass({
                         </p>
                       </div>
     } else {
-      this.updateTeacher();
+      this.updateTeacher(this.props.start, this.props.end);
       var paragraph = <div>
-                        <p>Selection: start= {selections[0].anchorOffset} end={selections[0].focusOffset} </p>
+                        <p>Selection: start= {this.props.start} end={this.props.end} </p>
                         <p id="content">
-                          {this.getBeginning(selections[0].getRangeAt(0))}
+                          {this.getBeginning(this.props.start)}
                           <span className="highlight">
-                          {this.updateContent(selections[0].getRangeAt(0))}
+                          {this.updateContent(this.props.start, this.props.end)}
                           </span >
-                          {this.getEnd(selections[0].getRangeAt(0))}
+                          {this.getEnd(this.props.end)}
                         </p>
                       </div>
     }

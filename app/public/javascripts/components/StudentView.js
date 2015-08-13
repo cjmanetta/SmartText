@@ -13,7 +13,8 @@ var StudentView = React.createClass({
       highlightOn: false,
       showQuestion: false,
       activeLesson: {},
-      selections: [],
+      start: null,
+      end: null,
       question: {prompt: "", green_start: null, green_end: null},
     }
   },
@@ -167,25 +168,27 @@ var StudentView = React.createClass({
     }
   },
   handleClear: function(){
-    socket.emit('studentClear', {_id: this.state.student._id})
-    this.forceUpdate();
+    socket.emit('studentClear', {student: this.state.student})
     this.setState({
-      selections: []
+      start: null,
+      end: null,
     })
   },
   handleSelect: function(selection){
     // var socket = io('/teacher')
     if (this.state.highlightOn){
-      var correctColor = this.compareSelection(selection);
-      var newSelections = [selection];
+      var start = selection.getRangeAt(0).startOffset;
+      var end = selection.getRangeAt(0).endOffset;
+
       this.setState({
-        selections: newSelections
+        start: start,
+        end: end,
       });
     }
   },
   updateTeacherSocket: function(start, end){
-    if(this.state.selections.length > 0){
-      var correctColor = this.compareSelection(this.state.selections[0]);
+    if(this.state.start !== null){
+      var correctColor = this.compareSelection(start, end);
       socket.emit('select', {
         student: this.state.student,
         start: start,
@@ -194,17 +197,13 @@ var StudentView = React.createClass({
       })
     }
   },
-  compareSelection: function(selection){
-    var student_start = selection.anchorOffset;
-    var student_end = selection.focusOffset;
+  compareSelection: function(start, end){
+    var student_start = start;
+    var student_end = end;
     var correct_start = this.state.question.green_start;
     var correct_end = this.state.question.green_end;
 
     //adjust start/end regardless of which way they highlight
-    if(student_start > student_end){
-      student_start = selection.focusOffset;
-      student_end = selection.anchorOffset;
-    }
     if(correct_start > correct_end){
       correct_start = this.state.question.green_end;
       correct_end = this.state.question.green_start;
@@ -239,10 +238,10 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
-    if(this.state.selections.length !== 0){
-      var start = this.state.selections[0].anchorOffset;
-      var stop = this.state.selections[0].focusOffset;
-      var color = this.compareSelection(this.state.selections[0]);
+    if(this.state.start !== null){
+      var start = this.state.start;
+      var stop = this.state.end;
+      var color = this.compareSelection(start, stop);
       if(color == "green"){
         var correct = 2;
       } else if(color === "blue"){
@@ -280,7 +279,7 @@ var StudentView = React.createClass({
 
   },
   showAnswer: function(){
-    var color = this.compareSelection(this.state.selections[0]);
+    var color = this.compareSelection(this.state.start, this.state.end);
     if(color === "green"){
       $('.highlight').addClass('cg');
     } else if(color === "blue"){
@@ -295,7 +294,8 @@ var StudentView = React.createClass({
         <h1>Student View</h1>
         <MainText article={this.state.article}
                   onSelect={this.handleSelect}
-                  selections={this.state.selections}
+                  start={this.state.start}
+                  end={this.state.end}
                   updateTeacher={this.updateTeacherSocket}/>
 
         <RightBar question={this.state.question}

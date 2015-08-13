@@ -37,11 +37,18 @@ var Grid = React.createClass({
     })
   },
   clearStudentTile: function(data){
-    //update state
+    var student =  this.findStudent(data.student);
+    student.start = null;
+    student.color = null;
+    student.end = null
+    this.forceUpdate();
   },
   updateStudentTile: function(data){
     var student = this.findStudent(data.student);
-    debugger
+    student.start = data.start;
+    student.end = data.end;
+    student.color = data.color;
+    this.forceUpdate();
   },
   handleTileClick: function(event){
 
@@ -97,10 +104,7 @@ var Grid = React.createClass({
         <div  >
           <li id={student._id} className="w20" onClick={that.handleTileClick}>
             <StudentTile student={student}
-                         article={that.props.article}
-                         start={student.start}
-                         end={student.end}
-                         color={student.color}/>
+                         article={that.props.article} />
           </li>
         </div>
       )

@@ -25162,7 +25162,8 @@
 	      highlightOn: false,
 	      showQuestion: false,
 	      activeLesson: {},
-	      selections: [],
+	      start: null,
+	      end: null,
 	      question: { prompt: "", green_start: null, green_end: null }
 	    };
 	  },
@@ -25316,25 +25317,27 @@
 	    }
 	  },
 	  handleClear: function handleClear() {
-	    socket.emit('studentClear', { _id: this.state.student._id });
-	    this.forceUpdate();
+	    socket.emit('studentClear', { student: this.state.student });
 	    this.setState({
-	      selections: []
+	      start: null,
+	      end: null
 	    });
 	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
-	      var correctColor = this.compareSelection(selection);
-	      var newSelections = [selection];
+	      var start = selection.getRangeAt(0).startOffset;
+	      var end = selection.getRangeAt(0).endOffset;
+
 	      this.setState({
-	        selections: newSelections
+	        start: start,
+	        end: end
 	      });
 	    }
 	  },
 	  updateTeacherSocket: function updateTeacherSocket(start, end) {
-	    if (this.state.selections.length > 0) {
-	      var correctColor = this.compareSelection(this.state.selections[0]);
+	    if (this.state.start !== null) {
+	      var correctColor = this.compareSelection(start, end);
 	      socket.emit('select', {
 	        student: this.state.student,
 	        start: start,
@@ -25343,17 +25346,13 @@
 	      });
 	    }
 	  },
-	  compareSelection: function compareSelection(selection) {
-	    var student_start = selection.anchorOffset;
-	    var student_end = selection.focusOffset;
+	  compareSelection: function compareSelection(start, end) {
+	    var student_start = start;
+	    var student_end = end;
 	    var correct_start = this.state.question.green_start;
 	    var correct_end = this.state.question.green_end;
 
 	    //adjust start/end regardless of which way they highlight
-	    if (student_start > student_end) {
-	      student_start = selection.focusOffset;
-	      student_end = selection.anchorOffset;
-	    }
 	    if (correct_start > correct_end) {
 	      correct_start = this.state.question.green_end;
 	      correct_end = this.state.question.green_start;
@@ -25387,10 +25386,10 @@
 	    return color;
 	  },
 	  saveAnswer: function saveAnswer() {
-	    if (this.state.selections.length !== 0) {
-	      var start = this.state.selections[0].anchorOffset;
-	      var stop = this.state.selections[0].focusOffset;
-	      var color = this.compareSelection(this.state.selections[0]);
+	    if (this.state.start !== null) {
+	      var start = this.state.start;
+	      var stop = this.state.end;
+	      var color = this.compareSelection(start, stop);
 	      if (color == "green") {
 	        var correct = 2;
 	      } else if (color === "blue") {
@@ -25427,7 +25426,7 @@
 	    });
 	  },
 	  showAnswer: function showAnswer() {
-	    var color = this.compareSelection(this.state.selections[0]);
+	    var color = this.compareSelection(this.state.start, this.state.end);
 	    if (color === "green") {
 	      $('.highlight').addClass('cg');
 	    } else if (color === "blue") {
@@ -25447,7 +25446,8 @@
 	      ),
 	      React.createElement(MainText, { article: this.state.article,
 	        onSelect: this.handleSelect,
-	        selections: this.state.selections,
+	        start: this.state.start,
+	        end: this.state.end,
 	        updateTeacher: this.updateTeacherSocket }),
 	      React.createElement(RightBar, { question: this.state.question,
 	        actionOne: this.handleClear,
@@ -25592,33 +25592,30 @@
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	  },
-	  getBeginning: function getBeginning(range) {
+	  getBeginning: function getBeginning(start) {
 	    var originalContent = this.props.article.content;
-	    var beginningText = originalContent.slice(0, range.startOffset);
+	    var beginningText = originalContent.slice(0, start);
 	    return beginningText;
 	  },
-	  updateContent: function updateContent(range) {
+	  updateContent: function updateContent(start, end) {
 	    var originalContent = this.props.article.content;
-	    var highlightedText = originalContent.slice(range.startOffset, range.endOffset);
+	    var highlightedText = originalContent.slice(start, end);
 	    return highlightedText;
 	  },
-	  getEnd: function getEnd(range) {
+	  getEnd: function getEnd(end) {
 	    var originalContent = this.props.article.content;
-	    var endText = originalContent.slice(range.endOffset, originalContent.length);
+	    var endText = originalContent.slice(end, originalContent.length);
 	    return endText;
 	  },
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
-	  updateTeacher: function updateTeacher() {
-	    var start = this.props.selections[0].getRangeAt(0).startOffset;
-	    var end = this.props.selections[0].getRangeAt(0).endOffset;
-
+	  updateTeacher: function updateTeacher(start, end) {
 	    this.props.updateTeacher(start, end);
 	  },
 	  render: function render() {
-	    var selections = this.props.selections;
-	    if (selections.length === 0) {
+	    debugger;
+	    if (this.props.start === null) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
 	        'div',
@@ -25630,7 +25627,7 @@
 	        )
 	      );
 	    } else {
-	      this.updateTeacher();
+	      this.updateTeacher(this.props.start, this.props.end);
 	      var paragraph = React.createElement(
 	        'div',
 	        null,
@@ -25638,21 +25635,21 @@
 	          'p',
 	          null,
 	          'Selection: start= ',
-	          selections[0].anchorOffset,
+	          this.props.start,
 	          ' end=',
-	          selections[0].focusOffset,
+	          this.props.end,
 	          ' '
 	        ),
 	        React.createElement(
 	          'p',
 	          { id: 'content' },
-	          this.getBeginning(selections[0].getRangeAt(0)),
+	          this.getBeginning(this.props.start),
 	          React.createElement(
 	            'span',
 	            { className: 'highlight' },
-	            this.updateContent(selections[0].getRangeAt(0))
+	            this.updateContent(this.props.start, this.props.end)
 	          ),
-	          this.getEnd(selections[0].getRangeAt(0))
+	          this.getEnd(this.props.end)
 	        )
 	      );
 	    }
@@ -27284,11 +27281,18 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    //update state
+	    var student = this.findStudent(data.student);
+	    student.start = null;
+	    student.color = null;
+	    student.end = null;
+	    this.forceUpdate();
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var student = this.findStudent(data.student);
-	    debugger;
+	    student.start = data.start;
+	    student.end = data.end;
+	    student.color = data.color;
+	    this.forceUpdate();
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
@@ -27347,10 +27351,7 @@
 	          'li',
 	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
 	          React.createElement(StudentTile, { student: student,
-	            article: that.props.article,
-	            start: student.start,
-	            end: student.end,
-	            color: student.color })
+	            article: that.props.article })
 	        )
 	      );
 	    });
@@ -27387,10 +27388,68 @@
 	var StudentTile = React.createClass({
 	  displayName: "StudentTile",
 
+	  getBeginning: function getBeginning(start) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, start);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(start, end) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(start, end);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(end) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(end, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+	    var student = this.props.student;
+
+	    if (student.color === "red") {
+	      var colorClass = "b1pxsr";
+	    } else if (student.color === "blue") {
+	      var colorClass = "b1pxsb";
+	    } else if (student.color === "green") {
+	      var colorClass = "b1pxsg";
+	    } else {
+	      var colorClass = "b1pxsbk";
+	    }
+
+	    if (this.props.student.start === undefined) {
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          this.getBeginning(this.props.student.start),
+	          React.createElement(
+	            "span",
+	            { className: "highlight" },
+	            this.updateContent(this.props.student.start, this.props.student.end)
+	          ),
+	          this.getEnd(this.props.student.end)
+	        )
+	      );
+	    }
+
+	    var classes = "bcb p15px fs10px scrol h350px w250px" + colorClass;
+
 	    return React.createElement(
 	      "div",
-	      { id: "clickable", className: "bcb p15px b1pxsb fs10px scrol h350px w250px" },
+	      { id: "clickable", className: classes },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },
@@ -27410,7 +27469,7 @@
 	      React.createElement(
 	        "p",
 	        { id: "content" },
-	        this.props.article.content
+	        paragraph
 	      )
 	    );
 	  }

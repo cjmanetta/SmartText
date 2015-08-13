@@ -121,8 +121,32 @@ body {
   text-align: left;
 }
 
+.b1pxsr{
+  border: 1px solid red;
+}
+
+.b1pxsg{
+  border: 1px solid green;
+}
+
 .b1pxsb{
+  border: 1px solid blue;
+}
+
+.b1pxsbk{
   border: 1px solid black;
+}
+
+.cg{
+  background-color: green;
+}
+
+.cb{
+  background-color: blue;
+}
+
+.cr{
+  background-color: red;
 }
 
 .fs8px{
