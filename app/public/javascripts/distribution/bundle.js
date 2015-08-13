@@ -25635,10 +25635,12 @@
 	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
 	  updateTeacher: function updateTeacher(start, end) {
-	    this.props.updateTeacher(start, end);
+	    if (this.props.updateTeacher) {
+	      this.props.updateTeacher(start, end);
+	    }
 	  },
 	  render: function render() {
-	    if (this.props.start === null) {
+	    if (!this.props.start) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
 	        'div',
@@ -25654,15 +25656,6 @@
 	      var paragraph = React.createElement(
 	        'div',
 	        null,
-	        React.createElement(
-	          'p',
-	          null,
-	          'Selection: start= ',
-	          this.props.start,
-	          ' end=',
-	          this.props.end,
-	          ' '
-	        ),
 	        React.createElement(
 	          'p',
 	          { id: 'content' },
@@ -26058,7 +26051,7 @@
 	    });
 
 	    var data = { title: title, author: author, content: content };
-
+	    debugger;
 	    Call.call(action, method, data).then((function (serverData) {
 	      this.setState({
 	        article: serverData.article

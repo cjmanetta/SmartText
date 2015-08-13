@@ -37,10 +37,12 @@ var MainText = React.createClass({
     this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
   },
   updateTeacher: function(start, end){
-    this.props.updateTeacher(start, end);
+    if(this.props.updateTeacher){
+      this.props.updateTeacher(start, end);
+    }
   },
   render: function() {
-    if (this.props.start === null ){
+    if (!this.props.start){
       var content = this.props.article.content
       var paragraph = <div>
                         <p id="content">
@@ -50,7 +52,6 @@ var MainText = React.createClass({
     } else {
       this.updateTeacher(this.props.start, this.props.end);
       var paragraph = <div>
-                        <p>Selection: start= {this.props.start} end={this.props.end} </p>
                         <p id="content">
                           {this.getBeginning(this.props.start)}
                           <span className="highlight">
