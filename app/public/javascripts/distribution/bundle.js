@@ -27293,49 +27293,27 @@
 
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-<<<<<<< HEAD
-	        "li",
-	        { id: student._id, className: "col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px", onClick: that.handleTileClick },
+	        'li',
+	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
 	        React.createElement(StudentTile, { student: student, article: that.props.article })
 	      );
 	    });
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
 	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
-	        "h4",
-=======
-	        'div',
-	        null,
-	        React.createElement(
-	          'li',
-	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.props.article })
-	        )
-	      );
-	    });
-	    return React.createElement(
-	      'div',
-	      { className: 'container' },
-	      React.createElement(
-	        'h3',
->>>>>>> master
+	        'h4',
 	        null,
 	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
-<<<<<<< HEAD
 	      React.createElement(
-	        "div",
-	        { className: "row" },
+	        'div',
+	        { className: 'row' },
 	        students
 	      ),
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
-=======
-	      students,
 	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
->>>>>>> master
 	    );
 	  }
 	});
