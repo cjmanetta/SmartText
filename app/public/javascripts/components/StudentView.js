@@ -198,10 +198,16 @@ var StudentView = React.createClass({
     }
   },
   compareSelection: function(start, end){
+    debugger
     var student_start = start;
     var student_end = end;
     var correct_start = parseInt(this.state.question.green_start, 10);
     var correct_end = parseInt(this.state.question.green_end, 10);
+
+    if(correct_start > correct_end){
+      var correct_end = parseInt(this.state.question.green_start, 10);
+      var correct_start = parseInt(this.state.question.green_end, 10);
+    }
 
     var correct_length = correct_end - correct_start;
     var variance = Math.round(correct_length / 6);
@@ -213,7 +219,7 @@ var StudentView = React.createClass({
 
     if(student_start > correct_start_range_beginning && student_start < correct_start_range_end){
       if(student_end > correct_end_range_beginning && student_end < correct_end_range_end){
-        var color = '#76EE00'
+        var color = 'green'
       } else {
         var color = 'blue'
       }
@@ -232,7 +238,6 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
-    debugger
     if(this.state.start !== null){
       var start = this.state.start;
       var stop = this.state.end;

@@ -1,12 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
-nav div {
-  background-color: white;
-  color: black; }
-
-#rightBar .row {
-  margin-top: 20px;
-  margin-bottom: 20px; }
-
 .cg {
   background-color: green; }
 
@@ -16,8 +8,18 @@ nav div {
 .cr {
   background-color: red; }
 
+<<<<<<< HEAD
 .mar3px {
   margin: 3px; }
+=======
+nav div {
+  background-color: white;
+  color: black; }
+
+#rightBar .row {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+>>>>>>> master
 
 body {
   background-color: rbg(232, 246, 255);
@@ -193,9 +195,6 @@ body {
 .tal {
   text-align: left; }
 
-.b1pxsb {
-  border: 1px solid black; }
-
 .fs8px {
   font-size: 8px; }
 
@@ -240,3 +239,24 @@ body {
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
   -webkit-font-smoothing: antialiased;
   font-weight: bold; }
+
+.cg {
+  background-color: green; }
+
+.cb {
+  background-color: blue; }
+
+.cr {
+  background-color: red; }
+
+.b1pxsbk {
+  border: 1px solid black; }
+
+.b1pxsb {
+  border: 1px solid blue; }
+
+.b1pxsg {
+  border: 1px solid green; }
+
+.b1pxsr {
+  border: 1px solid red; }

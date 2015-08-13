@@ -25347,10 +25347,16 @@
 	    }
 	  },
 	  compareSelection: function compareSelection(start, end) {
+	    debugger;
 	    var student_start = start;
 	    var student_end = end;
 	    var correct_start = parseInt(this.state.question.green_start, 10);
 	    var correct_end = parseInt(this.state.question.green_end, 10);
+
+	    if (correct_start > correct_end) {
+	      var correct_end = parseInt(this.state.question.green_start, 10);
+	      var correct_start = parseInt(this.state.question.green_end, 10);
+	    }
 
 	    var correct_length = correct_end - correct_start;
 	    var variance = Math.round(correct_length / 6);
@@ -25361,7 +25367,7 @@
 
 	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = '#76EE00';
+	        var color = 'green';
 	      } else {
 	        var color = 'blue';
 	      }
@@ -25380,7 +25386,6 @@
 	    return color;
 	  },
 	  saveAnswer: function saveAnswer() {
-	    debugger;
 	    if (this.state.start !== null) {
 	      var start = this.state.start;
 	      var stop = this.state.end;
@@ -25937,6 +25942,9 @@
 	  handleGetActiveLesson: function handleGetActiveLesson() {
 	    this.getActiveLesson(this.state.teacher);
 	  },
+	  handleUpdateAnswers: function handleUpdateAnswers() {
+	    this.getAnswers(this.state.question._id);
+	  },
 	  render: function render() {
 
 	    return React.createElement(
@@ -25953,7 +25961,8 @@
 	        lessons: this.state.lessons,
 	        newLesson: this.newLesson,
 	        getLessonsList: this.handleGetLessonsList,
-	        getActiveLesson: this.handleGetActiveLesson })
+	        getActiveLesson: this.handleGetActiveLesson,
+	        updateAnswers: this.handleUpdateAnswers })
 	    );
 	  }
 	});
@@ -25992,7 +26001,9 @@
 	      question: null,
 	      answered: false,
 	      lessonPills: 'Lessons',
-	      selections: []
+	      selections: [],
+	      start: null,
+	      stop: null
 	    };
 	  },
 	  getArticle: function getArticle() {
@@ -26024,7 +26035,9 @@
 	      answer: null,
 	      question: null,
 	      answered: false,
-	      lessonPills: 'Lessons'
+	      lessonPills: 'Lessons',
+	      start: null,
+	      end: null
 	    });
 	  },
 	  handleAddArticleClick: function handleAddArticleClick() {
@@ -26051,7 +26064,6 @@
 	    });
 
 	    var data = { title: title, author: author, content: content };
-	    debugger;
 	    Call.call(action, method, data).then((function (serverData) {
 	      this.setState({
 	        article: serverData.article
@@ -26062,17 +26074,19 @@
 	    });
 	  },
 	  handleSelect: function handleSelect(selection) {
-	    var green_start = selection.anchorOffset;
-	    var green_end = selection.focusOffset;
+	    var green_start = selection.getRangeAt(0).startOffset;
+	    var green_end = selection.getRangeAt(0).endOffset;
 	    var path = "/questions/" + this.state.question._id;
 	    var data = { prompt: this.state.question.prompt, green_start: green_start, green_end: green_end };
 	    Call.call(path, 'put', data).then((function (serverData) {
 	      this.setState({
 	        question: serverData.question,
+	        start: serverData.question.green_start,
+	        end: serverData.question.green_end,
 	        answered: true
 	      });
 	    }).bind(this))['catch'](function (serverData) {
-	      console.log('You have failed to answer the quesiton');
+	      console.log('You have failed to answer the question');
 	      console.log(serverData);
 	    });
 	  },
@@ -26095,6 +26109,7 @@
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
 	    this.props.activate(lesson_id);
+	    this.transitionTo('grid', { id: this.props.teacher._id });
 	  },
 	  render: function render() {
 	    if (this.state.article && this.state.answer) {
@@ -26105,7 +26120,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', className: 'btn btn-default' },
@@ -26113,7 +26128,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', className: 'btn btn-default' },
@@ -26542,7 +26557,6 @@
 	    var data = { title: title, date: date };
 
 	    Call.call(action, method, data).then((function (serverData) {
-	      debugger;
 	      this.props.getLessonsList();
 	      this.props.successfulUpdate();
 	    }).bind(this))['catch'](function (serverData) {
@@ -27297,46 +27311,86 @@
 	'use strict';
 
 	var React = __webpack_require__(2);
+	var Call = __webpack_require__(198);
 
 	var ReviewPanel = React.createClass({
 	  displayName: 'ReviewPanel',
 
-	  render: function render() {
-	    var green = [];
-	    var blue = [];
-	    var red = [];
-	    debugger;
-	    if (this.props.answers) {
-	      this.props.answers.map(function (answer) {
+	  getInitialState: function getInitialState() {
+	    return {
+	      green: [],
+	      blue: [],
+	      red: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.props.updateAnswers();
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    if (nextProps.answers.length > 0) {
+	      nextProps.answers.map((function (answer) {
+	        var path = '/students/lookup/' + answer._student_id;
 	        if (answer.correct === 2) {
-	          green.push(answer);
+	          Call.call(path, 'get').then((function (serverData) {
+	            var newGreen = this.state.green.concat(serverData.student);
+	            this.setState({
+	              green: newGreen
+	            });
+	          }).bind(this))['catch'](function (serverData) {
+	            console.log('There was an error getting that student');
+	            console.log(serverData);
+	          });
 	        } else if (answer.correct === 1) {
-	          blue.push(answer);
+	          Call.call(path, 'get').then((function (serverData) {
+	            var newBlue = this.state.blue.concat(serverData.student);
+	            this.setState({
+	              blue: newBlue
+	            });
+	          }).bind(this))['catch'](function (serverData) {
+	            console.log('There was an error getting that student');
+	            console.log(serverData);
+	          });
 	        } else {
-	          red.push(answer);
+	          Call.call(path, 'get').then((function (serverData) {
+	            var newRed = this.state.red.concat(serverData.student);
+	            this.setState({
+	              red: newRed
+	            });
+	          }).bind(this))['catch'](function (serverData) {
+	            console.log('There was an error getting that student');
+	            console.log(serverData);
+	          });
 	        }
-	      });
+	      }).bind(this));
 	    }
-	    var redLi = red.map(function (answer) {
-	      React.createElement(
+	  },
+	  render: function render() {
+	    var redLi = this.state.red.map(function (student) {
+	      return React.createElement(
 	        'li',
 	        null,
-	        'answer._id'
+	        student.username,
+	        ': ',
+	        student.first_name
 	      );
 	    });
 
-	    var blueLi = blue.map(function (answer) {
-	      React.createElement(
+	    var blueLi = this.state.blue.map(function (student) {
+	      return React.createElement(
 	        'li',
 	        null,
-	        'answer._id'
+	        student.username,
+	        ': ',
+	        student.first_name
 	      );
 	    });
-	    var greenLi = green.map(function (answer) {
-	      React.createElement(
+	    var greenLi = this.state.green.map(function (student) {
+	      return React.createElement(
 	        'li',
 	        null,
-	        'answer._id'
+	        student.username,
+	        ': ',
+	        student.first_name
 	      );
 	    });
 	    return React.createElement(
@@ -27347,9 +27401,60 @@
 	        null,
 	        'Review Panel'
 	      ),
-	      greenLi,
-	      blueLi,
-	      redLi
+	      React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Green Group'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          greenLi
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Blue Group'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          blueLi
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Red Group'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          redLi
+	        )
+	      )
 	    );
 	  }
 	});
@@ -27540,7 +27645,7 @@
 	    } else {
 	      var colorClass = "b1pxsbk";
 	    }
-
+	    debugger;
 	    if (this.props.student.start === undefined) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
@@ -27570,7 +27675,7 @@
 	      );
 	    }
 
-	    var classes = "bcb p15px fs10px scrol h350px w250px" + colorClass;
+	    var classes = "bcb p15px fs10px scrol h350px w250px " + colorClass;
 
 	    return React.createElement(
 	      "div",
@@ -27579,6 +27684,7 @@
 	        "span",
 	        { className: "fs14px" },
 	        this.props.student.first_name,
+	        " ",
 	        this.props.student.last_initial
 	      ),
 	      React.createElement(

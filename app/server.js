@@ -27,6 +27,7 @@ var answers_routes = require('./routes/answer')
 var klasses_routes = require('./routes/klass')
 var questions_routes = require('./routes/question')
 var student_login_routes = require('./routes/studentLogin')
+var student_lookup_routes = require('./routes/studentLookup')
 var standards_routes = require('./routes/standard')
 
 app.use('/answers', answers_routes)
@@ -37,6 +38,7 @@ app.use('/teachers', teachers_routes)
 app.use('/teachers/:id/klasses', klasses_routes)
 app.use('/teachers/:id/lessons/', lessons_routes)
 app.use('/teachers/:id/klasses/:klass_id/students', students_routes)
+app.use('/students/lookup', student_lookup_routes)
 app.use('/students/login', student_login_routes)
 
 

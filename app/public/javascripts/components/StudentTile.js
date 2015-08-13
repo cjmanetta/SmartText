@@ -28,7 +28,7 @@ var StudentTile = React.createClass({
     }  else {
       var colorClass = "b1pxsbk"
     }
-
+    debugger
     if (this.props.student.start === undefined ){
       var content = this.props.article.content
       var paragraph = <div>
@@ -48,12 +48,12 @@ var StudentTile = React.createClass({
                       </div>
     }
 
-    var classes = "bcb p15px fs10px scrol h350px w250px" + colorClass;
+    var classes = "bcb p15px fs10px scrol h350px w250px " + colorClass;
 
     return (
       <div id="clickable" className={classes} >
         <span className="fs14px">
-          {this.props.student.first_name}
+          {this.props.student.first_name}{" "}
           {this.props.student.last_initial}
         </span>
         <h6>{this.props.article.title}</h6>
