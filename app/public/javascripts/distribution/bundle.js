@@ -25995,7 +25995,9 @@
 	      question: null,
 	      answered: false,
 	      lessonPills: 'Lessons',
-	      selections: []
+	      selections: [],
+	      start: null,
+	      stop: null
 	    };
 	  },
 	  getArticle: function getArticle() {
@@ -26027,7 +26029,9 @@
 	      answer: null,
 	      question: null,
 	      answered: false,
-	      lessonPills: 'Lessons'
+	      lessonPills: 'Lessons',
+	      start: null,
+	      end: null
 	    });
 	  },
 	  handleAddArticleClick: function handleAddArticleClick() {
@@ -26064,17 +26068,19 @@
 	    });
 	  },
 	  handleSelect: function handleSelect(selection) {
-	    var green_start = selection.anchorOffset;
-	    var green_end = selection.focusOffset;
+	    var green_start = selection.getRangeAt(0).startOffset;
+	    var green_end = selection.getRangeAt(0).endOffset;
 	    var path = "/questions/" + this.state.question._id;
 	    var data = { prompt: this.state.question.prompt, green_start: green_start, green_end: green_end };
 	    Call.call(path, 'put', data).then((function (serverData) {
 	      this.setState({
 	        question: serverData.question,
+	        start: serverData.question.green_start,
+	        end: serverData.question.green_end,
 	        answered: true
 	      });
 	    }).bind(this))['catch'](function (serverData) {
-	      console.log('You have failed to answer the quesiton');
+	      console.log('You have failed to answer the question');
 	      console.log(serverData);
 	    });
 	  },
@@ -26107,7 +26113,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', className: 'btn btn-default' },
@@ -26115,7 +26121,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', className: 'btn btn-default' },
