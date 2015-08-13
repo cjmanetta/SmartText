@@ -25347,10 +25347,16 @@
 	    }
 	  },
 	  compareSelection: function compareSelection(start, end) {
+	    debugger;
 	    var student_start = start;
 	    var student_end = end;
 	    var correct_start = parseInt(this.state.question.green_start, 10);
 	    var correct_end = parseInt(this.state.question.green_end, 10);
+
+	    if (correct_start > correct_end) {
+	      var correct_end = parseInt(this.state.question.green_start, 10);
+	      var correct_start = parseInt(this.state.question.green_end, 10);
+	    }
 
 	    var correct_length = correct_end - correct_start;
 	    var variance = Math.round(correct_length / 6);
@@ -25361,7 +25367,7 @@
 
 	    if (student_start > correct_start_range_beginning && student_start < correct_start_range_end) {
 	      if (student_end > correct_end_range_beginning && student_end < correct_end_range_end) {
-	        var color = '#76EE00';
+	        var color = 'green';
 	      } else {
 	        var color = 'blue';
 	      }
@@ -27562,7 +27568,7 @@
 	      );
 	    }
 
-	    var classes = "bcb p15px fs10px scrol h350px w250px" + colorClass;
+	    var classes = "bcb p15px fs10px scrol h350px w250px " + colorClass;
 
 	    return React.createElement(
 	      "div",
