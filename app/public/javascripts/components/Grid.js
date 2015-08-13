@@ -1,6 +1,7 @@
 var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
+var Call = require('../call');
 
 var Header = require("./Header");
 var RightBar = require('./RightBar');

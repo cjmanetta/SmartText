@@ -4,7 +4,6 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
 var LessonPanel = require("./LessonPanel");
-var auth = require('../auth')
 var Call = require('../call');
 
 
@@ -16,17 +15,8 @@ var TeacherView = React.createClass({
       article: {},
       question: {prompt: "none"},
       answers: [],
-      loggedIn: auth.loggedIn(),
       lessons: [],
     }
-  },
-  updateAuth(loggedIn){
-    this.setState({
-      loggedIn: !!loggedIn
-    })
-  },
-  componentWillMount: function(){
-    auth.login();
   },
   componentDidMount: function() {
     var action = '/teachers/' + this.props.params.id;
@@ -67,11 +57,19 @@ var TeacherView = React.createClass({
 
     Call.call(path, 'get')
         .then(function(serverData){
-          this.getArticle(serverData.lesson.article_id);
-          this.getQuestion(serverData.lesson.question_id);
-          this.setState({
-            activeLesson: serverData.lesson
-          });
+          if(serverData.lesson){
+            this.getArticle(serverData.lesson.article_id);
+            this.getQuestion(serverData.lesson.question_id);
+            this.setState({
+              activeLesson: serverData.lesson
+            });
+          } else {
+            this.setState({
+              activeLesson: null,
+              article: null,
+              question: null
+            });
+          }
         }.bind(this))
         .catch(function(serverData){
           console.log('there was an error getting the active lesson')
@@ -139,6 +137,7 @@ var TeacherView = React.createClass({
   newLesson: function(action, data){
     Call.call(action, 'post', data)
         .then(function(serverData) {
+          this.getQuestion(serverData.lesson.question_id);
           var newLessons = this.state.lessons.concat(serverData.lesson)
           this.setState({
             lessons: newLessons,
@@ -157,6 +156,9 @@ var TeacherView = React.createClass({
   handleGetLessonsList: function(){
     this.getLessonsList(this.state.teacher);
   },
+  handleGetActiveLesson: function(){
+    this.getActiveLesson(this.state.teacher);
+  },
   render: function() {
 
     return (
@@ -172,7 +174,8 @@ var TeacherView = React.createClass({
                       answers={this.state.answers}
                       lessons={this.state.lessons}
                       newLesson={this.newLesson}
-                      getLessonsList={this.handleGetLessonsList} />
+                      getLessonsList={this.handleGetLessonsList}
+                      getActiveLesson={this.handleGetActiveLesson}/>
       </div>
     );
   },

@@ -57,32 +57,15 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(201);
-	var StudentPanel = __webpack_require__(210);
-	var LessonPanel = __webpack_require__(204);
-	var ReviewPanel = __webpack_require__(214);
-	var Grid = __webpack_require__(215);
-	var Home = __webpack_require__(217);
+	var StudentPanel = __webpack_require__(209);
+	var LessonPanel = __webpack_require__(203);
+	var ReviewPanel = __webpack_require__(213);
+	var Grid = __webpack_require__(214);
+	var Home = __webpack_require__(216);
 	var Header = __webpack_require__(202);
-	var Call = __webpack_require__(205);
+	var Call = __webpack_require__(204);
 
 	//functions defined in the global scope to be used in many components
-
-	// var requireAuth = function(component){
-	//   statics: {
-	//     willTransitionTo: function(transition) {
-	//       if (!auth.loggedIn()) {
-	//         transition.redirect('/', {}, {'nextPath' : transition.path});
-	//       }
-	//     },
-	//   },
-	//   render () {
-	//     console.log('inside requireAuth')
-	//     return <Component {...this.props}/>
-	//   }
-	// }
-
-	//add this to the desired route
-	// handler={requireAuth}
 
 	//Routes for the react router
 	var routes = React.createElement(
@@ -105,17 +88,7 @@
 	  displayName: 'App',
 
 	  getInitialState: function getInitialState() {
-	    loggedIn: auth.loggedIn();
 	    teacher: null;
-	  },
-	  setStateOnAuth: function setStateOnAuth() {
-	    this.setState({
-	      loggedIn: loggedIn
-	    });
-	  },
-	  componentWillMount: function componentWillMount() {
-	    auth.onChange = this.setStateOnAuth.bind(this);
-	    auth.login();
 	  },
 	  render: function render() {
 	    return React.createElement(RouteHandler, null);
@@ -25649,9 +25622,8 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(204);
-	var auth = __webpack_require__(203);
-	var Call = __webpack_require__(205);
+	var LessonPanel = __webpack_require__(203);
+	var Call = __webpack_require__(204);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25663,17 +25635,8 @@
 	      article: {},
 	      question: { prompt: "none" },
 	      answers: [],
-	      loggedIn: auth.loggedIn(),
 	      lessons: []
 	    };
-	  },
-	  updateAuth: function updateAuth(loggedIn) {
-	    this.setState({
-	      loggedIn: !!loggedIn
-	    });
-	  },
-	  componentWillMount: function componentWillMount() {
-	    auth.login();
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var action = '/teachers/' + this.props.params.id;
@@ -25706,11 +25669,19 @@
 	    var path = "/teachers/" + this.props.params.id + "/lessons/" + teacher.active_lesson;
 
 	    Call.call(path, 'get').then((function (serverData) {
-	      this.getArticle(serverData.lesson.article_id);
-	      this.getQuestion(serverData.lesson.question_id);
-	      this.setState({
-	        activeLesson: serverData.lesson
-	      });
+	      if (serverData.lesson) {
+	        this.getArticle(serverData.lesson.article_id);
+	        this.getQuestion(serverData.lesson.question_id);
+	        this.setState({
+	          activeLesson: serverData.lesson
+	        });
+	      } else {
+	        this.setState({
+	          activeLesson: null,
+	          article: null,
+	          question: null
+	        });
+	      }
 	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the active lesson');
 	      console.log(serverData);
@@ -25763,6 +25734,7 @@
 	  },
 	  newLesson: function newLesson(action, data) {
 	    Call.call(action, 'post', data).then((function (serverData) {
+	      this.getQuestion(serverData.lesson.question_id);
 	      var newLessons = this.state.lessons.concat(serverData.lesson);
 	      this.setState({
 	        lessons: newLessons
@@ -25779,6 +25751,9 @@
 	  },
 	  handleGetLessonsList: function handleGetLessonsList() {
 	    this.getLessonsList(this.state.teacher);
+	  },
+	  handleGetActiveLesson: function handleGetActiveLesson() {
+	    this.getActiveLesson(this.state.teacher);
 	  },
 	  render: function render() {
 
@@ -25801,7 +25776,8 @@
 	        answers: this.state.answers,
 	        lessons: this.state.lessons,
 	        newLesson: this.newLesson,
-	        getLessonsList: this.handleGetLessonsList })
+	        getLessonsList: this.handleGetLessonsList,
+	        getActiveLesson: this.handleGetActiveLesson })
 	    );
 	  }
 	});
@@ -25821,14 +25797,14 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var auth = __webpack_require__(203);
-
 	var Header = React.createClass({
 	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
 	  confirmLogout: function confirmLogout() {
-	    auth.logout();
+	    if (confirm('Are you sure you want to logout?')) {
+	      this.transitionTo('/');
+	    }
 	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
@@ -25848,14 +25824,14 @@
 	        'div',
 	        null,
 	        React.createElement(
-	          'div',
-	          { onClick: this.confirmLogout, className: 'l-out btn btn-default navbar-btn' },
+	          Link,
+	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
 	          'Log Out'
 	        ),
 	        React.createElement(
 	          Link,
 	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
-	          'teacher dashboard'
+	          'Teacher Dashboard'
 	        ),
 	        React.createElement(
 	          Link,
@@ -25904,39 +25880,6 @@
 
 /***/ },
 /* 203 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var localStorage = window.localStorage;
-
-	function login() {
-	  localStorage.token = Math.random().toString(36).substring(7);
-	}
-
-	function getToken() {
-	  return localStorage.token;
-	}
-
-	function logout() {
-	  console.log('before delete:' + localStorage.token);
-	  delete localStorage.token;
-	  console.log('after delete:' + localStorage.token);
-	  console.log('logout');
-	  this.onChange(false);
-	}
-
-	function loggedIn() {
-	  return !!localStorage.token;
-	}
-
-	exports.login = login;
-	exports.getToken = getToken;
-	exports.logout = logout;
-	exports.loggedIn = loggedIn;
-
-/***/ },
-/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25948,11 +25891,11 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Call = __webpack_require__(205);
+	var Call = __webpack_require__(204);
 
-	var LessonSelect = __webpack_require__(206);
-	var NewLesson = __webpack_require__(209);
-	var LessonBox = __webpack_require__(207);
+	var LessonSelect = __webpack_require__(205);
+	var NewLesson = __webpack_require__(208);
+	var LessonBox = __webpack_require__(206);
 	var MainText = __webpack_require__(200);
 
 	var LessonPanel = React.createClass({
@@ -26055,6 +25998,7 @@
 	    var action = '/teachers/' + this.props.teacher._id + "/lessons/" + lesson_id;
 	    var method = 'delete';
 	    Call.call(action, method).then((function (serverData) {
+	      this.props.getActiveLesson();
 	      this.props.getLessonsList();
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('there was an error deleting the class');
@@ -26302,7 +26246,7 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 205 */
+/* 204 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -26327,13 +26271,13 @@
 	};
 
 /***/ },
-/* 206 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var LessonBox = __webpack_require__(207);
+	var LessonBox = __webpack_require__(206);
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
@@ -26394,13 +26338,13 @@
 	*/
 
 /***/ },
-/* 207 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var EditLesson = __webpack_require__(208);
+	var EditLesson = __webpack_require__(207);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26514,14 +26458,14 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 208 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var Call = __webpack_require__(205);
+	var Call = __webpack_require__(204);
 
 	var EditLesson = React.createClass({
 	  displayName: 'EditLesson',
@@ -26591,7 +26535,7 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 209 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26680,13 +26624,14 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 210 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var KlassBox = __webpack_require__(211);
+	var KlassBox = __webpack_require__(210);
+	var Call = __webpack_require__(204);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -26702,20 +26647,11 @@
 	  getKlassList: function getKlassList() {
 	    var studentPanel = this;
 	    var path = "/teachers/" + this.props.params.id + "/klasses";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'get',
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      var newKlasses = serverData.klasses;
-	      studentPanel.setState({
-	        klasses: newKlasses
+	    Call.call(path, 'get').then((function (serverData) {
+	      this.setState({
+	        klasses: serverData.klasses
 	      });
-	    });
-
-	    request.fail(function (serverData) {
+	    }).bind(this))["catch"](function (serverData) {
 	      console.log('there was an error getting the klasses');
 	      console.log(serverData);
 	    });
@@ -26723,53 +26659,37 @@
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
 
-	    var studentPanel = this;
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    var name = $(event.target).find('#name').val();
-	    var grade = $(event.target).find("#grade").val();
-	    var pin = $(event.target).find('#pin').val();
+	    var form = event.target;
+	    var action = $(form).attr('action');
+	    var method = $(form).attr('method');
+	    var name = $(form).find('#name').val();
+	    var grade = $(form).find("#grade").val();
+	    var pin = $(form).find('#pin').val();
 	    var teacher_id = this.props.teacher._id;
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
+	      form.reset();
 	      if (method === "post") {
-	        var newKlasses = studentPanel.state.klasses.concat(serverData.klass);
-	        studentPanel.setState({
+	        var newKlasses = this.state.klasses.concat(serverData.klass);
+	        this.setState({
 	          klasses: newKlasses
 	        });
 	      } else if (method === "put") {
 	        this.getKlassList();
 	      }
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error creating that klass');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error creating the class');
 	      console.log(serverData);
 	    });
 	  },
 	  handleDeleteKlass: function handleDeleteKlass(klass_id) {
 	    var action = '/teachers/' + this.props.teacher._id + "/klasses/" + klass_id;
-	    var method = 'delete';
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      dataType: "json"
-	    });
-
-	    request.done((function (serverData) {
+	    Call.call(action, 'delete').then((function (serverData) {
 	      this.getKlassList();
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
-	      console.log('there was an error deleting the class');
+	    }).bind(this))["catch"](function (serverData) {
+	      console.log('there was an error deleting the klass');
 	      console.log(serverData);
 	    });
 	  },
@@ -26818,13 +26738,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 211 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentList = __webpack_require__(212);
+	var StudentList = __webpack_require__(211);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26961,13 +26881,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 212 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentBox = __webpack_require__(213);
+	var StudentBox = __webpack_require__(212);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27094,7 +27014,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 213 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27208,7 +27128,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 214 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27274,10 +27194,10 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 215 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
@@ -27286,15 +27206,17 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+	var Call = __webpack_require__(204);
+
 	var Header = __webpack_require__(202);
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
-	var StudentTile = __webpack_require__(216);
+	var StudentTile = __webpack_require__(215);
 	var socket = io();
 
 	var Grid = React.createClass({
-	  displayName: "Grid",
+	  displayName: 'Grid',
 
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
@@ -27371,6 +27293,7 @@
 
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
+<<<<<<< HEAD
 	        "li",
 	        { id: student._id, className: "col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px", onClick: that.handleTileClick },
 	        React.createElement(StudentTile, { student: student, article: that.props.article })
@@ -27382,16 +27305,37 @@
 	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        "h4",
+=======
+	        'div',
 	        null,
-	        "Teacher Dashboard"
+	        React.createElement(
+	          'li',
+	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student, article: that.props.article })
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'container' },
+	      React.createElement(
+	        'h3',
+>>>>>>> master
+	        null,
+	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
+<<<<<<< HEAD
 	      React.createElement(
 	        "div",
 	        { className: "row" },
 	        students
 	      ),
 	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: "view question", labelTwo: "finished" })
+=======
+	      students,
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
+>>>>>>> master
 	    );
 	  }
 	});
@@ -27399,7 +27343,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 216 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27441,7 +27385,7 @@
 	module.exports = StudentTile;
 
 /***/ },
-/* 217 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27451,7 +27395,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(202);
-	var SignUp = __webpack_require__(218);
+	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27470,14 +27414,14 @@
 	//<Header />
 
 /***/ },
-/* 218 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var auth = __webpack_require__(203);
+	var AuthError = __webpack_require__(218);
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -27510,8 +27454,10 @@
 
 	    request.done(function (serverData) {
 
-	      if (serverData.teacher === null) {
-	        console.log('in first route');
+	      if (serverData.teacher === null || serverData.student === null) {
+	        signUp.setState({
+	          error: true
+	        });
 	        signUp.transitionTo('/');
 	      } else if (serverData.student) {
 	        signUp.transitionTo('students', { id: serverData.student._id });
@@ -27696,15 +27642,48 @@
 	        )
 	      );
 	    }
+	    if (this.state.error) {
+	      var authError = React.createElement(AuthError, null);
+	    } else {
+	      var authError = React.createElement('div', null);
+	    }
 	    return React.createElement(
 	      'div',
 	      null,
-	      authBox
+	      authBox,
+	      authError
 	    );
 	  }
 	});
 
 	module.exports = SignUp;
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+
+	var AuthError = React.createClass({
+	  displayName: 'AuthError',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'alert alert-danger mt10' },
+	      React.createElement(
+	        'p',
+	        null,
+	        'Oops!  You entered the wrong credentials. Try again.'
+	      )
+	    );
+	  }
+	});
+
+	module.exports = AuthError;
 
 /***/ }
 /******/ ]);
