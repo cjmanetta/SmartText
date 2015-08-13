@@ -4,6 +4,7 @@ var StudentList = require('./StudentList')
 var KlassBox = React.createClass({
   getInitialState: function() {
     return {
+      klassBox: 'new'
       display: 'panel'
     };
   },
