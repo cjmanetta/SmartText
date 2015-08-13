@@ -25736,7 +25736,7 @@
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
+	          { to: "grid", disabled: this.props.activeLesson !== null, params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
 	          "Teacher Dashboard"
 	        ),
 	        React.createElement(
@@ -25950,7 +25950,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px w80" },
-	      React.createElement(Header, { teacher: this.state.teacher }),
+	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -27234,7 +27234,7 @@
 	            React.createElement(
 	              "a",
 	              { className: "mar3px", onClick: this.deleteClick },
-	              React.createElement("i", { className: "glyphicon glyphicon-remove" })
+	              React.createElement("i", { className: "glyphicon glyphicon-trash" })
 	            )
 	          ),
 	          React.createElement(

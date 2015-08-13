@@ -1,17 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
-.cg {
-  background-color: green; }
-
-.cb {
-  background-color: blue; }
-
-.cr {
-  background-color: red; }
-
-<<<<<<< HEAD
-.mar3px {
-  margin: 3px; }
-=======
 nav div {
   background-color: white;
   color: black; }
@@ -19,7 +6,9 @@ nav div {
 #rightBar .row {
   margin-top: 20px;
   margin-bottom: 20px; }
->>>>>>> master
+
+.mar3px {
+  margin: 3px; }
 
 body {
   background-color: rbg(232, 246, 255);

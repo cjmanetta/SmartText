@@ -29,7 +29,7 @@ var StudentBox = React.createClass({
             <p>
               <span>{this.props.student.first_name} {this.props.student.last_initial}   </span>
               <a className="mar3px imgtag" onClick={this.editClick}><i className="glyphicon glyphicon-pencil"></i></a>
-              <a className="mar3px" onClick={this.deleteClick}><i className="glyphicon glyphicon-remove"></i></a>
+              <a className="mar3px" onClick={this.deleteClick}><i className="glyphicon glyphicon-trash"></i></a>
             </p>
             <p>Username: {this.props.student.username}</p>
           </div>
