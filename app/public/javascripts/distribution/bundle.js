@@ -25917,6 +25917,103 @@
 	module.exports = TeacherView;
 
 /***/ },
+<<<<<<< HEAD
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = React.createClass({
+	  displayName: 'Header',
+
+	  mixins: [Router.Navigation, Router.State],
+	  confirmLogout: function confirmLogout() {
+	    if (confirm('Are you sure you want to logout?')) {
+	      this.transitionTo('/');
+	    }
+	  },
+	  render: function render() {
+	    var teacher = this.props.teacher;
+	    var student = this.props.student;
+	    var content = null;
+	    var buttons = null;
+
+	    if (teacher) {
+	      content = React.createElement(
+	        'p',
+	        { className: 'navbar-text navbar-left' },
+	        teacher.first_name,
+	        ' ',
+	        teacher.last_name
+	      );
+	      buttons = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          Link,
+	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
+	          'Log Out'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
+	          'Teacher Dashboard'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
+	          'Students Panel'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
+	          'Lessons Panel'
+	        ),
+	        React.createElement('span', { className: 'clear' })
+	      );
+	    } else if (student) {
+	      content = React.createElement(
+	        'p',
+	        { className: 'navbar-text navbar-left' },
+	        student.first_name
+	      );
+	    } else {
+	      content = null;
+	    }
+
+	    return(
+	      //add full navbar components brand buttons etc
+	      React.createElement(
+	        'nav',
+	        { className: 'navbar navbar-default navbar-fixed-top' },
+	        React.createElement(
+	          'div',
+	          { className: 'container-fluid' },
+	          React.createElement(
+	            'a',
+	            { className: 'navbar-brand', href: '#' },
+	            React.createElement('img', { src: '../../../images/smartext_final3.png', className: 'logo', alt: 'SmartText' })
+	          ),
+	          content,
+	          buttons
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+=======
+>>>>>>> master
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27330,6 +27427,11 @@
 	    var that = this;
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
+<<<<<<< HEAD
+	        'li',
+	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
+	        React.createElement(StudentTile, { student: student, article: that.props.article })
+=======
 	        'div',
 	        null,
 	        React.createElement(
@@ -27337,19 +27439,36 @@
 	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
 	          React.createElement(StudentTile, { student: student, article: that.props.article })
 	        )
+>>>>>>> master
 	      );
 	    });
 	    return React.createElement(
 	      'div',
+<<<<<<< HEAD
+	      null,
+	      React.createElement(Header, { teacher: this.props.teacher }),
+	      React.createElement(
+	        'h4',
+=======
 	      { className: 'container' },
 	      React.createElement(
 	        'h3',
+>>>>>>> master
 	        null,
 	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
+<<<<<<< HEAD
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        students
+	      ),
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
+=======
 	      students,
 	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'Display Question', labelTwo: 'Finish' })
+>>>>>>> master
 	    );
 	  }
 	});
