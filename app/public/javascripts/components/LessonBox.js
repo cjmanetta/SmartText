@@ -28,12 +28,12 @@ var LessonBox = React.createClass({
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
           <div className="panel-heading">
-            <h5 className="panel-title">{ this.props.lesson.title }</h5>
+            <p className="panel-title">{ this.props.lesson.title }<span><a onClick={this.editClick}>
+          <i className="glyphicon glyphicon-pencil"></i></a></span><span><a onClick={this.deleteClick}>
+          <i className="glyphicon glyphicon-trash"></i></a></span></p>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
-              <button type="button" className="btn btn-default" onClick={this.makeActive}>Make Active Lesson</button>
-              <button type="button" className="btn btn-default" onClick={this.editClick}>Edit</button>
-              <button type="button" className="btn btn-default" onClick={this.deleteClick}>Delete</button>
+              <button type="button" className="btn btn-primary btn-xs raised" onClick={this.makeActive}>Make Active Lesson</button>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@ var LessonBox = React.createClass({
             <h5 className="panel-title">{ this.props.lesson.title }</h5>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
-              <button type="button" className="btn btn-default">Delete</button>
+              <button type="button" className="btn btn-primary btn-sm raised">Delete</button>
             </div>
             <div className="panel-body">
               <EditLesson teacher={this.props.teacher}

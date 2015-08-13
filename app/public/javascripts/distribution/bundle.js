@@ -25802,7 +25802,7 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      { id: 'mainText', className: 'w60 p15px ml5' },
+	      { id: 'mainText', className: 'ml5 mr5 bboot fs10px scrol h350px w250px plr1' },
 	      React.createElement(
 	        'h3',
 	        { id: 'title' },
@@ -26241,30 +26241,30 @@
 	    if (this.state.article && this.state.answer) {
 	      var submitButton = React.createElement(
 	        'button',
-	        { type: 'submit', className: 'btn btn-default' },
+	        { type: 'submit', className: 'btn btn-primary raised btn-sm' },
 	        'Submit'
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        'button',
-	        { type: 'submit', className: 'btn btn-default' },
+	        { type: 'submit', className: 'btn btn-primary raised' },
 	        'Submit'
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        'button',
-	        { type: 'submit', className: 'btn btn-default' },
+	        { type: 'submit', disabled: this.state.answered === false, className: 'btn btn-primary raised' },
 	        'Submit'
 	      );
 	      var addButton = null;
 	    } else {
 	      var addButton = React.createElement(
 	        'button',
-	        { onClick: this.handleAddArticleClick, className: 'btn btn-default' },
+	        { onClick: this.handleAddArticleClick, className: 'btn btn-primary raised' },
 	        'Add Text'
 	      );
 	      var submitButton = null;
@@ -26317,7 +26317,7 @@
 	        ),
 	        React.createElement(
 	          'button',
-	          { type: 'submit', className: 'btn btn-default' },
+	          { type: 'submit', className: 'btn btn-primary btn-sm raised' },
 	          'Submit Text'
 	        )
 	      );
@@ -26343,7 +26343,7 @@
 	          React.createElement(
 	            'h5',
 	            { className: 'panel-title' },
-	            'Current Active Lesson:',
+	            'Current Active Lesson: ',
 	            this.props.activeLesson.title
 	          ),
 	          React.createElement(
@@ -26352,13 +26352,10 @@
 	            this.props.activeLesson.date
 	          ),
 	          React.createElement(
-	            'div',
-	            { className: 'panel-body' },
-	            React.createElement(
-	              Link,
-	              { to: 'grid', params: { id: this.props.teacher._id }, className: 'btn btn-default navbar-btn' },
-	              'Go to Lesson'
-	            )
+	            Link,
+	            { to: 'grid', params: { id: this.props.teacher._id }, className: 'btn btn-primary btn-sm raised' },
+	            'Go to Lesson ',
+	            React.createElement('span', { className: 'glyphicon glyphicon-chevron-right' })
 	          )
 	        )
 	      );
@@ -26371,7 +26368,7 @@
 	        null,
 	        React.createElement(
 	          'ul',
-	          { className: 'nav nav-pills' },
+	          { className: 'nav nav-tabs mbf20' },
 	          React.createElement(
 	            'li',
 	            { role: 'presentation' },
@@ -26404,7 +26401,7 @@
 	        null,
 	        React.createElement(
 	          'ul',
-	          { className: 'nav nav-pills' },
+	          { className: 'nav nav-tabs mbf20' },
 	          React.createElement(
 	            'li',
 	            { role: 'presentation', className: 'active' },
@@ -26425,41 +26422,57 @@
 	          )
 	        ),
 	        React.createElement(
-	          'form',
-	          { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	          'div',
+	          { className: 'col-xs-12 col-md-8' },
 	          React.createElement(
 	            'div',
-	            { className: 'form-group' },
+	            { className: 'col-xs-12' },
 	            React.createElement(
-	              'label',
-	              { htmlFor: 'title' },
-	              'Lesson Title'
+	              'form',
+	              { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	              React.createElement(
+	                'div',
+	                { className: 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'title' },
+	                  'Lesson Title'
+	                ),
+	                React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	              ),
+	              React.createElement(
+	                'div',
+	                { className: 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'date' },
+	                  'Lesson Date'
+	                ),
+	                React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	              ),
+	              submitButton
 	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	            addButton
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'date' },
-	              'Lesson Date'
-	            ),
-	            React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	          ),
-	          submitButton
+	            { className: 'col-xs-12' },
+	            textBox
+	          )
 	        ),
-	        addButton,
-	        textBox,
-	        mainText
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-12 col-md-4' },
+	          mainText
+	        )
 	      );
 	    }
 	    return React.createElement(
 	      'div',
-	      { id: 'lessonPanel', className: 'container' },
+	      { id: 'lessonPanel', className: 'row' },
 	      React.createElement(
 	        'div',
-	        { className: 'row' },
+	        { className: 'pt1' },
 	        lessonPills
 	      )
 	    );
@@ -26577,9 +26590,27 @@
 	          'div',
 	          { className: 'panel-heading' },
 	          React.createElement(
-	            'h5',
+	            'p',
 	            { className: 'panel-title' },
-	            this.props.lesson.title
+	            this.props.lesson.title,
+	            React.createElement(
+	              'span',
+	              null,
+	              React.createElement(
+	                'a',
+	                { onClick: this.editClick },
+	                React.createElement('i', { className: 'glyphicon glyphicon-pencil' })
+	              )
+	            ),
+	            React.createElement(
+	              'span',
+	              null,
+	              React.createElement(
+	                'a',
+	                { onClick: this.deleteClick },
+	                React.createElement('i', { className: 'glyphicon glyphicon-trash' })
+	              )
+	            )
 	          ),
 	          React.createElement(
 	            'p',
@@ -26591,18 +26622,8 @@
 	            { className: 'btn-group' },
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.makeActive },
+	              { type: 'button', className: 'btn btn-primary btn-xs raised', onClick: this.makeActive },
 	              'Make Active Lesson'
-	            ),
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.editClick },
-	              'Edit'
-	            ),
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-default', onClick: this.deleteClick },
-	              'Delete'
 	            )
 	          )
 	        )
@@ -26630,7 +26651,7 @@
 	            { className: 'btn-group' },
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default' },
+	              { type: 'button', className: 'btn btn-primary btn-sm raised' },
 	              'Delete'
 	            )
 	          ),
