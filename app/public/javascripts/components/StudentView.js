@@ -26,7 +26,6 @@ var StudentView = React.createClass({
       this.updatePrompt(data)
     }.bind(this))
     socket.on('finish', function(){
-      debugger
       this.saveAnswer();
       this.showAnswer();
       this.setState({
@@ -200,14 +199,8 @@ var StudentView = React.createClass({
   compareSelection: function(start, end){
     var student_start = start;
     var student_end = end;
-    var correct_start = this.state.question.green_start;
-    var correct_end = this.state.question.green_end;
-
-    //adjust start/end regardless of which way they highlight
-    if(correct_start > correct_end){
-      correct_start = this.state.question.green_end;
-      correct_end = this.state.question.green_start;
-    }
+    var correct_start = parseInt(this.state.question.green_start, 10);
+    var correct_end = parseInt(this.state.question.green_end, 10);
 
     var correct_length = correct_end - correct_start;
     var variance = Math.round(correct_length / 6);
@@ -238,6 +231,7 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
+    debugger
     if(this.state.start !== null){
       var start = this.state.start;
       var stop = this.state.end;
@@ -258,25 +252,17 @@ var StudentView = React.createClass({
     var _student_id = this.state.student._id;
 
     var data = {start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id};
-    var path = "/answers"
-    var request = $.ajax({
-      url: path,
-      method: 'post',
-      data: data,
-      dataType: 'json'
-    });
 
-    request.done(function(serverData){
-      this.setState({
-        answer: serverData.answer
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('Failed to post the answer');
-      console.log( serverData);
-    });
-
+    Call.call("/answers", "post", data)
+        .then(function(serverData){
+          this.setState({
+            answer: serverData.answer
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to post the answer');
+          console.log( serverData);
+        });
   },
   showAnswer: function(){
     var color = this.compareSelection(this.state.start, this.state.end);

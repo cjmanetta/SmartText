@@ -40,7 +40,6 @@ var MainText = React.createClass({
     this.props.updateTeacher(start, end);
   },
   render: function() {
-    debugger
     if (this.props.start === null ){
       var content = this.props.article.content
       var paragraph = <div>
