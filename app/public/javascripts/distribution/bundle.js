@@ -26103,6 +26103,7 @@
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
 	    this.props.activate(lesson_id);
+	    this.transitionTo('grid', { id: this.props.teacher._id });
 	  },
 	  render: function render() {
 	    if (this.state.article && this.state.answer) {

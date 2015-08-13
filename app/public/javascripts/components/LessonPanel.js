@@ -137,6 +137,7 @@ var LessonPanel = React.createClass({
   },
   setActiveLesson: function(lesson_id){
     this.props.activate(lesson_id);
+    this.transitionTo('grid', {id: this.props.teacher._id});
   },
   render: function(){
     if (this.state.article && this.state.answer) {
