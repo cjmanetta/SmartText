@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -57,14 +56,14 @@
 	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(202);
+	var TeacherView = __webpack_require__(203);
 	var StudentPanel = __webpack_require__(209);
-	var LessonPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
 	var ReviewPanel = __webpack_require__(213);
 	var Grid = __webpack_require__(214);
 	var Home = __webpack_require__(216);
-	var Header = __webpack_require__(201);
-	var Call = __webpack_require__(204);
+	var Header = __webpack_require__(202);
+	var Call = __webpack_require__(198);
 
 	//functions defined in the global scope to be used in many components
 
@@ -25147,11 +25146,11 @@
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var RightBar = __webpack_require__(198);
-	var MainText = __webpack_require__(200);
-	var Header = __webpack_require__(201);
+	var Call = __webpack_require__(198);
+	var RightBar = __webpack_require__(199);
+	var MainText = __webpack_require__(201);
+	var Header = __webpack_require__(202);
 	var socket = io();
-
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
 
@@ -25162,8 +25161,10 @@
 	      klass: {},
 	      article: { content: "", author: "", title: "" },
 	      highlightOn: false,
+	      showQuestion: false,
 	      activeLesson: {},
-	      selections: [],
+	      start: null,
+	      end: null,
 	      question: { prompt: "", green_start: null, green_end: null }
 	    };
 	  },
@@ -25175,8 +25176,8 @@
 	      this.updatePrompt(data);
 	    }).bind(this));
 	    socket.on('finish', (function () {
-	      alert('Your teacher has ended the session.');
 	      this.saveAnswer();
+	      this.showAnswer();
 	      this.setState({
 	        highlightOn: false
 	      });
@@ -25184,7 +25185,7 @@
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      question: data,
+	      showQuestion: true,
 	      highlightOn: true
 	    });
 	  },
@@ -25316,44 +25317,40 @@
 	    }
 	  },
 	  handleClear: function handleClear() {
-	    socket.emit('studentClear', { _id: this.state.student._id });
-	    this.forceUpdate();
+	    socket.emit('studentClear', { student: this.state.student });
 	    this.setState({
-	      selections: []
+	      start: null,
+	      end: null
 	    });
 	  },
 	  handleSelect: function handleSelect(selection) {
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
-	      var correctColor = this.compareSelection(selection);
-	      var selectedRange = selection.getRangeAt(0);
-	      this.state.selections.push(selectedRange);
-	      this.forceUpdate();
+	      var start = selection.getRangeAt(0).startOffset;
+	      var end = selection.getRangeAt(0).endOffset;
 
-	      var highlightedText = $('#content').html();
-	      socket.emit('select', {
-	        student: this.state.student,
-	        selection: highlightedText,
-	        color: correctColor,
-	        _id: this.state.student._id
+	      this.setState({
+	        start: start,
+	        end: end
 	      });
 	    }
 	  },
-	  compareSelection: function compareSelection(selection) {
-	    var student_start = selection.anchorOffset;
-	    var student_end = selection.focusOffset;
-	    var correct_start = this.state.question.green_start;
-	    var correct_end = this.state.question.green_end;
-
-	    //adjust start/end regardless of which way they highlight
-	    if (student_start > student_end) {
-	      student_start = selection.focusOffset;
-	      student_end = selection.anchorOffset;
+	  updateTeacherSocket: function updateTeacherSocket(start, end) {
+	    if (this.state.start !== null) {
+	      var correctColor = this.compareSelection(start, end);
+	      socket.emit('select', {
+	        student: this.state.student,
+	        start: start,
+	        end: end,
+	        color: correctColor
+	      });
 	    }
-	    if (correct_start > correct_end) {
-	      correct_start = this.state.question.green_end;
-	      correct_end = this.state.question.green_start;
-	    }
+	  },
+	  compareSelection: function compareSelection(start, end) {
+	    var student_start = start;
+	    var student_end = end;
+	    var correct_start = parseInt(this.state.question.green_start, 10);
+	    var correct_end = parseInt(this.state.question.green_end, 10);
 
 	    var correct_length = correct_end - correct_start;
 	    var variance = Math.round(correct_length / 6);
@@ -25383,10 +25380,11 @@
 	    return color;
 	  },
 	  saveAnswer: function saveAnswer() {
-	    if (this.state.selections.length !== 0) {
-	      var start = selections[0].anchorOffset;
-	      var stop = selections[0].focusOffset;
-	      var color = this.compareSelection(this.state.selections[0]);
+	    debugger;
+	    if (this.state.start !== null) {
+	      var start = this.state.start;
+	      var stop = this.state.end;
+	      var color = this.compareSelection(start, stop);
 	      if (color == "green") {
 	        var correct = 2;
 	      } else if (color === "blue") {
@@ -25403,36 +25401,46 @@
 	    var _student_id = this.state.student._id;
 
 	    var data = { start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id };
-	    var path = "/answers";
-	    var request = $.ajax({
-	      url: path,
-	      method: 'post',
-	      data: data,
-	      dataType: 'json'
-	    });
 
-	    request.done((function (serverData) {
+	    Call.call("/answers", "post", data).then((function (serverData) {
 	      this.setState({
 	        answer: serverData.answer
 	      });
-	    }).bind(this));
-
-	    request.fail(function (serverData) {
+	    }).bind(this))['catch'](function (serverData) {
 	      console.log('Failed to post the answer');
 	      console.log(serverData);
 	    });
 	  },
+	  showAnswer: function showAnswer() {
+	    var color = this.compareSelection(this.state.start, this.state.end);
+	    if (color === "green") {
+	      $('.highlight').addClass('cg');
+	    } else if (color === "blue") {
+	      $('.highlight').addClass('cb');
+	    } else if (color === "red") {
+	      $('.highlight').addClass('cr');
+	    }
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      null,
-	      React.createElement(Header, { student: this.state.student }),
+	      { id: 'studentMain', className: 'container' },
 	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
-	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'Clear', labelTwo: 'Submit' })
-	      )
+	        'h1',
+	        null,
+	        'Student View'
+	      ),
+	      React.createElement(MainText, { article: this.state.article,
+	        onSelect: this.handleSelect,
+	        start: this.state.start,
+	        end: this.state.end,
+	        updateTeacher: this.updateTeacherSocket }),
+	      React.createElement(RightBar, { question: this.state.question,
+	        actionOne: this.handleClear,
+	        actionTwo: this.handleSubmit,
+	        labelOne: 'Clear',
+	        labelTwo: 'Submit',
+	        show: this.state.showQuestion })
 	    );
 	  }
 	});
@@ -25441,17 +25449,47 @@
 
 /***/ },
 /* 198 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.call = function (action, method, data) {
+	  return new Promise(function (resolve, reject) {
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      resolve(serverData);
+	    });
+
+	    request.fail(function (serverData) {
+	      reject(serverData);
+	    });
+	  });
+	};
+
+/***/ },
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var QuestionBox = __webpack_require__(199);
+	var QuestionBox = __webpack_require__(200);
 
 	var RightBar = React.createClass({
 	  displayName: "RightBar",
 
 	  render: function render() {
+	    if (this.props.show === true) {
+	      var prompt = this.props.question.prompt;
+	    } else {
+	      var prompt = "";
+	    }
 
 	    if (this.props.labelOne === "Display Question") {
 	      var buttonColor = "btn btnxl pr btn-success";
@@ -25468,7 +25506,7 @@
 	        React.createElement(
 	          "div",
 	          { className: "col-md-12" },
-	          React.createElement(QuestionBox, { prompt: this.props.question.prompt })
+	          React.createElement(QuestionBox, { prompt: prompt })
 	        )
 	      ),
 	      React.createElement(
@@ -25508,7 +25546,7 @@
 	module.exports = RightBar;
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25551,7 +25589,7 @@
 	module.exports = QuestionBox;
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25578,29 +25616,29 @@
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	  },
+	  getBeginning: function getBeginning(start) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, start);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(start, end) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(start, end);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(end) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(end, originalContent.length);
+	    return endText;
+	  },
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
-	  getBeginning: function getBeginning(selections) {
-	    var originalContent = this.props.article.content;
-	    var beginningText = originalContent.slice(0, selections[0].startOffset);
-	    return beginningText;
-	  },
-	  updateContent: function updateContent(selections) {
-	    var originalContent = this.props.article.content;
-	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
-	    return highlightedText;
-	  },
-	  getEnd: function getEnd(selections) {
-	    var originalContent = this.props.article.content;
-	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
-	    return endText;
+	  updateTeacher: function updateTeacher(start, end) {
+	    this.props.updateTeacher(start, end);
 	  },
 	  render: function render() {
-
-	    var selections = this.props.selections;
-
-	    if (selections.length === 0) {
+	    if (this.props.start === null) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
 	        'div',
@@ -25612,23 +25650,32 @@
 	        )
 	      );
 	    } else {
+	      this.updateTeacher(this.props.start, this.props.end);
 	      var paragraph = React.createElement(
 	        'div',
 	        null,
 	        React.createElement(
 	          'p',
+	          null,
+	          'Selection: start= ',
+	          this.props.start,
+	          ' end=',
+	          this.props.end,
+	          ' '
+	        ),
+	        React.createElement(
+	          'p',
 	          { id: 'content' },
-	          this.getBeginning(selections),
+	          this.getBeginning(this.props.start),
 	          React.createElement(
 	            'span',
 	            { className: 'highlight' },
-	            this.updateContent(selections)
+	            this.updateContent(this.props.start, this.props.end)
 	          ),
-	          this.getEnd(selections)
+	          this.getEnd(this.props.end)
 	        )
 	      );
 	    }
-
 	    return React.createElement(
 	      'div',
 	      { id: 'mainText', className: 'w60 p15px ml5' },
@@ -25650,7 +25697,7 @@
 	module.exports = MainText;
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25726,7 +25773,7 @@
 	      logo = React.createElement(
 	        Link,
 	        { to: "/", className: "navbar-brand" },
-	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	        React.createElement("img", { src: "../../../images/smartext_final3.png", className: "logo", alt: "SmartText" })
 	      );
 	    }
 
@@ -25736,7 +25783,11 @@
 	      React.createElement(
 	        "div",
 	        { className: "container-fluid" },
-	        logo,
+	        React.createElement(
+	          "a",
+	          { className: "navbar-brand", href: "#" },
+	          logo
+	        ),
 	        content,
 	        buttons
 	      )
@@ -25747,7 +25798,7 @@
 	module.exports = Header;
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25759,9 +25810,9 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(201);
-	var LessonPanel = __webpack_require__(203);
-	var Call = __webpack_require__(204);
+	var Header = __webpack_require__(202);
+	var LessonPanel = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25897,7 +25948,7 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container pt150px" },
+	      { className: "container pt150px w80" },
 	      React.createElement(Header, { teacher: this.state.teacher }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
@@ -25917,8 +25968,7 @@
 	module.exports = TeacherView;
 
 /***/ },
-<<<<<<< HEAD
-/* 202 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25930,108 +25980,12 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = React.createClass({
-	  displayName: 'Header',
-
-	  mixins: [Router.Navigation, Router.State],
-	  confirmLogout: function confirmLogout() {
-	    if (confirm('Are you sure you want to logout?')) {
-	      this.transitionTo('/');
-	    }
-	  },
-	  render: function render() {
-	    var teacher = this.props.teacher;
-	    var student = this.props.student;
-	    var content = null;
-	    var buttons = null;
-
-	    if (teacher) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        teacher.first_name,
-	        ' ',
-	        teacher.last_name
-	      );
-	      buttons = React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          Link,
-	          { to: '/', className: 'l-out btn btn-default navbar-btn' },
-	          'Log Out'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'grid', params: { id: teacher._id }, className: 't-p btn btn-default navbar-btn' },
-	          'Teacher Dashboard'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'studentPanel', params: { id: teacher._id }, className: 's-p btn btn-default navbar-btn' },
-	          'Students Panel'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'lessonPanel', params: { id: teacher._id }, className: 'l-p btn btn-default navbar-btn' },
-	          'Lessons Panel'
-	        ),
-	        React.createElement('span', { className: 'clear' })
-	      );
-	    } else if (student) {
-	      content = React.createElement(
-	        'p',
-	        { className: 'navbar-text navbar-left' },
-	        student.first_name
-	      );
-	    } else {
-	      content = null;
-	    }
-
-	    return(
-	      //add full navbar components brand buttons etc
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar navbar-default navbar-fixed-top' },
-	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
-	          React.createElement(
-	            'a',
-	            { className: 'navbar-brand', href: '#' },
-	            React.createElement('img', { src: '../../../images/smartext_final3.png', className: 'logo', alt: 'SmartText' })
-	          ),
-	          content,
-	          buttons
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Header;
-
-/***/ },
-=======
->>>>>>> master
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(2);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
-
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var LessonSelect = __webpack_require__(205);
 	var NewLesson = __webpack_require__(208);
 	var LessonBox = __webpack_require__(206);
-	var MainText = __webpack_require__(200);
+	var MainText = __webpack_require__(201);
 
 	var LessonPanel = React.createClass({
 	  displayName: 'LessonPanel',
@@ -26381,31 +26335,6 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 204 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.call = function (action, method, data) {
-	  return new Promise(function (resolve, reject) {
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      resolve(serverData);
-	    });
-
-	    request.fail(function (serverData) {
-	      reject(serverData);
-	    });
-	  });
-	};
-
-/***/ },
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26600,7 +26529,7 @@
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var EditLesson = React.createClass({
 	  displayName: 'EditLesson',
@@ -26766,7 +26695,7 @@
 
 	var React = __webpack_require__(2);
 	var KlassBox = __webpack_require__(210);
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -27341,10 +27270,10 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
-	var Header = __webpack_require__(201);
-	var RightBar = __webpack_require__(198);
+	var Header = __webpack_require__(202);
+	var RightBar = __webpack_require__(199);
 
 	//Sockets
 	var StudentTile = __webpack_require__(215);
@@ -27359,7 +27288,7 @@
 	      students: [],
 	      clickable: true,
 	      tileBig: false,
-	      student_ids: []
+	      showQuestion: true
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -27376,19 +27305,23 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    $('#' + data._id).find('#content').html(this.props.article.content);
-	    $('#' + data._id).find('div').css("border-color", 'black');
+	    var student = this.findStudent(data.student);
+	    student.start = null;
+	    student.color = null;
+	    student.end = null;
+	    this.forceUpdate();
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
-	    var textFromStudent = data.selection;
-	    var borderColor = data.color;
-	    $('#' + data._id).find('#content').html(textFromStudent);
-	    $('#' + data._id).find('div').css("border-color", borderColor);
+	    var student = this.findStudent(data.student);
+	    student.start = data.start;
+	    student.end = data.end;
+	    student.color = data.color;
+	    this.forceUpdate();
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
 	    if (event.target.id === "clickable" && this.state.clickable) {
-	      $(event.target).animate({ width: "900px", height: "600px", fontSize: "20px" }, 1000);
+	      $(event.target).animate({ position: "absolute", width: "900px", height: "600px", fontSize: "20px", backgroundColor: "white" }, 1000);
 	      this.state.clickable = false;
 	      $(event.target).attr('id', "clickedBig");
 	    } else if (event.target.id === "clickedBig") {
@@ -27398,16 +27331,25 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
-	    if (!!this.state.student_ids.indexOf(data.student._id)) {
-	      var student_ids = this.state.student_ids;
-	      var students = this.state.students;
-	      student_ids.push(data.student._id);
-	      students.push(data.student);
+	    var student = this.findStudent(data.student);
+	    if (student === null) {
+	      var newStudents = this.state.students.concat(data.student);
 	      this.setState({
-	        students: students,
-	        student_ids: student_ids
+	        students: newStudents
 	      });
 	    }
+	  },
+	  findStudent: function findStudent(studentObj) {
+	    var id = studentObj._id;
+	    var match = null;
+
+	    this.state.students.map(function (student) {
+	      if (id === student._id) {
+	        match = student;
+	      }
+	    });
+
+	    return match;
 	  },
 	  viewPrompt: function viewPrompt() {
 	    socket.emit('viewPrompt', this.props.question);
@@ -27425,50 +27367,36 @@
 	  render: function render() {
 
 	    var that = this;
+
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-<<<<<<< HEAD
-	        'li',
-	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
-	        React.createElement(StudentTile, { student: student, article: that.props.article })
-=======
 	        'div',
 	        null,
 	        React.createElement(
 	          'li',
-	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.props.article })
+	          { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student,
+	            article: that.props.article })
 	        )
->>>>>>> master
 	      );
 	    });
 	    return React.createElement(
 	      'div',
-<<<<<<< HEAD
 	      null,
 	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        'h4',
-=======
-	      { className: 'container' },
-	      React.createElement(
-	        'h3',
->>>>>>> master
 	        null,
 	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
-<<<<<<< HEAD
-	      React.createElement(
-	        'div',
-	        { className: 'row' },
-	        students
-	      ),
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
-=======
 	      students,
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'Display Question', labelTwo: 'Finish' })
->>>>>>> master
+	      React.createElement(RightBar, { question: this.props.question,
+	        actionOne: this.viewPrompt,
+	        actionTwo: this.handleFinish,
+	        labelOne: 'Display Question',
+	        labelTwo: 'Finish',
+	        show: this.state.showQuestion })
 	    );
 	  }
 	});
@@ -27486,10 +27414,68 @@
 	var StudentTile = React.createClass({
 	  displayName: "StudentTile",
 
+	  getBeginning: function getBeginning(start) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, start);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(start, end) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(start, end);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(end) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(end, originalContent.length);
+	    return endText;
+	  },
 	  render: function render() {
+	    var student = this.props.student;
+
+	    if (student.color === "red") {
+	      var colorClass = "b1pxsr";
+	    } else if (student.color === "blue") {
+	      var colorClass = "b1pxsb";
+	    } else if (student.color === "green") {
+	      var colorClass = "b1pxsg";
+	    } else {
+	      var colorClass = "b1pxsbk";
+	    }
+
+	    if (this.props.student.start === undefined) {
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          content
+	        )
+	      );
+	    } else {
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          this.getBeginning(this.props.student.start),
+	          React.createElement(
+	            "span",
+	            { className: "highlight" },
+	            this.updateContent(this.props.student.start, this.props.student.end)
+	          ),
+	          this.getEnd(this.props.student.end)
+	        )
+	      );
+	    }
+
+	    var classes = "bcb p15px fs10px scrol h350px w250px" + colorClass;
+
 	    return React.createElement(
 	      "div",
-	      { id: "clickable", className: "bcb p15px b1pxsb fs10px scrol h350px w250px" },
+	      { id: "clickable", className: classes },
 	      React.createElement(
 	        "span",
 	        { className: "fs14px" },
@@ -27509,7 +27495,7 @@
 	      React.createElement(
 	        "p",
 	        { id: "content" },
-	        this.props.article.content
+	        paragraph
 	      )
 	    );
 	  }
@@ -27527,7 +27513,7 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Header = __webpack_require__(201);
+	var Header = __webpack_require__(202);
 	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
@@ -27820,5 +27806,3 @@
 
 /***/ }
 /******/ ]);
-=======
->>>>>>> master

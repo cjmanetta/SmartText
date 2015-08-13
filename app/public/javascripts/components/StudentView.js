@@ -1,9 +1,9 @@
 var React = require("react");
+var Call = require('../call');
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
 var Header = require('./Header');
 var socket = io();
-
 var StudentView = React.createClass({
   getInitialState: function(){
     return {
@@ -12,8 +12,10 @@ var StudentView = React.createClass({
       klass: {},
       article: {content: "", author: "", title: ""},
       highlightOn: false,
+      showQuestion: false,
       activeLesson: {},
-      selections: [],
+      start: null,
+      end: null,
       question: {prompt: "", green_start: null, green_end: null},
     }
   },
@@ -25,16 +27,16 @@ var StudentView = React.createClass({
       this.updatePrompt(data)
     }.bind(this))
     socket.on('finish', function(){
-      alert('Your teacher has ended the session.')
       this.saveAnswer();
+      this.showAnswer();
       this.setState({
-        highlightOn: false
+        highlightOn: false,
       });
     }.bind(this));
   },
   updatePrompt: function(data){
     this.setState({
-      question: data,
+      showQuestion: true,
       highlightOn: true
     })
   },
@@ -166,44 +168,40 @@ var StudentView = React.createClass({
     }
   },
   handleClear: function(){
-    socket.emit('studentClear', {_id: this.state.student._id})
-    this.forceUpdate();
+    socket.emit('studentClear', {student: this.state.student})
     this.setState({
-      selections: []
+      start: null,
+      end: null,
     })
   },
   handleSelect: function(selection){
     // var socket = io('/teacher')
     if (this.state.highlightOn){
-      var correctColor = this.compareSelection(selection);
-      var selectedRange = selection.getRangeAt(0);
-      this.state.selections.push(selectedRange);
-      this.forceUpdate();
+      var start = selection.getRangeAt(0).startOffset;
+      var end = selection.getRangeAt(0).endOffset;
 
-      var highlightedText = $('#content').html()
+      this.setState({
+        start: start,
+        end: end,
+      });
+    }
+  },
+  updateTeacherSocket: function(start, end){
+    if(this.state.start !== null){
+      var correctColor = this.compareSelection(start, end);
       socket.emit('select', {
         student: this.state.student,
-        selection: highlightedText,
+        start: start,
+        end: end,
         color: correctColor,
-        _id: this.state.student._id
       })
     }
   },
-  compareSelection: function(selection){
-    var student_start = selection.anchorOffset;
-    var student_end = selection.focusOffset;
-    var correct_start = this.state.question.green_start;
-    var correct_end = this.state.question.green_end;
-
-    //adjust start/end regardless of which way they highlight
-    if(student_start > student_end){
-      student_start = selection.focusOffset;
-      student_end = selection.anchorOffset;
-    }
-    if(correct_start > correct_end){
-      correct_start = this.state.question.green_end;
-      correct_end = this.state.question.green_start;
-    }
+  compareSelection: function(start, end){
+    var student_start = start;
+    var student_end = end;
+    var correct_start = parseInt(this.state.question.green_start, 10);
+    var correct_end = parseInt(this.state.question.green_end, 10);
 
     var correct_length = correct_end - correct_start;
     var variance = Math.round(correct_length / 6);
@@ -234,10 +232,11 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
-    if(this.state.selections.length !== 0){
-      var start = selections[0].anchorOffset;
-      var stop = selections[0].focusOffset;
-      var color = this.compareSelection(this.state.selections[0]);
+    debugger
+    if(this.state.start !== null){
+      var start = this.state.start;
+      var stop = this.state.end;
+      var color = this.compareSelection(start, stop);
       if(color == "green"){
         var correct = 2;
       } else if(color === "blue"){
@@ -254,34 +253,44 @@ var StudentView = React.createClass({
     var _student_id = this.state.student._id;
 
     var data = {start: start, stop: stop, correct: correct, _question_id: _question_id, _student_id: _student_id};
-    var path = "/answers"
-    var request = $.ajax({
-      url: path,
-      method: 'post',
-      data: data,
-      dataType: 'json'
-    });
 
-    request.done(function(serverData){
-      this.setState({
-        answer: serverData.answer
-      })
-    }.bind(this));
-
-    request.fail(function(serverData){
-      console.log('Failed to post the answer');
-      console.log( serverData);
-    });
-
+    Call.call("/answers", "post", data)
+        .then(function(serverData){
+          this.setState({
+            answer: serverData.answer
+          })
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('Failed to post the answer');
+          console.log( serverData);
+        });
+  },
+  showAnswer: function(){
+    var color = this.compareSelection(this.state.start, this.state.end);
+    if(color === "green"){
+      $('.highlight').addClass('cg');
+    } else if(color === "blue"){
+      $('.highlight').addClass('cb');
+    } else if(color === "red"){
+      $('.highlight').addClass('cr');
+    }
   },
   render: function() {
     return (
-      <div>
-        <Header student={this.state.student}/>
-        <div className="container">
-          <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-          <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="Clear" labelTwo="Submit"/>
-        </div>
+      <div id="studentMain" className="container">
+        <h1>Student View</h1>
+        <MainText article={this.state.article}
+                  onSelect={this.handleSelect}
+                  start={this.state.start}
+                  end={this.state.end}
+                  updateTeacher={this.updateTeacherSocket}/>
+
+        <RightBar question={this.state.question}
+                  actionOne={this.handleClear}
+                  actionTwo={this.handleSubmit}
+                  labelOne="Clear"
+                  labelTwo="Submit"
+                  show={this.state.showQuestion}/>
       </div>
     );
   },
