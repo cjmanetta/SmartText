@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -27700,3 +27701,5 @@
 
 /***/ }
 /******/ ]);
+=======
+>>>>>>> master
