@@ -135,18 +135,18 @@ var LessonPanel = React.createClass({
   },
   render: function(){
     if (this.state.article && this.state.answer) {
-      var submitButton = <button type="submit" className="btn btn-default">Submit</button>
+      var submitButton = <button type="submit" className="btn btn-primary raised btn-sm">Submit</button>
       var addButton = null;
     } else if (this.state.article !== null && this.state.answered === true) {
       var mainText = <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-      var submitButton = <button type="submit" className="btn btn-default">Submit</button>;
+      var submitButton = <button type="submit" className="btn btn-primary raised">Submit</button>;
       var addButton = null;
     } else if (this.state.article) {
       var mainText = <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-      var submitButton = <button type="submit" className="btn btn-default">Submit</button>;
+      var submitButton = <button type="submit" className="btn btn-primary raised">Submit</button>;
       var addButton = null;
     } else {
-      var addButton = <button onClick={this.handleAddArticleClick} className="btn btn-default">Add Text</button>;
+      var addButton = <button onClick={this.handleAddArticleClick} className="btn btn-primary raised">Add Text</button>;
       var submitButton = null;
     }
 
@@ -169,7 +169,7 @@ var LessonPanel = React.createClass({
                 <label htmlFor="question">Question</label>
                 <input type="text" className="form-control" name="question" id="question" placeholder="Question" />
               </div>
-              <button type="submit" className="btn btn-default">Submit Text</button>
+              <button type="submit" className="btn btn-primary btn-sm raised">Submit Text</button>
             </form>
     } else {
       var textBox = <div></div>
@@ -190,11 +190,9 @@ var LessonPanel = React.createClass({
     if(this.props.activeLesson){
       var activeLesson = <div className="panel panel-default">
           <div className="panel-heading">
-            <h5 className="panel-title">Current Active Lesson:{ this.props.activeLesson.title }</h5>
-            <p>{ this.props.activeLesson.date }</p>
-            <div className="panel-body">
-              <Link to="grid" params={{id: this.props.teacher._id }} className="btn btn-default navbar-btn">Go to Lesson</Link>
-            </div>
+              <h5 className="panel-title">Current Active Lesson: { this.props.activeLesson.title }</h5>
+              <p>{ this.props.activeLesson.date }</p>
+                <Link to="grid" params={{id: this.props.teacher._id }} className="btn btn-primary btn-sm raised">Go to Lesson <span className="glyphicon glyphicon-chevron-right"></span></Link>
           </div>
       </div>
     }
@@ -203,7 +201,7 @@ var LessonPanel = React.createClass({
     if(this.state.lessonPills === 'Lessons'){
       var lessonPills =
       <div>
-        <ul className="nav nav-pills">
+        <ul className="nav nav-tabs mbf20">
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
@@ -215,7 +213,7 @@ var LessonPanel = React.createClass({
     } else if(this.state.lessonPills === 'New Lesson'){
       var lessonPills =
       <div>
-        <ul className="nav nav-pills">
+        <ul className="nav nav-tabs mbf20">
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
@@ -236,9 +234,10 @@ var LessonPanel = React.createClass({
       </div>
     }
     return (
-      <div id="lessonPanel" className="container">
-        <div className="row">
-          {lessonPills}
+      <div id="lessonPanel" className="row">
+        <div className="pt1">
+
+            {lessonPills}
         </div>
       </div>
     )

@@ -1,16 +1,25 @@
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
+@import "buttons";
+@import "panels";
 
-$blue: #7FFAFF;
-$yellow: #FEFC4F;
-$gray: #525061;
+$blue: #31cde8;
+$yellow: #f4ef2f;
+$dark-gray: #4F4F4F;
+$md-gray: #7D7D7D;
+$lt-gray: #B2B1B2;
 $text-font: 'Libre Baskerville', serif;
 $default-font: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", sans-serif;
+$xtra-lt-gray: #F7F5F5;
+$main-box-shadow: -3px 2px 11px 0px;
+$border-radius: 4px;
+$border-boot: 1px solid #ccc;
+$inset-box-shadow: inset 0 3px 10px rgba(0,0,0,.075);
 
 
 nav {
   div {
     background-color: white;
-    color: black;
+    color: $dark-gray;
   }
 }
 
@@ -185,8 +194,16 @@ body {
   margin-top: 10%;
 }
 
+.mbf20 {
+  margin-bottom: 20px;
+}
+
 .ml5 {
   margin-left: 5%;
+}
+
+.mr5 {
+  margin-right: 5%;
 }
 
 .tal {
@@ -229,29 +246,17 @@ body {
 
 .bcb{
   border: 5px solid black;
+  border-radius: $border-radius;
+  box-shadow: $inset-box-shadow;
 }
 
+.bboot {
+  border: $border-boot;
+  border-radius: $border-radius;
+}
 .w250px{
   width: 250px;
 }
 
-
-.btn-custom {
-  background-color: #857F87;
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
-  background-image: -khtml-gradient(linear, left top, left bottom, from($gray), to($gray));
-  background-image: -moz-linear-gradient(top, $gray, $gray);
-  background-image: -ms-linear-gradient(top, $gray, $gray);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $gray), color-stop(100%, $gray));
-  background-image: -webkit-linear-gradient(top, $gray, $gray);
-  background-image: -o-linear-gradient(top, $gray, $gray);
-  background-image: linear-gradient($gray, $gray);
-  border-color: $gray $gray hsl(68, 93%, 43%);
-  color: white !important;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
-  -webkit-font-smoothing: antialiased;
-  font-weight: bold;
-}
 
 
