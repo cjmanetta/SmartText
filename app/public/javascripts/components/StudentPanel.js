@@ -40,7 +40,6 @@ var StudentPanel = React.createClass({
 
     Call.call(action, method, data)
         .then(function(serverData){
-          debugger
           form.reset();
           if(method === "post"){
             var newKlasses = this.state.klasses.concat(serverData.klass)

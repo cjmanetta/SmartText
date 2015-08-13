@@ -26727,7 +26727,6 @@
 	    var data = { name: name, grade: grade, pin: pin, teacher_id: teacher_id };
 
 	    Call.call(action, method, data).then((function (serverData) {
-	      debugger;
 	      form.reset();
 	      if (method === "post") {
 	        var newKlasses = this.state.klasses.concat(serverData.klass);
@@ -26893,141 +26892,112 @@
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default flpr dib w400px' },
+	        { className: 'col-xs-4' },
 	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'col-sm-4' },
-	              React.createElement(
-	                'h1',
-	                null,
-	                this.props.klass.name
-	              ),
-	              React.createElement(
-	                'p',
-	                null,
-	                'Pin: ',
-	                this.props.klass.pin
-	              ),
-	              React.createElement(
-	                'p',
-	                null,
-	                'Grade: ',
-	                this.props.klass.grade
-	              ),
-	              React.createElement(
-	                'button',
-	                { className: 'btn btn-custom mar3px', onClick: this.editClick },
-	                'Edit'
-	              ),
-	              React.createElement(
-	                'button',
-	                { className: 'btn btn-custom mar3px', onClick: this.deleteClick },
-	                'Delete'
-	              )
-	            )
-	          )
+	          'h1',
+	          null,
+	          this.props.klass.name
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Pin: ',
+	          this.props.klass.pin
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Grade: ',
+	          this.props.klass.grade
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-custom mar3px', onClick: this.editClick },
+	          'Edit'
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-custom mar3px', onClick: this.deleteClick },
+	          'Delete'
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id;
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default dib w400px' },
+	        { className: 'col-xs-4' },
 	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h3',
-	            null,
-	            this.props.klass.name
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Pin: ',
-	            this.props.klass.pin
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Grade: ',
-	            this.props.klass.grade
-	          ),
-	          React.createElement(
-	            'button',
-	            { className: 'btn btn-custom', onClick: this.deleteClick },
-	            'Delete'
-	          )
+	          'h3',
+	          null,
+	          this.props.klass.name
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'panel-body' },
+	          'p',
+	          null,
+	          'Pin: ',
+	          this.props.klass.pin
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Grade: ',
+	          this.props.klass.grade
+	        ),
+	        React.createElement(
+	          'form',
+	          { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
 	          React.createElement(
-	            'form',
-	            { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
+	            'div',
+	            { className: 'form-group' },
 	            React.createElement(
-	              'div',
-	              { className: 'form-group' },
-	              React.createElement(
-	                'label',
-	                { htmlFor: 'last_initial' },
-	                'Class Name'
-	              ),
-	              React.createElement('input', { id: 'name',
-	                type: 'text',
-	                name: 'name',
-	                className: 'form-control',
-	                defaultValue: this.props.klass.name })
+	              'label',
+	              { htmlFor: 'last_initial' },
+	              'Class Name'
 	            ),
+	            React.createElement('input', { id: 'name',
+	              type: 'text',
+	              name: 'name',
+	              className: 'form-control',
+	              defaultValue: this.props.klass.name })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
 	            React.createElement(
-	              'div',
-	              { className: 'form-group' },
-	              React.createElement(
-	                'label',
-	                { htmlFor: 'last_initial' },
-	                'Grade'
-	              ),
-	              React.createElement('input', { id: 'grade',
-	                type: 'text',
-	                name: 'grade',
-	                className: 'form-control',
-	                defaultValue: this.props.klass.grade })
+	              'label',
+	              { htmlFor: 'last_initial' },
+	              'Grade'
 	            ),
+	            React.createElement('input', { id: 'grade',
+	              type: 'text',
+	              name: 'grade',
+	              className: 'form-control',
+	              defaultValue: this.props.klass.grade })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
 	            React.createElement(
-	              'div',
-	              { className: 'form-group' },
-	              React.createElement(
-	                'label',
-	                { htmlFor: 'pin' },
-	                'Pin'
-	              ),
-	              React.createElement('input', { id: 'pin',
-	                type: 'text',
-	                name: 'pin',
-	                className: 'form-control',
-	                defaultValue: this.props.klass.pin })
+	              'label',
+	              { htmlFor: 'pin' },
+	              'Pin'
 	            ),
-	            React.createElement('input', { type: 'submit', className: 'btn btn-custom', value: 'Update Class' })
-	          )
+	            React.createElement('input', { id: 'pin',
+	              type: 'text',
+	              name: 'pin',
+	              className: 'form-control',
+	              defaultValue: this.props.klass.pin })
+	          ),
+	          React.createElement('input', { type: 'submit', className: 'btn btn-custom', value: 'Update Class' })
 	        )
 	      );
 	    }
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'row' },
 	      content,
-	      React.createElement(
-	        'div',
-	        { className: 'panel-body' },
-	        React.createElement(StudentList, { teacher: this.props.teacher,
-	          klass: this.props.klass })
-	      )
+	      React.createElement(StudentList, { teacher: this.props.teacher,
+	        klass: this.props.klass })
 	    );
 	  }
 
@@ -27146,7 +27116,7 @@
 	      null,
 	      React.createElement(
 	        'div',
-	        { className: 'flpr dib w600px h800px m30px' },
+	        { className: 'col-xs-8' },
 	        React.createElement(
 	          'h4',
 	          null,
@@ -27175,8 +27145,16 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { id: 'studentsList' },
-	        students
+	        { id: 'studentsList row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-12' },
+	          React.createElement(
+	            'div',
+	            { className: 'row bt1px mt20px' },
+	            students
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -27219,85 +27197,85 @@
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        "div",
-	        { className: "b1pxsb col-md-2 mt10px pad7px w150px h150px ml5px br10" },
+	        { className: "col-xs-6 col-sm-4 col-md-2" },
 	        React.createElement(
-	          "p",
-	          null,
+	          "div",
+	          { className: "mt20px b1pxsb pad7px br10 h150px wf150px ml0px" },
 	          React.createElement(
-	            "span",
+	            "p",
 	            null,
-	            this.props.student.first_name,
-	            " ",
-	            this.props.student.last_initial,
-	            "   "
+	            React.createElement(
+	              "span",
+	              null,
+	              this.props.student.first_name,
+	              " ",
+	              this.props.student.last_initial,
+	              "   "
+	            ),
+	            React.createElement(
+	              "a",
+	              { className: "mar3px imgtag", onClick: this.editClick },
+	              React.createElement("i", { className: "glyphicon glyphicon-pencil" })
+	            ),
+	            React.createElement(
+	              "a",
+	              { className: "mar3px", onClick: this.deleteClick },
+	              React.createElement("i", { className: "glyphicon glyphicon-remove" })
+	            )
 	          ),
 	          React.createElement(
-	            "a",
-	            { className: "mar3px imgtag", onClick: this.editClick },
-	            React.createElement("i", { className: "glyphicon glyphicon-pencil" })
-	          ),
-	          React.createElement(
-	            "a",
-	            { className: "mar3px", onClick: this.deleteClick },
-	            React.createElement("i", { className: "glyphicon glyphicon-remove" })
+	            "p",
+	            null,
+	            "Username: ",
+	            this.props.student.username
 	          )
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Username: ",
-	          this.props.student.username
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students/" + this.props.student._id;
 	      var content = React.createElement(
 	        "div",
-	        { className: "panel panel-default mt10px " },
+	        { className: "mt20px pad7px" },
 	        React.createElement(
-	          "div",
-	          { className: "panel-heading" },
+	          "h4",
+	          null,
+	          " Editing ",
+	          this.props.student.first_name
+	        ),
+	        React.createElement(
+	          "form",
+	          { id: "studentEdit", action: path, method: "put", onSubmit: this.handleSubmit },
 	          React.createElement(
-	            "h4",
-	            null,
-	            " Editing ",
-	            this.props.student.first_name
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "username" },
+	              "Username"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "username", type: "text", name: "username", placeholder: this.props.student.username })
 	          ),
 	          React.createElement(
-	            "form",
-	            { id: "studentEdit", action: path, method: "put", onSubmit: this.handleSubmit },
+	            "div",
+	            { className: "form-group" },
 	            React.createElement(
-	              "div",
-	              { className: "form-group" },
-	              React.createElement(
-	                "label",
-	                { htmlFor: "username" },
-	                "Username"
-	              ),
-	              React.createElement("input", { className: "form-control", id: "username", type: "text", name: "username", placeholder: this.props.student.username })
+	              "label",
+	              { htmlFor: "first_name" },
+	              "First Name"
 	            ),
+	            React.createElement("input", { className: "form-control", id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
 	            React.createElement(
-	              "div",
-	              { className: "form-group" },
-	              React.createElement(
-	                "label",
-	                { htmlFor: "first_name" },
-	                "First Name"
-	              ),
-	              React.createElement("input", { className: "form-control", id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name })
+	              "label",
+	              { htmlFor: "last_initial" },
+	              "Last Initial"
 	            ),
-	            React.createElement(
-	              "div",
-	              { className: "form-group" },
-	              React.createElement(
-	                "label",
-	                { htmlFor: "last_initial" },
-	                "Last Initial"
-	              ),
-	              React.createElement("input", { className: "form-control", id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial })
-	            ),
-	            React.createElement("input", { className: "btn btn-custom", type: "submit", value: "Update Student" })
-	          )
+	            React.createElement("input", { className: "form-control", id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial })
+	          ),
+	          React.createElement("input", { className: "btn btn-custom", type: "submit", value: "Update Student" })
 	        )
 	      );
 	    }

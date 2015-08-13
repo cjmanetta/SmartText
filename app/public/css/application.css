@@ -32,13 +32,6 @@ body {
   top: -18px;
   left: -5px; }
 
-.flpr {
-  float: left;
-  position: relative; }
-
-.dib {
-  display: inline-block; }
-
 .tp50px {
   top: 70px; }
 
@@ -140,6 +133,9 @@ body {
 .wf300px {
   width: 300px; }
 
+.wf150px {
+  width: 150px; }
+
 .w100 {
   width: 100%; }
 
@@ -152,8 +148,14 @@ body {
 .mt10 {
   margin-top: 10%; }
 
-.mt10px {
-  margin-top: 10px; }
+.mt20px {
+  margin-top: 20px; }
+
+.m10px {
+  margin: 10px; }
+
+.bt1px {
+  border-top: 1px solid #ccc; }
 
 .pad7px {
   padding: 7px; }
