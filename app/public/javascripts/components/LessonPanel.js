@@ -82,7 +82,6 @@ var LessonPanel = React.createClass({
         });
 
     var data = {title: title, author: author, content: content}
-    debugger
     Call.call(action, method, data)
         .then(function(serverData){
           this.setState({

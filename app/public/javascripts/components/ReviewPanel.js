@@ -6,7 +6,7 @@ var ReviewPanel = React.createClass({
     var green = [];
     var blue = [];
     var red = [];
-    debugger
+
     if(this.props.answers){
       this.props.answers.map(function(answer){
         if(answer.correct === 2){
