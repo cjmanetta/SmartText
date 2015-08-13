@@ -32,6 +32,7 @@ var StudentView = React.createClass({
       this.showAnswer();
       this.setState({
         highlightOn: false,
+        showAnswer: true,
       });
     }.bind(this));
   },
@@ -297,7 +298,9 @@ var StudentView = React.createClass({
                   labelOne="Clear"
                   labelTwo="Submit"
                   show={this.state.showQuestion}
-                  showAnswer={this.state.showAnswer}/>
+                  showAnswer={this.state.showAnswer}
+                  teacher={this.state.teacher}
+                  article={this.state.article} />
       </div>
     );
   },

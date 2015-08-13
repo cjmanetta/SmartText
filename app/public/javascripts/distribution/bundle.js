@@ -25180,7 +25180,8 @@
 	      this.saveAnswer();
 	      this.showAnswer();
 	      this.setState({
-	        highlightOn: false
+	        highlightOn: false,
+	        showAnswer: true
 	      });
 	    }).bind(this));
 	  },
@@ -25447,7 +25448,9 @@
 	        labelOne: 'Clear',
 	        labelTwo: 'Submit',
 	        show: this.state.showQuestion,
-	        showAnswer: this.state.showAnswer })
+	        showAnswer: this.state.showAnswer,
+	        teacher: this.state.teacher,
+	        article: this.state.article })
 	    );
 	  }
 	});
@@ -25504,7 +25507,7 @@
 	    } else {
 	      var buttonColor = "btn btnxl pr btn-primary";
 	    }
-	    if (this.props.showAnswer && this.props.teacher._id !== 0 && this.props.article.content !== undefined && this.props.question.green_start !== undefined) {
+	    if (this.props.showAnswer && this.props.teacher !== null && this.props.teacher._id !== 0 && this.props.article.content !== undefined && this.props.question.green_start !== undefined) {
 	      var student = { start: this.props.question.green_start, end: this.props.question.green_end, first_name: this.props.teacher.first_name, last_initial: this.props.teacher.last_name };
 	      var answer = React.createElement(StudentTile, { student: student, article: this.props.article });
 	    } else {
