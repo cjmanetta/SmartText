@@ -31,7 +31,7 @@ var KlassBox = React.createClass({
 
     if(this.state.display === "panel"){
       var content =
-      <div className="panel panel-default w150px">
+      <div className="panel panel-default flpr dib w400px">
         <div className="panel-heading">
           <div className="row">
             <div className="col-sm-4">
@@ -46,7 +46,7 @@ var KlassBox = React.createClass({
       </div>
     } else if (this.state.display === "edit"){
       var path = "/teachers/"+ this.props.teacher._id +"/klasses/" + this.props.klass._id
-      var content = <div className="panel panel-default flpr dib w400px">
+      var content = <div className="panel panel-default dib w400px">
         <div className="panel-heading">
           <h3>{this.props.klass.name}</h3>
           <p>Pin: {this.props.klass.pin}</p>

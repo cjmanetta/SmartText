@@ -26893,7 +26893,7 @@
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default w150px' },
+	        { className: 'panel panel-default flpr dib w400px' },
 	        React.createElement(
 	          'div',
 	          { className: 'panel-heading' },
@@ -26938,7 +26938,7 @@
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id;
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default flpr dib w400px' },
+	        { className: 'panel panel-default dib w400px' },
 	        React.createElement(
 	          'div',
 	          { className: 'panel-heading' },
@@ -27145,29 +27145,33 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h4',
-	        null,
-	        'Add a Student to this Class'
-	      ),
-	      React.createElement(
-	        'form',
-	        { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
+	        'div',
+	        { className: 'flpr dib w600px h800px m30px' },
 	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { className: 'form-control', id: 'username', type: 'text', name: 'username', placeholder: 'Username' })
+	          'h4',
+	          null,
+	          'Add a Student to this Class'
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { className: 'form-control', id: 'first_name', type: 'text', name: 'first_name', placeholder: 'First Name' })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { className: 'form-control', id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'Last Initial' })
-	        ),
-	        React.createElement('input', { className: 'btn btn-custom', type: 'submit', value: 'Create Student' })
+	          'form',
+	          { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'username', type: 'text', name: 'username', placeholder: 'Username' })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'first_name', type: 'text', name: 'first_name', placeholder: 'First Name' })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'Last Initial' })
+	          ),
+	          React.createElement('input', { className: 'btn btn-custom', type: 'submit', value: 'Create Student' })
+	        )
 	      ),
 	      React.createElement(
 	        'div',

@@ -16,12 +16,9 @@ nav div {
 .cr {
   background-color: red; }
 
-<<<<<<< HEAD
 .mar3px {
   margin: 3px; }
 
-=======
->>>>>>> master
 body {
   background-color: rbg(232, 246, 255);
   font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", sans-serif; }
@@ -161,15 +158,23 @@ body {
 .pad7px {
   padding: 7px; }
 
-<<<<<<< HEAD
 .w400px {
   width: 400px; }
+
+.w600px {
+  width: 600px; }
 
 .h150px {
   height: 150px; }
 
+.h800px {
+  height: 250px; }
+
 .ml5px {
   margin-left: 15px; }
+
+.m30px {
+  margin-left: 30px; }
 
 .w1000 {
   width: 1000px; }
@@ -186,8 +191,6 @@ body {
 .tal {
   text-align: left; }
 
-=======
->>>>>>> master
 .b1pxsb {
   border: 1px solid black; }
 
