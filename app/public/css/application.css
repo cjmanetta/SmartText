@@ -1,18 +1,31 @@
-@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 nav div {
   background-color: white;
   color: black; }
 
+#rightBar .row {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
 body {
   background-color: rbg(232, 246, 255);
+<<<<<<< HEAD
+  font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", sans-serif; }
 
+.bcy {
+  background-color: #FEFC4F; }
+=======
+
+>>>>>>> master
 
 .logo {
   position: relative;
   float: left;
   top: -18px;
   left: -5px; }
+
+.tp50px {
+  top: 70px; }
 
 .l-p {
   position: relative;
@@ -52,10 +65,20 @@ body {
 .pa {
   position: absolute; }
 
+<<<<<<< HEAD
+.btns {
+  margin: 0;
+  padding: 0;
+  width: 270px; }
+
+.cntr {
+  text-align: center; }
+=======
 .st-mini-txt {
   min-width: 80px;
   padding-right: 10px;
 }
+>>>>>>> master
 
 .w20 {
 <<<<<<< HEAD
@@ -71,11 +94,11 @@ body {
 .w60 {
   width: 60%; }
 
-.bcp {
-  background-color: #730ce8; }
+.bcg {
+  background-color: white; }
 
-.bcy {
-  background-color: #fff90d; }
+.borcy {
+  border: 5px solid #FEFC4F; }
 
 .tar {
   text-align: right; }
@@ -86,14 +109,36 @@ body {
 .r0 {
   right: 0; }
 
+.r5 {
+  right: 5px; }
+
 .b0 {
   bottom: 0; }
 
 .h100 {
   height: 100%; }
 
+.btnxl {
+  width: 230px;
+  font-size: 24px; }
+
 .h90 {
   height: 90%; }
+
+.h30 {
+  height: 30%; }
+
+.t20 {
+  bottom: 20px; }
+
+.t60 {
+  bottom: 60px; }
+
+.wf300px {
+  width: 300px; }
+
+.w100 {
+  width: 100%; }
 
 .p15px {
   padding: 15px; }
@@ -147,6 +192,25 @@ body {
 
 .w250px {
   width: 250px; }
+<<<<<<< HEAD
+
+.btn-custom {
+  background-color: #857F87;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#525061), to(#525061));
+  background-image: -moz-linear-gradient(top, #525061, #525061);
+  background-image: -ms-linear-gradient(top, #525061, #525061);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #525061), color-stop(100%, #525061));
+  background-image: -webkit-linear-gradient(top, #525061, #525061);
+  background-image: -o-linear-gradient(top, #525061, #525061);
+  background-image: linear-gradient(#525061, #525061);
+  border-color: #525061 #525061 #b8d408;
+  color: white !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold; }
+=======
 =======
 .w80{
   left: 0;
@@ -168,4 +232,5 @@ body {
   margin-bottom: 15px;
 }
 
+>>>>>>> master
 >>>>>>> master
