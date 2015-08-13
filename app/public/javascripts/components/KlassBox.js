@@ -4,7 +4,6 @@ var StudentList = require('./StudentList')
 var KlassBox = React.createClass({
   getInitialState: function() {
     return {
-      klassBox: 'new'
       display: 'panel'
     };
   },
@@ -20,27 +19,34 @@ var KlassBox = React.createClass({
     event.preventDefault();
     this.props.update(event);
     this.setState({
-      display: panel
+      display: "panel"
     });
   },
   render: function() {
+    var path = "/teachers/"
+                 + this.props.teacher._id
+                 +"/klasses/"
+                 + this.props.klass._id
+                 + "/students"
+
     if(this.state.display === "panel"){
-      var content = <div className="panel panel-default">
+      var content =
+      <div className="panel panel-default w150px">
         <div className="panel-heading">
-          <h3>{this.props.klass.name}</h3>
-          <p>Pin: {this.props.klass.pin}</p>
-          <p>Grade: {this.props.klass.grade}</p>
-          <button className="btn btn-custom mar3px" onClick={this.editClick}>Edit</button>
-          <button className="btn btn-custom mar3px" onClick={this.deleteClick}>Delete</button>
-        </div>
-        <div className="panel-body">
-          <StudentList teacher={this.props.teacher}
-                       klass={this.props.klass}/>
+          <div className="row">
+            <div className="col-sm-4">
+              <h1>{this.props.klass.name}</h1>
+              <p>Pin: {this.props.klass.pin}</p>
+              <p>Grade: {this.props.klass.grade}</p>
+              <button className="btn btn-custom mar3px" onClick={this.editClick}>Edit</button>
+              <button className="btn btn-custom mar3px" onClick={this.deleteClick}>Delete</button>
+            </div>
+          </div>
         </div>
       </div>
     } else if (this.state.display === "edit"){
       var path = "/teachers/"+ this.props.teacher._id +"/klasses/" + this.props.klass._id
-      var content = <div className="panel panel-default">
+      var content = <div className="panel panel-default flpr dib w400px">
         <div className="panel-heading">
           <h3>{this.props.klass.name}</h3>
           <p>Pin: {this.props.klass.pin}</p>
@@ -81,6 +87,10 @@ var KlassBox = React.createClass({
     return (
       <div>
         { content }
+        <div className="panel-body">
+          <StudentList teacher={this.props.teacher}
+                       klass={this.props.klass}/>
+        </div>
       </div>
     );
   }
