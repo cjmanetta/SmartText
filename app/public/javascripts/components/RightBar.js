@@ -3,6 +3,11 @@ var QuestionBox = require("./QuestionBox");
 
 var RightBar = React.createClass({
   render: function() {
+    if(this.props.show === true){
+      var prompt = this.props.question.prompt
+    } else {
+      var prompt = ""
+    }
 
     if (this.props.labelOne === "Display Question"){
       var buttonColor = "btn btnxl pr btn-success"
@@ -14,7 +19,7 @@ var RightBar = React.createClass({
       <div id="rightBar" className="pf wf300px bcg r5 tal h100 p15px tp50px">
         <div className="row">
           <div className="col-md-12">
-            <QuestionBox prompt={ this.props.question.prompt }/>
+            <QuestionBox prompt={ prompt }/>
           </div>
         </div>
         <div className="pa b0 h30 btns">

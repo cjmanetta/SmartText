@@ -30,6 +30,8 @@ nav {
   }
 }
 
+
+
 body {
   background-color: rbg(232, 246, 255);
   font-family: $default-font;
@@ -215,9 +217,6 @@ body {
   text-align: left;
 }
 
-.b1pxsb{
-  border: 1px solid black;
-}
 
 .fs8px{
   font-size: 8px;
@@ -265,3 +264,26 @@ body {
 
 
 
+.cg{
+  background-color: green;
+}
+
+.cb{
+  background-color: blue;
+}
+
+.cr{
+  background-color: red;
+}
+.b1pxsbk{
+  border: 1px solid black;
+}
+.b1pxsb{
+  border: 1px solid blue;
+}
+.b1pxsg{
+  border: 1px solid green;
+}
+.b1pxsr{
+  border: 1px solid red;
+}

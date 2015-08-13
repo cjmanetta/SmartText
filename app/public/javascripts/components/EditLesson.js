@@ -20,7 +20,6 @@ var EditLesson = React.createClass({
 
     Call.call(action, method, data)
         .then(function(serverData){
-          debugger
           this.props.getLessonsList();
           this.props.successfulUpdate();
         }.bind(this))

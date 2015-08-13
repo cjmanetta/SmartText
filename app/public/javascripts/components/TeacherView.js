@@ -159,6 +159,9 @@ var TeacherView = React.createClass({
   handleGetActiveLesson: function(){
     this.getActiveLesson(this.state.teacher);
   },
+  handleUpdateAnswers: function(){
+    this.getAnswers(this.state.question._id)
+  },
   render: function() {
 
     return (
@@ -174,7 +177,8 @@ var TeacherView = React.createClass({
                       lessons={this.state.lessons}
                       newLesson={this.newLesson}
                       getLessonsList={this.handleGetLessonsList}
-                      getActiveLesson={this.handleGetActiveLesson}/>
+                      getActiveLesson={this.handleGetActiveLesson}
+                      updateAnswers={this.handleUpdateAnswers}/>
       </div>
     );
   },
