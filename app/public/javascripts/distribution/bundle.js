@@ -25520,16 +25520,28 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "questionBox", className: "p15px db borcy" },
+	      { id: "questionBox" },
 	      React.createElement(
-	        "h3",
-	        null,
-	        "Question:"
-	      ),
-	      React.createElement(
-	        "p",
-	        null,
-	        this.props.prompt
+	        "div",
+	        { className: "panel panel-warning" },
+	        React.createElement(
+	          "div",
+	          { className: "panel-heading" },
+	          React.createElement(
+	            "h3",
+	            { className: "panel-title" },
+	            "Question:"
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "panel-body" },
+	          React.createElement(
+	            "p",
+	            null,
+	            this.props.prompt
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -25678,17 +25690,17 @@
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "bcy t-p btn navbar-btn" },
+	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
 	          "Teacher Dashboard"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn bcy navbar-btn" },
+	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-custom navbar-btn" },
 	          "Students Panel"
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn bcy navbar-btn" },
+	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-custom navbar-btn" },
 	          "Lessons Panel"
 	        ),
 	        React.createElement("span", { className: "clear" })

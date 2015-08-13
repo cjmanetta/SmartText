@@ -2,9 +2,10 @@
 
 $blue: #7FFAFF;
 $yellow: #FEFC4F;
-$gray: #E0E0E0;
+$gray: #525061;
 $text-font: 'Libre Baskerville', serif;
 $default-font: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", sans-serif;
+
 
 nav {
   div {
@@ -22,7 +23,7 @@ nav {
 
 body {
   background-color: rbg(232, 246, 255);
-  font: $default-font;
+  font-family: $default-font;
 }
 
 
@@ -112,7 +113,7 @@ body {
 }
 
 .bcg {
-  background-color: $gray
+  background-color: white;
 }
 
 .borcy{
@@ -233,4 +234,24 @@ body {
 .w250px{
   width: 250px;
 }
+
+
+.btn-custom {
+  background-color: #857F87;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
+  background-image: -khtml-gradient(linear, left top, left bottom, from($gray), to($gray));
+  background-image: -moz-linear-gradient(top, $gray, $gray);
+  background-image: -ms-linear-gradient(top, $gray, $gray);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $gray), color-stop(100%, $gray));
+  background-image: -webkit-linear-gradient(top, $gray, $gray);
+  background-image: -o-linear-gradient(top, $gray, $gray);
+  background-image: linear-gradient($gray, $gray);
+  border-color: $gray $gray hsl(68, 93%, 43%);
+  color: white !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+}
+
 
