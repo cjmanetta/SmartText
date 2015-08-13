@@ -22,10 +22,13 @@ router.use(methodOverride(function(req, res){
 
 router.route('/')
 .post(function(req, res){
-  Student.findOne({username : req.body.username}, function(err, student){
+  Student.findOne({username: req.body.username}, function(err,
+    student){
+    console.log(student)
     if (student){
-      Klass.findOne({_id: student._klass_id}, function(err, klass){
-
+      Klass.findById(student._klass_id, function(err, klass){
+        console.log('klass: '+klass)
+        console.log('klass pin: '+klass.pin)
         if (err){
           return console.error(err);
         } else if ( klass.pin === req.body.pin){
