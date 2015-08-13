@@ -25866,7 +25866,7 @@
 	          React.createElement(
 	            'a',
 	            { className: 'navbar-brand', href: '#' },
-	            React.createElement('img', { src: '../../../images/smartext_final.png', className: 'logo', alt: 'SmartText' })
+	            React.createElement('img', { src: '../../../images/smartext_final3.png', className: 'logo', alt: 'SmartText' })
 	          ),
 	          content,
 	          buttons
