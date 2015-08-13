@@ -28,7 +28,7 @@ var StudentTile = React.createClass({
     }  else {
       var colorClass = "b1pxsbk"
     }
-    debugger
+
     if (this.props.student.start === undefined ){
       var content = this.props.article.content
       var paragraph = <div>
@@ -37,18 +37,26 @@ var StudentTile = React.createClass({
                         </p>
                       </div>
     } else {
+      var start = this.props.student.start
+      var end = this.props.student.end
+
+      if(start > end){
+        var end = this.props.student.start
+        var start = this.props.student.end
+      }
       var paragraph = <div>
                         <p id="content">
-                          {this.getBeginning(this.props.student.start)}
+                          {this.getBeginning(start)}
                           <span className="highlight">
-                          {this.updateContent(this.props.student.start, this.props.student.end)}
+                          {this.updateContent(start, end)}
                           </span >
-                          {this.getEnd(this.props.student.end)}
+                          {this.getEnd(end)}
                         </p>
                       </div>
     }
 
-    var classes = "bcb p15px fs10px scrol h350px w250px " + colorClass;
+    debugger
+    var classes = "bcb p15px fs10px scrol h350px w250px   " + colorClass;
 
     return (
       <div id="clickable" className={classes} >

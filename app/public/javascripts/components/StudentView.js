@@ -17,6 +17,7 @@ var StudentView = React.createClass({
       start: null,
       end: null,
       question: {prompt: "", green_start: null, green_end: null},
+      showAnswer: false,
     }
   },
 
@@ -295,7 +296,8 @@ var StudentView = React.createClass({
                   actionTwo={this.handleSubmit}
                   labelOne="Clear"
                   labelTwo="Submit"
-                  show={this.state.showQuestion}/>
+                  show={this.state.showQuestion}
+                  showAnswer={this.state.showAnswer}/>
       </div>
     );
   },
