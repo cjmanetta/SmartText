@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -25897,7 +25896,7 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container pt150px" },
+	      { className: "container pt150px w80" },
 	      React.createElement(Header, { teacher: this.state.teacher }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
@@ -26747,26 +26746,38 @@
 	      "div",
 	      { id: "studentPanel" },
 	      React.createElement(
-	        "h5",
+	        "h3",
 	        null,
-	        "Student Panel"
-	      ),
-	      React.createElement(
-	        "h6",
-	        null,
-	        "New Class"
+	        "Add a New Class"
 	      ),
 	      React.createElement(
 	        "form",
 	        { id: "newKlass", action: path, method: "post", onSubmit: this.handleSubmit },
-	        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "5C - Second Period" }),
-	        React.createElement("input", { id: "grade", type: "text", name: "grade", placeholder: "5" }),
-	        React.createElement("input", { id: "pin", type: "text", name: "pin", placeholder: "1234" }),
-	        React.createElement("input", { type: "submit", value: "Create Class" })
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement("input", { className: "form-control", id: "name", type: "text", name: "name", placeholder: "Class Name" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement("input", { className: "form-control", id: "grade", type: "text", name: "grade", placeholder: "Grade" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement("input", { className: "form-control", id: "pin", type: "text", name: "pin", placeholder: "Pin Number ex:5748" })
+	        ),
+	        React.createElement("input", { type: "submit", className: "btn btn-custom", value: "Create Class" })
 	      ),
 	      React.createElement(
 	        "div",
 	        null,
+	        React.createElement(
+	          "h3",
+	          null,
+	          "My Classes"
+	        ),
 	        klasses
 	      )
 	    );
@@ -26816,8 +26827,8 @@
 	          'div',
 	          { className: 'panel-heading' },
 	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
+	            'h3',
+	            null,
 	            this.props.klass.name
 	          ),
 	          React.createElement(
@@ -26834,12 +26845,12 @@
 	          ),
 	          React.createElement(
 	            'button',
-	            { onClick: this.editClick },
+	            { className: 'btn btn-custom mar3px', onClick: this.editClick },
 	            'Edit'
 	          ),
 	          React.createElement(
 	            'button',
-	            { onClick: this.deleteClick },
+	            { className: 'btn btn-custom mar3px', onClick: this.deleteClick },
 	            'Delete'
 	          )
 	        ),
@@ -26859,8 +26870,8 @@
 	          'div',
 	          { className: 'panel-heading' },
 	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
+	            'h3',
+	            null,
 	            this.props.klass.name
 	          ),
 	          React.createElement(
@@ -26877,7 +26888,7 @@
 	          ),
 	          React.createElement(
 	            'button',
-	            { onClick: this.deleteClick },
+	            { className: 'btn btn-custom', onClick: this.deleteClick },
 	            'Delete'
 	          )
 	        ),
@@ -26887,22 +26898,49 @@
 	          React.createElement(
 	            'form',
 	            { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
-	            React.createElement('input', { id: 'name',
-	              type: 'text',
-	              name: 'name',
-	              placeholder: '5C - Second Period',
-	              defaultValue: this.props.klass.name }),
-	            React.createElement('input', { id: 'grade',
-	              type: 'text',
-	              name: 'grade',
-	              placeholder: '5',
-	              defaultValue: this.props.klass.grade }),
-	            React.createElement('input', { id: 'pin',
-	              type: 'text',
-	              name: 'pin',
-	              placeholder: '1234',
-	              defaultValue: this.props.klass.pin }),
-	            React.createElement('input', { type: 'submit', value: 'Update Class' })
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'last_initial' },
+	                'Class Name'
+	              ),
+	              React.createElement('input', { id: 'name',
+	                type: 'text',
+	                name: 'name',
+	                className: 'form-control',
+	                defaultValue: this.props.klass.name })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'last_initial' },
+	                'Grade'
+	              ),
+	              React.createElement('input', { id: 'grade',
+	                type: 'text',
+	                name: 'grade',
+	                className: 'form-control',
+	                defaultValue: this.props.klass.grade })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              React.createElement(
+	                'label',
+	                { htmlFor: 'pin' },
+	                'Pin'
+	              ),
+	              React.createElement('input', { id: 'pin',
+	                type: 'text',
+	                name: 'pin',
+	                className: 'form-control',
+	                defaultValue: this.props.klass.pin })
+	            ),
+	            React.createElement('input', { type: 'submit', className: 'btn btn-custom', value: 'Update Class' })
 	          )
 	        )
 	      );
@@ -27028,17 +27066,29 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h7',
+	        'h4',
 	        null,
-	        'New Student'
+	        'Add a Student to this Class'
 	      ),
 	      React.createElement(
 	        'form',
 	        { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement('input', { id: 'username', type: 'text', name: 'username', placeholder: 'sammysosa' }),
-	        React.createElement('input', { id: 'first_name', type: 'text', name: 'first_name', placeholder: 'Sammy' }),
-	        React.createElement('input', { id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'S.' }),
-	        React.createElement('input', { type: 'submit', value: 'Create Student' })
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { className: 'form-control', id: 'username', type: 'text', name: 'username', placeholder: 'Username' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { className: 'form-control', id: 'first_name', type: 'text', name: 'first_name', placeholder: 'First Name' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { className: 'form-control', id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'Last Initial' })
+	        ),
+	        React.createElement('input', { className: 'btn btn-custom', type: 'submit', value: 'Create Student' })
 	      ),
 	      React.createElement(
 	        'div',
@@ -27085,8 +27135,16 @@
 	  render: function render() {
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
-	        "li",
+	        "div",
 	        null,
+	        React.createElement("br", null),
+	        React.createElement(
+	          "p",
+	          null,
+	          this.props.student.first_name,
+	          " ",
+	          this.props.student.last_initial
+	        ),
 	        React.createElement(
 	          "p",
 	          null,
@@ -27094,63 +27152,55 @@
 	          this.props.student.username
 	        ),
 	        React.createElement(
-	          "p",
-	          null,
-	          "First Name: ",
-	          this.props.student.first_name
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Last Initial: ",
-	          this.props.student.last_initial
-	        ),
-	        React.createElement(
 	          "button",
-	          { onClick: this.editClick },
+	          { className: "btn btn-custom mar3px", onClick: this.editClick },
 	          "Edit"
 	        ),
 	        React.createElement(
 	          "button",
-	          { onClick: this.deleteClick },
+	          { className: "btn btn-custom mar3px", onClick: this.deleteClick },
 	          "Delete"
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students/" + this.props.student._id;
 	      var content = React.createElement(
-	        "li",
+	        "div",
 	        null,
-	        React.createElement(
-	          "p",
-	          null,
-	          "Username: ",
-	          this.props.student.username
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "First Name: ",
-	          this.props.student.first_name
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Last Initial: ",
-	          this.props.student.last_initial
-	        ),
-	        React.createElement(
-	          "button",
-	          { onClick: this.deleteClick },
-	          "Delete"
-	        ),
 	        React.createElement(
 	          "form",
 	          { id: "studentEdit", action: path, method: "put", onSubmit: this.handleSubmit },
-	          React.createElement("input", { id: "username", type: "text", name: "username", placeholder: this.props.student.username }),
-	          React.createElement("input", { id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name }),
-	          React.createElement("input", { id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial }),
-	          React.createElement("input", { type: "submit", value: "Update Student" })
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "username" },
+	              "Username"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "username", type: "text", name: "username", placeholder: this.props.student.username })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "first_name" },
+	              "First Name"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "last_initial" },
+	              "Last Initial"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial })
+	          ),
+	          React.createElement("input", { className: "btn btn-custom", type: "submit", value: "Update Student" })
 	        )
 	      );
 	    }
@@ -27291,7 +27341,7 @@
 	  handleTileClick: function handleTileClick(event) {
 
 	    if (event.target.id === "clickable" && this.state.clickable) {
-	      $(event.target).animate({ width: "900px", height: "600px", fontSize: "20px" }, 1000);
+	      $(event.target).animate({ position: "absolute", width: "900px", height: "600px", fontSize: "20px", backgroundColor: "white" }, 1000);
 	      this.state.clickable = false;
 	      $(event.target).attr('id', "clickedBig");
 	    } else if (event.target.id === "clickedBig") {
@@ -27328,22 +27378,20 @@
 	  render: function render() {
 
 	    var that = this;
+
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'li',
-	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.props.article })
-	        )
+	        'li',
+	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
+	        React.createElement(StudentTile, { student: student, article: that.props.article })
 	      );
 	    });
 	    return React.createElement(
 	      'div',
-	      { className: 'container' },
+	      null,
+	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
-	        'h3',
+	        'h4',
 	        null,
 	        'Teacher Dashboard'
 	      ),
@@ -27544,7 +27592,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { type: 'submit', className: 'btn btn-default' },
+	              { type: 'submit', className: 'btn btn-custom' },
 	              'Log In'
 	            )
 	          ),
@@ -27593,7 +27641,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { type: 'submit', className: 'btn btn-default' },
+	              { type: 'submit', className: 'btn btn-custom' },
 	              'Sign Up'
 	            )
 	          )
@@ -27650,7 +27698,7 @@
 	          ),
 	          React.createElement(
 	            'button',
-	            { type: 'submit', className: 'btn btn-default' },
+	            { type: 'submit', className: 'btn btn btn-custom' },
 	            'Log In'
 	          )
 	        )
@@ -27701,5 +27749,3 @@
 
 /***/ }
 /******/ ]);
-=======
->>>>>>> master

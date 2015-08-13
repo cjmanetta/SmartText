@@ -80,15 +80,21 @@ var StudentPanel = React.createClass({
     var path = "/teachers/"+ this.props.teacher._id +"/klasses"
     return (
       <div id="studentPanel">
-        <h5>Student Panel</h5>
-        <h6>New Class</h6>
+        <h3>Add a New Class</h3>
         <form id="newKlass" action={path} method="post" onSubmit={this.handleSubmit}>
-          <input id="name" type="text" name="name" placeholder="5C - Second Period" />
-          <input id="grade" type="text" name="grade" placeholder="5" />
-          <input id="pin" type="text" name="pin" placeholder="1234" />
-          <input type="submit" value="Create Class" />
+          <div className="form-group">
+            <input className="form-control" id="name" type="text" name="name" placeholder="Class Name" />
+          </div>
+          <div className="form-group">
+            <input className="form-control" id="grade" type="text" name="grade" placeholder="Grade" />
+          </div>
+          <div className="form-group">
+            <input className="form-control" id="pin" type="text" name="pin" placeholder="Pin Number ex:5748" />
+          </div>
+          <input type="submit" className="btn btn-custom" value="Create Class" />
         </form>
         <div>
+          <h3>My Classes</h3>
           { klasses}
         </div>
       </div>
