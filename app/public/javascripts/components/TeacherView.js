@@ -162,7 +162,7 @@ var TeacherView = React.createClass({
   render: function() {
 
     return (
-      <div className="container pt150px">
+      <div className="container pt150px w80">
         <Header teacher={this.state.teacher}/>
         <h3>Welcome, { this.state.teacher.first_name}</h3>
         <RouteHandler teacher={this.state.teacher}
