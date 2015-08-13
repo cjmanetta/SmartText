@@ -1,6 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
-<<<<<<< HEAD
-<<<<<<< HEAD
 /*********************************************************************
 
   Name:   Push - Bootstrap Button Pack
@@ -523,19 +521,7 @@ i:active, i:hover {
   background-color: #F7F5F5;
   box-shadow: -3px 2px 11px 0px #F7F5F5;
   background-image: none; }
-=======
-.cg {
-  background-color: green; }
 
-.cb {
-  background-color: blue; }
-
-.cr {
-  background-color: red; }
->>>>>>> master
-
-=======
->>>>>>> master
 nav div {
   background-color: white;
   color: #4F4F4F; }
@@ -552,11 +538,7 @@ body {
   font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", sans-serif; }
 
 .bcy {
-<<<<<<< HEAD
   background-color: #f4ef2f; }
-=======
-  background-color: #FEFC4F; }
->>>>>>> master
 
 .logo {
   position: relative;
@@ -684,10 +666,9 @@ body {
 .mt10 {
   margin-top: 10%; }
 
-<<<<<<< HEAD
 .mbf20 {
   margin-bottom: 20px; }
-=======
+
 .mt20px {
   margin-top: 20px; }
 
@@ -726,7 +707,6 @@ body {
 
 .br10 {
   border-radius: 10%; }
->>>>>>> master
 
 .ml5 {
   margin-left: 5%; }
@@ -760,7 +740,6 @@ body {
   font-size: 14px; }
 
 .bcb {
-<<<<<<< HEAD
   border: 5px solid black;
   border-radius: 4px;
   box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.075); }
@@ -771,28 +750,6 @@ body {
 
 .w250px {
   width: 250px; }
-=======
-  border: 5px solid black; }
-
-.w250px {
-  width: 250px; }
-
-.btn-custom {
-  background-color: #857F87;
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$gray", endColorstr="$gray");
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#525061), to(#525061));
-  background-image: -moz-linear-gradient(top, #525061, #525061);
-  background-image: -ms-linear-gradient(top, #525061, #525061);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #525061), color-stop(100%, #525061));
-  background-image: -webkit-linear-gradient(top, #525061, #525061);
-  background-image: -o-linear-gradient(top, #525061, #525061);
-  background-image: linear-gradient(#525061, #525061);
-  border-color: #525061 #525061 #b8d408;
-  color: white !important;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
-  -webkit-font-smoothing: antialiased;
-  font-weight: bold; }
 
 .cg {
   background-color: green; }
@@ -814,4 +771,3 @@ body {
 
 .b1pxsr {
   border: 1px solid red; }
->>>>>>> master
