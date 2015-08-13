@@ -19,58 +19,67 @@ var KlassBox = React.createClass({
     event.preventDefault();
     this.props.update(event);
     this.setState({
-      display: panel
+      display: "panel"
     });
   },
   render: function() {
+    var path = "/teachers/"
+                 + this.props.teacher._id
+                 +"/klasses/"
+                 + this.props.klass._id
+                 + "/students"
+
     if(this.state.display === "panel"){
-      var content = <div className="panel panel-default">
-        <div className="panel-heading">
-          <h5 className="panel-title">{this.props.klass.name}</h5>
+      var content =
+        <div className="col-xs-4">
+          <h1>{this.props.klass.name}</h1>
           <p>Pin: {this.props.klass.pin}</p>
           <p>Grade: {this.props.klass.grade}</p>
-          <button onClick={this.editClick}>Edit</button>
-          <button onClick={this.deleteClick}>Delete</button>
+          <button className="btn btn-custom mar3px" onClick={this.editClick}>Edit</button>
+          <button className="btn btn-custom mar3px" onClick={this.deleteClick}>Delete</button>
         </div>
-        <div className="panel-body">
-          <StudentList teacher={this.props.teacher}
-                       klass={this.props.klass}/>
-        </div>
-      </div>
+
     } else if (this.state.display === "edit"){
       var path = "/teachers/"+ this.props.teacher._id +"/klasses/" + this.props.klass._id
-      var content = <div className="panel panel-default">
-        <div className="panel-heading">
-          <h5 className="panel-title">{this.props.klass.name}</h5>
-          <p>Pin: {this.props.klass.pin}</p>
-          <p>Grade: {this.props.klass.grade}</p>
-          <button onClick={this.deleteClick}>Delete</button>
-        </div>
-        <div className="panel-body">
-          <form id="klassEdit" action={path} method="put" onSubmit={this.handleSubmit}>
+      var content = <div className="col-xs-4">
+
+        <h3>{this.props.klass.name}</h3>
+        <p>Pin: {this.props.klass.pin}</p>
+        <p>Grade: {this.props.klass.grade}</p>
+        <form id="klassEdit" action={path} method="put" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="last_initial">Class Name</label>
             <input id="name"
-                   type="text"
-                   name="name"
-                   placeholder="5C - Second Period"
-                   defaultValue={this.props.klass.name} />
+                 type="text"
+                 name="name"
+                 className="form-control"
+                 defaultValue={this.props.klass.name} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_initial">Grade</label>
             <input id="grade"
-                   type="text"
-                   name="grade"
-                   placeholder="5"
-                   defaultValue={this.props.klass.grade} />
+                  type="text"
+                  name="grade"
+                  className="form-control"
+                  defaultValue={this.props.klass.grade} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="pin">Pin</label>
             <input id="pin"
-                   type="text"
-                   name="pin"
-                   placeholder="1234"
-                   defaultValue={this.props.klass.pin} />
-            <input type="submit" value="Update Class" />
-          </form>
-        </div>
+                 type="text"
+                 name="pin"
+                 className="form-control"
+                 defaultValue={this.props.klass.pin} />
+          </div>
+          <input type="submit" className="btn btn-custom" value="Update Class" />
+        </form>
       </div>
     }
     return (
-      <div>
-        { content }
+      <div className="row">
+          { content }
+            <StudentList teacher={this.props.teacher}
+                         klass={this.props.klass}/>
       </div>
     );
   }

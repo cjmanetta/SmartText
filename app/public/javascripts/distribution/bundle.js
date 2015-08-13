@@ -56,13 +56,13 @@
 	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(203);
-	var StudentPanel = __webpack_require__(209);
-	var LessonPanel = __webpack_require__(204);
-	var ReviewPanel = __webpack_require__(213);
-	var Grid = __webpack_require__(214);
+	var TeacherView = __webpack_require__(204);
+	var StudentPanel = __webpack_require__(210);
+	var LessonPanel = __webpack_require__(205);
+	var ReviewPanel = __webpack_require__(214);
+	var Grid = __webpack_require__(215);
 	var Home = __webpack_require__(216);
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(203);
 	var Call = __webpack_require__(198);
 
 	//functions defined in the global scope to be used in many components
@@ -25148,8 +25148,8 @@
 	var React = __webpack_require__(2);
 	var Call = __webpack_require__(198);
 	var RightBar = __webpack_require__(199);
-	var MainText = __webpack_require__(201);
-	var Header = __webpack_require__(202);
+	var MainText = __webpack_require__(202);
+	var Header = __webpack_require__(203);
 	var socket = io();
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
@@ -25165,7 +25165,8 @@
 	      activeLesson: {},
 	      start: null,
 	      end: null,
-	      question: { prompt: "", green_start: null, green_end: null }
+	      question: { prompt: "", green_start: null, green_end: null },
+	      showAnswer: false
 	    };
 	  },
 
@@ -25179,7 +25180,8 @@
 	      this.saveAnswer();
 	      this.showAnswer();
 	      this.setState({
-	        highlightOn: false
+	        highlightOn: false,
+	        showAnswer: true
 	      });
 	    }).bind(this));
 	  },
@@ -25445,7 +25447,10 @@
 	        actionTwo: this.handleSubmit,
 	        labelOne: 'Clear',
 	        labelTwo: 'Submit',
-	        show: this.state.showQuestion })
+	        show: this.state.showQuestion,
+	        showAnswer: this.state.showAnswer,
+	        teacher: this.state.teacher,
+	        article: this.state.article })
 	    );
 	  }
 	});
@@ -25485,6 +25490,7 @@
 
 	var React = __webpack_require__(2);
 	var QuestionBox = __webpack_require__(200);
+	var StudentTile = __webpack_require__(201);
 
 	var RightBar = React.createClass({
 	  displayName: "RightBar",
@@ -25501,6 +25507,12 @@
 	    } else {
 	      var buttonColor = "btn btnxl pr btn-primary";
 	    }
+	    if (this.props.showAnswer && this.props.teacher !== null && this.props.teacher._id !== 0 && this.props.article.content !== undefined && this.props.question.green_start !== undefined) {
+	      var student = { start: this.props.question.green_start, end: this.props.question.green_end, first_name: this.props.teacher.first_name, last_initial: this.props.teacher.last_name };
+	      var answer = React.createElement(StudentTile, { student: student, article: this.props.article });
+	    } else {
+	      var answer = React.createElement("div", null);
+	    }
 
 	    return React.createElement(
 	      "div",
@@ -25512,6 +25524,11 @@
 	          "div",
 	          { className: "col-md-12" },
 	          React.createElement(QuestionBox, { prompt: prompt })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "col-md-12" },
+	          answer
 	        )
 	      ),
 	      React.createElement(
@@ -25595,6 +25612,115 @@
 
 /***/ },
 /* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(2);
+
+	var StudentTile = React.createClass({
+	  displayName: "StudentTile",
+
+	  getBeginning: function getBeginning(start) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, start);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(start, end) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(start, end);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(end) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(end, originalContent.length);
+	    return endText;
+	  },
+	  render: function render() {
+	    var student = this.props.student;
+
+	    if (student.color === "red") {
+	      var colorClass = "b1pxsr";
+	    } else if (student.color === "blue") {
+	      var colorClass = "b1pxsb";
+	    } else if (student.color === "green") {
+	      var colorClass = "b1pxsg";
+	    } else {
+	      var colorClass = "b1pxsbk";
+	    }
+
+	    if (this.props.student.start === undefined) {
+	      var content = this.props.article.content;
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          content
+	        )
+	      );
+	    } else {
+	      var start = this.props.student.start;
+	      var end = this.props.student.end;
+
+	      if (start > end) {
+	        var end = this.props.student.start;
+	        var start = this.props.student.end;
+	      }
+	      var paragraph = React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "p",
+	          { id: "content" },
+	          this.getBeginning(start),
+	          React.createElement(
+	            "span",
+	            { className: "highlight" },
+	            this.updateContent(start, end)
+	          ),
+	          this.getEnd(end)
+	        )
+	      );
+	    }
+
+	    debugger;
+	    var classes = "bcb p15px fs10px scrol h350px w250px   " + colorClass;
+
+	    return React.createElement(
+	      "div",
+	      { id: "clickable", className: classes },
+	      React.createElement(
+	        "span",
+	        { className: "fs14px" },
+	        this.props.student.first_name,
+	        " ",
+	        this.props.student.last_initial
+	      ),
+	      React.createElement(
+	        "h6",
+	        null,
+	        this.props.article.title
+	      ),
+	      React.createElement(
+	        "p",
+	        { id: "author" },
+	        this.props.article.author
+	      ),
+	      React.createElement(
+	        "p",
+	        { id: "content" },
+	        paragraph
+	      )
+	    );
+	  }
+	});
+
+	module.exports = StudentTile;
+
+/***/ },
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25695,7 +25821,7 @@
 	module.exports = MainText;
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25736,7 +25862,7 @@
 	        ),
 	        React.createElement(
 	          Link,
-	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
+	          { to: "grid", disabled: this.props.activeLesson !== null, params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
 	          "Teacher Dashboard"
 	        ),
 	        React.createElement(
@@ -25796,7 +25922,7 @@
 	module.exports = Header;
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25808,8 +25934,8 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(204);
+	var Header = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(205);
 	var Call = __webpack_require__(198);
 
 	var TeacherView = React.createClass({
@@ -25950,7 +26076,7 @@
 	    return React.createElement(
 	      "div",
 	      { className: "container pt150px w80" },
-	      React.createElement(Header, { teacher: this.state.teacher }),
+	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -25970,7 +26096,7 @@
 	module.exports = TeacherView;
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25984,10 +26110,10 @@
 
 	var Call = __webpack_require__(198);
 
-	var LessonSelect = __webpack_require__(205);
-	var NewLesson = __webpack_require__(208);
-	var LessonBox = __webpack_require__(206);
-	var MainText = __webpack_require__(201);
+	var LessonSelect = __webpack_require__(206);
+	var NewLesson = __webpack_require__(209);
+	var LessonBox = __webpack_require__(207);
+	var MainText = __webpack_require__(202);
 
 	var LessonPanel = React.createClass({
 	  displayName: 'LessonPanel',
@@ -26356,13 +26482,13 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var LessonBox = __webpack_require__(206);
+	var LessonBox = __webpack_require__(207);
 
 	var LessonSelect = React.createClass({
 	  displayName: "LessonSelect",
@@ -26423,13 +26549,13 @@
 	*/
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var EditLesson = __webpack_require__(207);
+	var EditLesson = __webpack_require__(208);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26551,7 +26677,7 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26627,7 +26753,7 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26716,13 +26842,13 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var KlassBox = __webpack_require__(210);
+	var KlassBox = __webpack_require__(211);
 	var Call = __webpack_require__(198);
 
 	var StudentPanel = React.createClass({
@@ -26730,6 +26856,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
+	      klassBox: 'My Classes',
 	      klasses: []
 	    };
 	  },
@@ -26784,6 +26911,12 @@
 	      console.log(serverData);
 	    });
 	  },
+	  handlePillClick: function handlePillClick(event) {
+	    event.preventDefault();
+	    this.setState({
+	      klassBox: $(event.target).text()
+	    });
+	  },
 	  render: function render() {
 	    var klasses = this.state.klasses.map((function (klass) {
 	      return React.createElement(
@@ -26796,32 +26929,86 @@
 	      );
 	    }).bind(this));
 	    var path = "/teachers/" + this.props.teacher._id + "/klasses";
-	    return React.createElement(
-	      "div",
-	      { id: "studentPanel" },
-	      React.createElement(
-	        "h5",
-	        null,
-	        "Student Panel"
-	      ),
-	      React.createElement(
-	        "h6",
-	        null,
-	        "New Class"
-	      ),
-	      React.createElement(
-	        "form",
-	        { id: "newKlass", action: path, method: "post", onSubmit: this.handleSubmit },
-	        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "5C - Second Period" }),
-	        React.createElement("input", { id: "grade", type: "text", name: "grade", placeholder: "5" }),
-	        React.createElement("input", { id: "pin", type: "text", name: "pin", placeholder: "1234" }),
-	        React.createElement("input", { type: "submit", value: "Create Class" })
-	      ),
-	      React.createElement(
+	    if (this.state.klassBox === 'New Class') {
+	      var klassBox = React.createElement(
+	        "div",
+	        { id: "studentPanel" },
+	        React.createElement(
+	          "ul",
+	          { className: "nav nav-tabs mbf20" },
+	          React.createElement(
+	            "li",
+	            { className: "active", role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Class"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "My Classes"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "form",
+	          { id: "newKlass", action: path, method: "post", onSubmit: this.handleSubmit },
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement("input", { className: "form-control", id: "name", type: "text", name: "name", placeholder: "Class Name" })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement("input", { className: "form-control", id: "grade", type: "text", name: "grade", placeholder: "Grade" })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement("input", { className: "form-control", id: "pin", type: "text", name: "pin", placeholder: "Pin Number ex:5748" })
+	          ),
+	          React.createElement("input", { type: "submit", className: "btn btn-custom", value: "Create Class" })
+	        )
+	      );
+	    } else if (this.state.klassBox === "My Classes") {
+	      var klassBox = React.createElement(
 	        "div",
 	        null,
+	        React.createElement(
+	          "ul",
+	          { className: "nav nav-tabs mbf20" },
+	          React.createElement(
+	            "li",
+	            { role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "New Class"
+	            )
+	          ),
+	          React.createElement(
+	            "li",
+	            { className: "active", role: "presentation" },
+	            React.createElement(
+	              "a",
+	              { href: "#", onClick: this.handlePillClick },
+	              "My Classes"
+	            )
+	          )
+	        ),
 	        klasses
-	      )
+	      );
+	    }
+	    return React.createElement(
+	      "div",
+	      null,
+	      klassBox
 	    );
 	  }
 	});
@@ -26829,13 +27016,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentList = __webpack_require__(211);
+	var StudentList = __webpack_require__(212);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -26857,113 +27044,121 @@
 	    event.preventDefault();
 	    this.props.update(event);
 	    this.setState({
-	      display: panel
+	      display: "panel"
 	    });
 	  },
 	  render: function render() {
+	    var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students";
+
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default' },
+	        { className: 'col-xs-4' },
 	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
-	            this.props.klass.name
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Pin: ',
-	            this.props.klass.pin
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Grade: ',
-	            this.props.klass.grade
-	          ),
-	          React.createElement(
-	            'button',
-	            { onClick: this.editClick },
-	            'Edit'
-	          ),
-	          React.createElement(
-	            'button',
-	            { onClick: this.deleteClick },
-	            'Delete'
-	          )
+	          'h1',
+	          null,
+	          this.props.klass.name
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'panel-body' },
-	          React.createElement(StudentList, { teacher: this.props.teacher,
-	            klass: this.props.klass })
+	          'p',
+	          null,
+	          'Pin: ',
+	          this.props.klass.pin
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Grade: ',
+	          this.props.klass.grade
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-custom mar3px', onClick: this.editClick },
+	          'Edit'
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-custom mar3px', onClick: this.deleteClick },
+	          'Delete'
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id;
 	      var content = React.createElement(
 	        'div',
-	        { className: 'panel panel-default' },
+	        { className: 'col-xs-4' },
 	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
-	            this.props.klass.name
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Pin: ',
-	            this.props.klass.pin
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            'Grade: ',
-	            this.props.klass.grade
-	          ),
-	          React.createElement(
-	            'button',
-	            { onClick: this.deleteClick },
-	            'Delete'
-	          )
+	          'h3',
+	          null,
+	          this.props.klass.name
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'panel-body' },
+	          'p',
+	          null,
+	          'Pin: ',
+	          this.props.klass.pin
+	        ),
+	        React.createElement(
+	          'p',
+	          null,
+	          'Grade: ',
+	          this.props.klass.grade
+	        ),
+	        React.createElement(
+	          'form',
+	          { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
 	          React.createElement(
-	            'form',
-	            { id: 'klassEdit', action: path, method: 'put', onSubmit: this.handleSubmit },
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement(
+	              'label',
+	              { htmlFor: 'last_initial' },
+	              'Class Name'
+	            ),
 	            React.createElement('input', { id: 'name',
 	              type: 'text',
 	              name: 'name',
-	              placeholder: '5C - Second Period',
-	              defaultValue: this.props.klass.name }),
+	              className: 'form-control',
+	              defaultValue: this.props.klass.name })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement(
+	              'label',
+	              { htmlFor: 'last_initial' },
+	              'Grade'
+	            ),
 	            React.createElement('input', { id: 'grade',
 	              type: 'text',
 	              name: 'grade',
-	              placeholder: '5',
-	              defaultValue: this.props.klass.grade }),
+	              className: 'form-control',
+	              defaultValue: this.props.klass.grade })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement(
+	              'label',
+	              { htmlFor: 'pin' },
+	              'Pin'
+	            ),
 	            React.createElement('input', { id: 'pin',
 	              type: 'text',
 	              name: 'pin',
-	              placeholder: '1234',
-	              defaultValue: this.props.klass.pin }),
-	            React.createElement('input', { type: 'submit', value: 'Update Class' })
-	          )
+	              className: 'form-control',
+	              defaultValue: this.props.klass.pin })
+	          ),
+	          React.createElement('input', { type: 'submit', className: 'btn btn-custom', value: 'Update Class' })
 	        )
 	      );
 	    }
 	    return React.createElement(
 	      'div',
-	      null,
-	      content
+	      { className: 'row' },
+	      content,
+	      React.createElement(StudentList, { teacher: this.props.teacher,
+	        klass: this.props.klass })
 	    );
 	  }
 
@@ -26972,13 +27167,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentBox = __webpack_require__(212);
+	var StudentBox = __webpack_require__(213);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27081,22 +27276,46 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h7',
-	        null,
-	        'New Student'
-	      ),
-	      React.createElement(
-	        'form',
-	        { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement('input', { id: 'username', type: 'text', name: 'username', placeholder: 'sammysosa' }),
-	        React.createElement('input', { id: 'first_name', type: 'text', name: 'first_name', placeholder: 'Sammy' }),
-	        React.createElement('input', { id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'S.' }),
-	        React.createElement('input', { type: 'submit', value: 'Create Student' })
+	        'div',
+	        { className: 'col-xs-8' },
+	        React.createElement(
+	          'h4',
+	          null,
+	          'Add a Student to this Class'
+	        ),
+	        React.createElement(
+	          'form',
+	          { id: 'newStudent', action: path, method: 'post', onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'username', type: 'text', name: 'username', placeholder: 'Username' })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'first_name', type: 'text', name: 'first_name', placeholder: 'First Name' })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { className: 'form-control', id: 'last_initial', type: 'text', name: 'last_initial', placeholder: 'Last Initial' })
+	          ),
+	          React.createElement('input', { className: 'btn btn-custom', type: 'submit', value: 'Create Student' })
+	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        { id: 'studentsList' },
-	        students
+	        { id: 'studentsList row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-12' },
+	          React.createElement(
+	            'div',
+	            { className: 'row bt1px mt20px' },
+	            students
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -27105,7 +27324,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27138,72 +27357,86 @@
 	  render: function render() {
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
-	        "li",
-	        null,
+	        "div",
+	        { className: "col-xs-6 col-sm-4 col-md-2" },
 	        React.createElement(
-	          "p",
-	          null,
-	          "Username: ",
-	          this.props.student.username
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "First Name: ",
-	          this.props.student.first_name
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Last Initial: ",
-	          this.props.student.last_initial
-	        ),
-	        React.createElement(
-	          "button",
-	          { onClick: this.editClick },
-	          "Edit"
-	        ),
-	        React.createElement(
-	          "button",
-	          { onClick: this.deleteClick },
-	          "Delete"
+	          "div",
+	          { className: "mt20px b1pxsb pad7px br10 h150px wf150px ml0px" },
+	          React.createElement(
+	            "p",
+	            null,
+	            React.createElement(
+	              "span",
+	              null,
+	              this.props.student.first_name,
+	              " ",
+	              this.props.student.last_initial,
+	              "   "
+	            ),
+	            React.createElement(
+	              "a",
+	              { className: "mar3px imgtag", onClick: this.editClick },
+	              React.createElement("i", { className: "glyphicon glyphicon-pencil" })
+	            ),
+	            React.createElement(
+	              "a",
+	              { className: "mar3px", onClick: this.deleteClick },
+	              React.createElement("i", { className: "glyphicon glyphicon-trash" })
+	            )
+	          ),
+	          React.createElement(
+	            "p",
+	            null,
+	            "Username: ",
+	            this.props.student.username
+	          )
 	        )
 	      );
 	    } else if (this.state.display === "edit") {
 	      var path = "/teachers/" + this.props.teacher._id + "/klasses/" + this.props.klass._id + "/students/" + this.props.student._id;
 	      var content = React.createElement(
-	        "li",
-	        null,
+	        "div",
+	        { className: "mt20px pad7px" },
 	        React.createElement(
-	          "p",
+	          "h4",
 	          null,
-	          "Username: ",
-	          this.props.student.username
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "First Name: ",
+	          " Editing ",
 	          this.props.student.first_name
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Last Initial: ",
-	          this.props.student.last_initial
-	        ),
-	        React.createElement(
-	          "button",
-	          { onClick: this.deleteClick },
-	          "Delete"
 	        ),
 	        React.createElement(
 	          "form",
 	          { id: "studentEdit", action: path, method: "put", onSubmit: this.handleSubmit },
-	          React.createElement("input", { id: "username", type: "text", name: "username", placeholder: this.props.student.username }),
-	          React.createElement("input", { id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name }),
-	          React.createElement("input", { id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial }),
-	          React.createElement("input", { type: "submit", value: "Update Student" })
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "username" },
+	              "Username"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "username", type: "text", name: "username", placeholder: this.props.student.username })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "first_name" },
+	              "First Name"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "first_name", type: "text", name: "first_name", placeholder: this.props.student.first_name })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "form-group" },
+	            React.createElement(
+	              "label",
+	              { htmlFor: "last_initial" },
+	              "Last Initial"
+	            ),
+	            React.createElement("input", { className: "form-control", id: "last_initial", type: "text", name: "last_initial", placeholder: this.props.student.last_initial })
+	          ),
+	          React.createElement("input", { className: "btn btn-custom", type: "submit", value: "Update Student" })
 	        )
 	      );
 	    }
@@ -27219,7 +27452,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27376,7 +27609,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27390,11 +27623,11 @@
 
 	var Call = __webpack_require__(198);
 
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(203);
 	var RightBar = __webpack_require__(199);
 
 	//Sockets
-	var StudentTile = __webpack_require__(215);
+	var StudentTile = __webpack_require__(201);
 	var socket = io();
 
 	var Grid = React.createClass({
@@ -27406,7 +27639,8 @@
 	      students: [],
 	      clickable: true,
 	      tileBig: false,
-	      showQuestion: true
+	      showQuestion: true,
+	      showAnswer: true
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -27520,113 +27754,15 @@
 	        actionTwo: this.handleFinish,
 	        labelOne: 'Display Question',
 	        labelTwo: 'Finish',
-	        show: this.state.showQuestion })
+	        show: this.state.showQuestion,
+	        showAnswer: this.state.showAnswer,
+	        teacher: this.props.teacher,
+	        article: this.props.article })
 	    );
 	  }
 	});
 
 	module.exports = Grid;
-
-/***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(2);
-
-	var StudentTile = React.createClass({
-	  displayName: "StudentTile",
-
-	  getBeginning: function getBeginning(start) {
-	    var originalContent = this.props.article.content;
-	    var beginningText = originalContent.slice(0, start);
-	    return beginningText;
-	  },
-	  updateContent: function updateContent(start, end) {
-	    var originalContent = this.props.article.content;
-	    var highlightedText = originalContent.slice(start, end);
-	    return highlightedText;
-	  },
-	  getEnd: function getEnd(end) {
-	    var originalContent = this.props.article.content;
-	    var endText = originalContent.slice(end, originalContent.length);
-	    return endText;
-	  },
-	  render: function render() {
-	    var student = this.props.student;
-
-	    if (student.color === "red") {
-	      var colorClass = "b1pxsr";
-	    } else if (student.color === "blue") {
-	      var colorClass = "b1pxsb";
-	    } else if (student.color === "green") {
-	      var colorClass = "b1pxsg";
-	    } else {
-	      var colorClass = "b1pxsbk";
-	    }
-	    debugger;
-	    if (this.props.student.start === undefined) {
-	      var content = this.props.article.content;
-	      var paragraph = React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "p",
-	          { id: "content" },
-	          content
-	        )
-	      );
-	    } else {
-	      var paragraph = React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "p",
-	          { id: "content" },
-	          this.getBeginning(this.props.student.start),
-	          React.createElement(
-	            "span",
-	            { className: "highlight" },
-	            this.updateContent(this.props.student.start, this.props.student.end)
-	          ),
-	          this.getEnd(this.props.student.end)
-	        )
-	      );
-	    }
-
-	    var classes = "bcb p15px fs10px scrol h350px w250px " + colorClass;
-
-	    return React.createElement(
-	      "div",
-	      { id: "clickable", className: classes },
-	      React.createElement(
-	        "span",
-	        { className: "fs14px" },
-	        this.props.student.first_name,
-	        " ",
-	        this.props.student.last_initial
-	      ),
-	      React.createElement(
-	        "h6",
-	        null,
-	        this.props.article.title
-	      ),
-	      React.createElement(
-	        "p",
-	        { id: "author" },
-	        this.props.article.author
-	      ),
-	      React.createElement(
-	        "p",
-	        { id: "content" },
-	        paragraph
-	      )
-	    );
-	  }
-	});
-
-	module.exports = StudentTile;
 
 /***/ },
 /* 216 */
@@ -27638,7 +27774,7 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(203);
 	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
@@ -27774,7 +27910,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { type: 'submit', className: 'btn btn-default' },
+	              { type: 'submit', className: 'btn btn-custom' },
 	              'Log In'
 	            )
 	          ),
@@ -27823,7 +27959,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { type: 'submit', className: 'btn btn-default' },
+	              { type: 'submit', className: 'btn btn-custom' },
 	              'Sign Up'
 	            )
 	          )
@@ -27880,7 +28016,7 @@
 	          ),
 	          React.createElement(
 	            'button',
-	            { type: 'submit', className: 'btn btn-default' },
+	            { type: 'submit', className: 'btn btn btn-custom' },
 	            'Log In'
 	          )
 	        )

@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*********************************************************************
 
   Name:   Push - Bootstrap Button Pack
@@ -533,6 +534,8 @@ i:active, i:hover {
   background-color: red; }
 >>>>>>> master
 
+=======
+>>>>>>> master
 nav div {
   background-color: white;
   color: #4F4F4F; }
@@ -540,6 +543,9 @@ nav div {
 #rightBar .row {
   margin-top: 20px;
   margin-bottom: 20px; }
+
+.mar3px {
+  margin: 3px; }
 
 body {
   background-color: rbg(232, 246, 255);
@@ -659,6 +665,9 @@ body {
 .wf300px {
   width: 300px; }
 
+.wf150px {
+  width: 150px; }
+
 .w100 {
   width: 100%; }
 
@@ -675,8 +684,49 @@ body {
 .mt10 {
   margin-top: 10%; }
 
+<<<<<<< HEAD
 .mbf20 {
   margin-bottom: 20px; }
+=======
+.mt20px {
+  margin-top: 20px; }
+
+.m10px {
+  margin: 10px; }
+
+.bt1px {
+  border-top: 1px solid #ccc; }
+
+.pad7px {
+  padding: 7px; }
+
+.w400px {
+  width: 400px; }
+
+.w600px {
+  width: 600px; }
+
+.h150px {
+  height: 150px; }
+
+.h800px {
+  height: 250px; }
+
+.ml5px {
+  margin-left: 15px; }
+
+.m30px {
+  margin-left: 30px; }
+
+.w1000 {
+  width: 1000px; }
+
+.mr15px {
+  margin-right: 15px; }
+
+.br10 {
+  border-radius: 10%; }
+>>>>>>> master
 
 .ml5 {
   margin-left: 5%; }

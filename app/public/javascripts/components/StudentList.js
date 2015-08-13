@@ -111,15 +111,27 @@ getInitialState: function() {
                  + "/students"
     return (
       <div>
-        <h7>New Student</h7>
-        <form id="newStudent" action={path} method="post" onSubmit={this.handleSubmit}>
-          <input id="username" type="text" name="username" placeholder="sammysosa" />
-          <input id="first_name" type="text" name="first_name" placeholder="Sammy" />
-          <input id="last_initial" type="text" name="last_initial" placeholder="S." />
-          <input type="submit" value="Create Student" />
-        </form>
-        <div id="studentsList">
-          {students}
+        <div className="col-xs-8">
+          <h4>Add a Student to this Class</h4>
+          <form id="newStudent" action={path} method="post" onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <input className="form-control" id="username" type="text" name="username" placeholder="Username" />
+            </div>
+            <div className="form-group">
+              <input className="form-control" id="first_name" type="text" name="first_name" placeholder="First Name" />
+            </div>
+            <div className="form-group">
+              <input className="form-control" id="last_initial" type="text" name="last_initial" placeholder="Last Initial" />
+            </div>
+            <input className="btn btn-custom" type="submit" value="Create Student" />
+          </form>
+        </div>
+        <div id="studentsList row">
+          <div className="col-xs-12">
+            <div className="row bt1px mt20px">
+            {students}
+            </div>
+          </div>
         </div>
       </div>
     )
