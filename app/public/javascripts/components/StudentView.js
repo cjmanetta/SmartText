@@ -1,6 +1,7 @@
 var React = require("react");
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
+var Header = require('./Header');
 var socket = io();
 
 var StudentView = React.createClass({
@@ -275,10 +276,12 @@ var StudentView = React.createClass({
   },
   render: function() {
     return (
-      <div className="container">
-        <h1>Student View</h1>
-        <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-        <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
+      <div>
+        <Header student={this.state.student}/>
+        <div className="container">
+          <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
+          <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="Clear" labelTwo="Submit"/>
+        </div>
       </div>
     );
   },

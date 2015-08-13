@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -56,13 +57,13 @@
 	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(201);
+	var TeacherView = __webpack_require__(202);
 	var StudentPanel = __webpack_require__(209);
 	var LessonPanel = __webpack_require__(203);
 	var ReviewPanel = __webpack_require__(213);
 	var Grid = __webpack_require__(214);
 	var Home = __webpack_require__(216);
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var Call = __webpack_require__(204);
 
 	//functions defined in the global scope to be used in many components
@@ -25148,6 +25149,7 @@
 	var React = __webpack_require__(2);
 	var RightBar = __webpack_require__(198);
 	var MainText = __webpack_require__(200);
+	var Header = __webpack_require__(201);
 	var socket = io();
 
 	var StudentView = React.createClass({
@@ -25423,14 +25425,14 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'container' },
+	      null,
+	      React.createElement(Header, { student: this.state.student }),
 	      React.createElement(
-	        'h1',
-	        null,
-	        'Student View'
-	      ),
-	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
-	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	        'div',
+	        { className: 'container' },
+	        React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
+	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'Clear', labelTwo: 'Submit' })
+	      )
 	    );
 	  }
 	});
@@ -25450,25 +25452,52 @@
 	  displayName: "RightBar",
 
 	  render: function render() {
+
+	    if (this.props.labelOne === "Display Question") {
+	      var buttonColor = "btn btnxl pr btn-success";
+	    } else {
+	      var buttonColor = "btn btnxl pr btn-primary";
+	    }
+
 	    return React.createElement(
 	      "div",
-	      { id: "rightBar", className: "pf w20 bcp tal t0 r0 h100 p15px" },
+	      { id: "rightBar", className: "pf wf300px bcg r5 tal h100 p15px tp50px" },
 	      React.createElement(
 	        "div",
-	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
+	        { className: "row" },
 	        React.createElement(
 	          "div",
-	          { className: "button-group pa b0 r0" },
+	          { className: "col-md-12" },
+	          React.createElement(QuestionBox, { prompt: this.props.question.prompt })
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "pa b0 h30 btns" },
+	        React.createElement(
+	          "div",
+	          { className: "row cntr" },
 	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionOne },
-	            this.props.labelOne
-	          ),
+	            "div",
+	            { className: "col-md-12" },
+	            React.createElement(
+	              "button",
+	              { className: buttonColor, onClick: this.props.actionOne },
+	              this.props.labelOne
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "row cntr" },
 	          React.createElement(
-	            "button",
-	            { onClick: this.props.actionTwo },
-	            this.props.labelTwo
+	            "div",
+	            { className: "col-md-12" },
+	            React.createElement(
+	              "button",
+	              { className: "btn btn-danger btnxl pr", onClick: this.props.actionTwo },
+	              this.props.labelTwo
+	            )
 	          )
 	        )
 	      )
@@ -25492,16 +25521,28 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "questionBox", className: "p15px db bcy mt10" },
+	      { id: "questionBox" },
 	      React.createElement(
-	        "h3",
-	        null,
-	        "Question:"
-	      ),
-	      React.createElement(
-	        "p",
-	        null,
-	        this.props.prompt
+	        "div",
+	        { className: "panel panel-warning" },
+	        React.createElement(
+	          "div",
+	          { className: "panel-heading" },
+	          React.createElement(
+	            "h3",
+	            { className: "panel-title" },
+	            "Question:"
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "panel-body" },
+	          React.createElement(
+	            "p",
+	            null,
+	            this.props.prompt
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -25621,7 +25662,104 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(202);
+	var Header = React.createClass({
+	  displayName: "Header",
+
+	  mixins: [Router.Navigation, Router.State],
+	  render: function render() {
+	    var teacher = this.props.teacher;
+	    var student = this.props.student;
+	    var content = null;
+	    var buttons = null;
+	    var logo = null;
+
+	    if (teacher) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        teacher.first_name,
+	        " ",
+	        teacher.last_name
+	      );
+	      buttons = React.createElement(
+	        "div",
+	        { id: "buttons" },
+	        React.createElement(
+	          Link,
+	          { to: "/", className: "l-out btn btn-danger navbar-btn" },
+	          "Log Out"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "grid", params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
+	          "Teacher Dashboard"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-custom navbar-btn" },
+	          "Students Panel"
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-custom navbar-btn" },
+	          "Lessons Panel"
+	        ),
+	        React.createElement("span", { className: "clear" })
+	      );
+	      logo = React.createElement(
+	        Link,
+	        { to: "lessonPanel", className: "navbar-brand", params: { id: teacher._id } },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    } else if (student) {
+	      content = React.createElement(
+	        "p",
+	        { className: "navbar-text navbar-left" },
+	        student.first_name
+	      );
+	      logo = React.createElement(
+	        Link,
+	        { to: "students", className: "navbar-brand", params: { id: student._id } },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    } else {
+	      logo = React.createElement(
+	        Link,
+	        { to: "/", className: "navbar-brand" },
+	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	      );
+	    }
+
+	    return React.createElement(
+	      "nav",
+	      { className: "navbar navbar-default navbar-fixed-top" },
+	      React.createElement(
+	        "div",
+	        { className: "container-fluid" },
+	        logo,
+	        content,
+	        buttons
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var Header = __webpack_require__(201);
 	var LessonPanel = __webpack_require__(203);
 	var Call = __webpack_require__(204);
 
@@ -25759,14 +25897,8 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container pt150px w80" },
+	      { className: "container pt150px" },
 	      React.createElement(Header, { teacher: this.state.teacher }),
-	      React.createElement(
-	        "h3",
-	        null,
-	        "Welcome, ",
-	        this.state.teacher.first_name
-	      ),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -25785,6 +25917,7 @@
 	module.exports = TeacherView;
 
 /***/ },
+<<<<<<< HEAD
 /* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25879,6 +26012,8 @@
 	module.exports = Header;
 
 /***/ },
+=======
+>>>>>>> master
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27208,7 +27343,7 @@
 
 	var Call = __webpack_require__(204);
 
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var RightBar = __webpack_require__(198);
 
 	//Sockets
@@ -27253,7 +27388,7 @@
 	  handleTileClick: function handleTileClick(event) {
 
 	    if (event.target.id === "clickable" && this.state.clickable) {
-	      $(event.target).animate({ position: "absolute", width: "900px", height: "600px", fontSize: "20px", backgroundColor: "white" }, 1000);
+	      $(event.target).animate({ width: "900px", height: "600px", fontSize: "20px" }, 1000);
 	      this.state.clickable = false;
 	      $(event.target).attr('id', "clickedBig");
 	    } else if (event.target.id === "clickedBig") {
@@ -27290,30 +27425,50 @@
 	  render: function render() {
 
 	    var that = this;
-
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
+<<<<<<< HEAD
 	        'li',
 	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
 	        React.createElement(StudentTile, { student: student, article: that.props.article })
+=======
+	        'div',
+	        null,
+	        React.createElement(
+	          'li',
+	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
+	          React.createElement(StudentTile, { student: student, article: that.props.article })
+	        )
+>>>>>>> master
 	      );
 	    });
 	    return React.createElement(
 	      'div',
+<<<<<<< HEAD
 	      null,
 	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
 	        'h4',
+=======
+	      { className: 'container' },
+	      React.createElement(
+	        'h3',
+>>>>>>> master
 	        null,
 	        'Teacher Dashboard'
 	      ),
 	      React.createElement(RouteHandler, null),
+<<<<<<< HEAD
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
 	        students
 	      ),
 	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
+=======
+	      students,
+	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'Display Question', labelTwo: 'Finish' })
+>>>>>>> master
 	    );
 	  }
 	});
@@ -27372,7 +27527,7 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(201);
 	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({
@@ -27665,3 +27820,5 @@
 
 /***/ }
 /******/ ]);
+=======
+>>>>>>> master
