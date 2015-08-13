@@ -26246,7 +26246,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article !== null && this.state.answered === true) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', className: 'btn btn-primary raised' },
@@ -26254,7 +26254,7 @@
 	      );
 	      var addButton = null;
 	    } else if (this.state.article) {
-	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections, start: this.state.start, end: this.state.end });
+	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        'button',
 	        { type: 'submit', disabled: this.state.answered === false, className: 'btn btn-primary raised' },
@@ -27722,11 +27722,6 @@
 
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-<<<<<<< HEAD
-	        'li',
-	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
-	        React.createElement(StudentTile, { student: student, article: that.props.article })
-=======
 	        'div',
 	        null,
 	        React.createElement(
@@ -27735,7 +27730,6 @@
 	          React.createElement(StudentTile, { student: student,
 	            article: that.props.article })
 	        )
->>>>>>> master
 	      );
 	    });
 	    return React.createElement(
