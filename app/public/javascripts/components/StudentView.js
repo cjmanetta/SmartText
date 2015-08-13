@@ -232,7 +232,6 @@ var StudentView = React.createClass({
     return color;
   },
   saveAnswer: function(){
-    debugger
     if(this.state.start !== null){
       var start = this.state.start;
       var stop = this.state.end;
