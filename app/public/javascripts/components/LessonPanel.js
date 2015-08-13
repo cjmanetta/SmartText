@@ -143,7 +143,7 @@ var LessonPanel = React.createClass({
       var addButton = null;
     } else if (this.state.article) {
       var mainText = <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-      var submitButton = <button type="submit" className="btn btn-primary raised">Submit</button>;
+      var submitButton = <button type="submit" disabled={this.state.answered === false} className="btn btn-primary raised">Submit</button>;
       var addButton = null;
     } else {
       var addButton = <button onClick={this.handleAddArticleClick} className="btn btn-primary raised">Add Text</button>;
@@ -217,26 +217,33 @@ var LessonPanel = React.createClass({
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>New Lesson</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
-        <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="title">Lesson Title</label>
-            <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
+        <div className="col-xs-12 col-md-8">
+          <div className="col-xs-12">
+            <form id="newLesson" action={formAction} method="post" onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="title">Lesson Title</label>
+                  <input type="text" className="form-control" name="title" id="title" placeholder="Lesson Title" />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="date">Lesson Date</label>
+                  <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
+                </div>
+              {submitButton}
+            </form>
+            {addButton}
           </div>
-          <div className="form-group">
-            <label htmlFor="date">Lesson Date</label>
-            <input type="date" className="form-control" name="date" id="date" placeholder="MM/DD/YYYY" />
+          <div className="col-xs-12">
+            {textBox}
           </div>
-          {submitButton}
-        </form>
-        {addButton}
-        {textBox}
-        {mainText}
+        </div>
+        <div className="col-xs-12 col-md-4">
+          {mainText}
+        </div>
       </div>
     }
     return (
       <div id="lessonPanel" className="row">
         <div className="pt1">
-
             {lessonPills}
         </div>
       </div>

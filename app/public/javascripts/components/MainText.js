@@ -48,7 +48,7 @@ var MainText = React.createClass({
     }
 
     return (
-      <div id="mainText" className="ml5 mr5 bboot fs10px scrol h350px w250px">
+      <div id="mainText" className="ml5 mr5 bboot fs10px scrol h350px w250px plr1">
         <h3 id="title">{this.props.article.title}</h3>
         <p id="author">{this.props.article.author}</p>
         {paragraph}

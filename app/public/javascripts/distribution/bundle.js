@@ -25630,7 +25630,7 @@
 
 	    return React.createElement(
 	      'div',
-	      { id: 'mainText', className: 'ml5 mr5 bboot fs10px scrol h350px w250px' },
+	      { id: 'mainText', className: 'ml5 mr5 bboot fs10px scrol h350px w250px plr1' },
 	      React.createElement(
 	        'h3',
 	        { id: 'title' },
@@ -26071,7 +26071,7 @@
 	      var mainText = React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections });
 	      var submitButton = React.createElement(
 	        'button',
-	        { type: 'submit', className: 'btn btn-primary raised' },
+	        { type: 'submit', disabled: this.state.answered === false, className: 'btn btn-primary raised' },
 	        'Submit'
 	      );
 	      var addButton = null;
@@ -26236,33 +26236,49 @@
 	          )
 	        ),
 	        React.createElement(
-	          'form',
-	          { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	          'div',
+	          { className: 'col-xs-12 col-md-8' },
 	          React.createElement(
 	            'div',
-	            { className: 'form-group' },
+	            { className: 'col-xs-12' },
 	            React.createElement(
-	              'label',
-	              { htmlFor: 'title' },
-	              'Lesson Title'
+	              'form',
+	              { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	              React.createElement(
+	                'div',
+	                { className: 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'title' },
+	                  'Lesson Title'
+	                ),
+	                React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	              ),
+	              React.createElement(
+	                'div',
+	                { className: 'form-group' },
+	                React.createElement(
+	                  'label',
+	                  { htmlFor: 'date' },
+	                  'Lesson Date'
+	                ),
+	                React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	              ),
+	              submitButton
 	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	            addButton
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'date' },
-	              'Lesson Date'
-	            ),
-	            React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	          ),
-	          submitButton
+	            { className: 'col-xs-12' },
+	            textBox
+	          )
 	        ),
-	        addButton,
-	        textBox,
-	        mainText
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-12 col-md-4' },
+	          mainText
+	        )
 	      );
 	    }
 	    return React.createElement(
