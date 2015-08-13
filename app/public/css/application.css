@@ -163,3 +163,14 @@ body {
   width: 250px;
 }
 
+.cg{
+  background-color: green;
+}
+
+.cb{
+  background-color: blue;
+}
+
+.cr{
+  background-color: red;
+}

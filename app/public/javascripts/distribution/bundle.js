@@ -56,14 +56,14 @@
 	var State = Router.State;
 
 	var StudentView = __webpack_require__(197);
-	var TeacherView = __webpack_require__(201);
+	var TeacherView = __webpack_require__(202);
 	var StudentPanel = __webpack_require__(209);
-	var LessonPanel = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
 	var ReviewPanel = __webpack_require__(213);
 	var Grid = __webpack_require__(214);
 	var Home = __webpack_require__(216);
-	var Header = __webpack_require__(202);
-	var Call = __webpack_require__(204);
+	var Header = __webpack_require__(203);
+	var Call = __webpack_require__(198);
 
 	//functions defined in the global scope to be used in many components
 
@@ -25146,10 +25146,10 @@
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var RightBar = __webpack_require__(198);
-	var MainText = __webpack_require__(200);
+	var Call = __webpack_require__(198);
+	var RightBar = __webpack_require__(199);
+	var MainText = __webpack_require__(201);
 	var socket = io();
-
 	var StudentView = React.createClass({
 	  displayName: 'StudentView',
 
@@ -25160,6 +25160,7 @@
 	      klass: {},
 	      article: { content: "", author: "", title: "" },
 	      highlightOn: false,
+	      showQuestion: false,
 	      activeLesson: {},
 	      selections: [],
 	      question: { prompt: "", green_start: null, green_end: null }
@@ -25173,8 +25174,9 @@
 	      this.updatePrompt(data);
 	    }).bind(this));
 	    socket.on('finish', (function () {
-	      alert('Your teacher has ended the session.');
+	      debugger;
 	      this.saveAnswer();
+	      this.showAnswer();
 	      this.setState({
 	        highlightOn: false
 	      });
@@ -25182,7 +25184,7 @@
 	  },
 	  updatePrompt: function updatePrompt(data) {
 	    this.setState({
-	      question: data,
+	      showQuestion: true,
 	      highlightOn: true
 	    });
 	  },
@@ -25324,16 +25326,20 @@
 	    // var socket = io('/teacher')
 	    if (this.state.highlightOn) {
 	      var correctColor = this.compareSelection(selection);
-	      var selectedRange = selection.getRangeAt(0);
-	      this.state.selections.push(selectedRange);
-	      this.forceUpdate();
-
-	      var highlightedText = $('#content').html();
+	      var newSelections = [selection];
+	      this.setState({
+	        selections: newSelections
+	      });
+	    }
+	  },
+	  updateTeacherSocket: function updateTeacherSocket(start, end) {
+	    if (this.state.selections.length > 0) {
+	      var correctColor = this.compareSelection(this.state.selections[0]);
 	      socket.emit('select', {
 	        student: this.state.student,
-	        selection: highlightedText,
-	        color: correctColor,
-	        _id: this.state.student._id
+	        start: start,
+	        end: end,
+	        color: correctColor
 	      });
 	    }
 	  },
@@ -25382,8 +25388,8 @@
 	  },
 	  saveAnswer: function saveAnswer() {
 	    if (this.state.selections.length !== 0) {
-	      var start = selections[0].anchorOffset;
-	      var stop = selections[0].focusOffset;
+	      var start = this.state.selections[0].anchorOffset;
+	      var stop = this.state.selections[0].focusOffset;
 	      var color = this.compareSelection(this.state.selections[0]);
 	      if (color == "green") {
 	        var correct = 2;
@@ -25420,17 +25426,35 @@
 	      console.log(serverData);
 	    });
 	  },
+	  showAnswer: function showAnswer() {
+	    var color = this.compareSelection(this.state.selections[0]);
+	    if (color === "green") {
+	      $('.highlight').addClass('cg');
+	    } else if (color === "blue") {
+	      $('.highlight').addClass('cb');
+	    } else if (color === "red") {
+	      $('.highlight').addClass('cr');
+	    }
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'container' },
+	      { id: 'studentMain', className: 'container' },
 	      React.createElement(
 	        'h1',
 	        null,
 	        'Student View'
 	      ),
-	      React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
-	      React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'clear', labelTwo: 'submit' })
+	      React.createElement(MainText, { article: this.state.article,
+	        onSelect: this.handleSelect,
+	        selections: this.state.selections,
+	        updateTeacher: this.updateTeacherSocket }),
+	      React.createElement(RightBar, { question: this.state.question,
+	        actionOne: this.handleClear,
+	        actionTwo: this.handleSubmit,
+	        labelOne: 'clear',
+	        labelTwo: 'submit',
+	        show: this.state.showQuestion })
 	    );
 	  }
 	});
@@ -25439,24 +25463,55 @@
 
 /***/ },
 /* 198 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.call = function (action, method, data) {
+	  return new Promise(function (resolve, reject) {
+	    var request = $.ajax({
+	      url: action,
+	      method: method,
+	      data: data,
+	      dataType: "json"
+	    });
+
+	    request.done(function (serverData) {
+	      resolve(serverData);
+	    });
+
+	    request.fail(function (serverData) {
+	      reject(serverData);
+	    });
+	  });
+	};
+
+/***/ },
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var QuestionBox = __webpack_require__(199);
+	var QuestionBox = __webpack_require__(200);
 
 	var RightBar = React.createClass({
 	  displayName: "RightBar",
 
 	  render: function render() {
+	    if (this.props.show) {
+	      var prompt = this.props.question.prompt;
+	    } else {
+	      var prompt = "";
+	    }
+
 	    return React.createElement(
 	      "div",
 	      { id: "rightBar", className: "pf w20 bcp tal t0 r0 h100 p15px" },
 	      React.createElement(
 	        "div",
 	        { className: "pr db h90" },
-	        React.createElement(QuestionBox, { prompt: this.props.question.prompt }),
+	        React.createElement(QuestionBox, { prompt: prompt }),
 	        React.createElement(
 	          "div",
 	          { className: "button-group pa b0 r0" },
@@ -25479,7 +25534,7 @@
 	module.exports = RightBar;
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25510,7 +25565,7 @@
 	module.exports = QuestionBox;
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25537,28 +25592,32 @@
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
 	  },
+	  getBeginning: function getBeginning(range) {
+	    var originalContent = this.props.article.content;
+	    var beginningText = originalContent.slice(0, range.startOffset);
+	    return beginningText;
+	  },
+	  updateContent: function updateContent(range) {
+	    var originalContent = this.props.article.content;
+	    var highlightedText = originalContent.slice(range.startOffset, range.endOffset);
+	    return highlightedText;
+	  },
+	  getEnd: function getEnd(range) {
+	    var originalContent = this.props.article.content;
+	    var endText = originalContent.slice(range.endOffset, originalContent.length);
+	    return endText;
+	  },
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
 	  },
-	  getBeginning: function getBeginning(selections) {
-	    var originalContent = this.props.article.content;
-	    var beginningText = originalContent.slice(0, selections[0].startOffset);
-	    return beginningText;
-	  },
-	  updateContent: function updateContent(selections) {
-	    var originalContent = this.props.article.content;
-	    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset);
-	    return highlightedText;
-	  },
-	  getEnd: function getEnd(selections) {
-	    var originalContent = this.props.article.content;
-	    var endText = originalContent.slice(selections[0].endOffset, originalContent.length);
-	    return endText;
+	  updateTeacher: function updateTeacher() {
+	    var start = this.props.selections[0].getRangeAt(0).startOffset;
+	    var end = this.props.selections[0].getRangeAt(0).endOffset;
+
+	    this.props.updateTeacher(start, end);
 	  },
 	  render: function render() {
-
 	    var selections = this.props.selections;
-
 	    if (selections.length === 0) {
 	      var content = this.props.article.content;
 	      var paragraph = React.createElement(
@@ -25571,23 +25630,32 @@
 	        )
 	      );
 	    } else {
+	      this.updateTeacher();
 	      var paragraph = React.createElement(
 	        'div',
 	        null,
 	        React.createElement(
 	          'p',
+	          null,
+	          'Selection: start= ',
+	          selections[0].anchorOffset,
+	          ' end=',
+	          selections[0].focusOffset,
+	          ' '
+	        ),
+	        React.createElement(
+	          'p',
 	          { id: 'content' },
-	          this.getBeginning(selections),
+	          this.getBeginning(selections[0].getRangeAt(0)),
 	          React.createElement(
 	            'span',
 	            { className: 'highlight' },
-	            this.updateContent(selections)
+	            this.updateContent(selections[0].getRangeAt(0))
 	          ),
-	          this.getEnd(selections)
+	          this.getEnd(selections[0].getRangeAt(0))
 	        )
 	      );
 	    }
-
 	    return React.createElement(
 	      'div',
 	      { id: 'mainText', className: 'w60 p15px ml5' },
@@ -25609,7 +25677,7 @@
 	module.exports = MainText;
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25621,9 +25689,9 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Header = __webpack_require__(202);
-	var LessonPanel = __webpack_require__(203);
-	var Call = __webpack_require__(204);
+	var Header = __webpack_require__(203);
+	var LessonPanel = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
@@ -25785,7 +25853,7 @@
 	module.exports = TeacherView;
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25879,7 +25947,7 @@
 	module.exports = Header;
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25891,12 +25959,12 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var LessonSelect = __webpack_require__(205);
 	var NewLesson = __webpack_require__(208);
 	var LessonBox = __webpack_require__(206);
-	var MainText = __webpack_require__(200);
+	var MainText = __webpack_require__(201);
 
 	var LessonPanel = React.createClass({
 	  displayName: 'LessonPanel',
@@ -26246,31 +26314,6 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 204 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.call = function (action, method, data) {
-	  return new Promise(function (resolve, reject) {
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-	      resolve(serverData);
-	    });
-
-	    request.fail(function (serverData) {
-	      reject(serverData);
-	    });
-	  });
-	};
-
-/***/ },
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -26465,7 +26508,7 @@
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var EditLesson = React.createClass({
 	  displayName: 'EditLesson',
@@ -26631,7 +26674,7 @@
 
 	var React = __webpack_require__(2);
 	var KlassBox = __webpack_require__(210);
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
 	var StudentPanel = React.createClass({
 	  displayName: "StudentPanel",
@@ -27206,10 +27249,10 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	var Call = __webpack_require__(204);
+	var Call = __webpack_require__(198);
 
-	var Header = __webpack_require__(202);
-	var RightBar = __webpack_require__(198);
+	var Header = __webpack_require__(203);
+	var RightBar = __webpack_require__(199);
 
 	//Sockets
 	var StudentTile = __webpack_require__(215);
@@ -27224,7 +27267,7 @@
 	      students: [],
 	      clickable: true,
 	      tileBig: false,
-	      student_ids: []
+	      showQuestion: true
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -27241,14 +27284,11 @@
 	    });
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
-	    $('#' + data._id).find('#content').html(this.props.article.content);
-	    $('#' + data._id).find('div').css("border-color", 'black');
+	    //update state
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
-	    var textFromStudent = data.selection;
-	    var borderColor = data.color;
-	    $('#' + data._id).find('#content').html(textFromStudent);
-	    $('#' + data._id).find('div').css("border-color", borderColor);
+	    var student = this.findStudent(data.student);
+	    debugger;
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
@@ -27263,16 +27303,25 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
-	    if (!!this.state.student_ids.indexOf(data.student._id)) {
-	      var student_ids = this.state.student_ids;
-	      var students = this.state.students;
-	      student_ids.push(data.student._id);
-	      students.push(data.student);
+	    var student = this.findStudent(data.student);
+	    if (student === null) {
+	      var newStudents = this.state.students.concat(data.student);
 	      this.setState({
-	        students: students,
-	        student_ids: student_ids
+	        students: newStudents
 	      });
 	    }
+	  },
+	  findStudent: function findStudent(studentObj) {
+	    var id = studentObj._id;
+	    var match = null;
+
+	    this.state.students.map(function (student) {
+	      if (id === student._id) {
+	        match = student;
+	      }
+	    });
+
+	    return match;
 	  },
 	  viewPrompt: function viewPrompt() {
 	    socket.emit('viewPrompt', this.props.question);
@@ -27297,7 +27346,11 @@
 	        React.createElement(
 	          'li',
 	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.props.article })
+	          React.createElement(StudentTile, { student: student,
+	            article: that.props.article,
+	            start: student.start,
+	            end: student.end,
+	            color: student.color })
 	        )
 	      );
 	    });
@@ -27311,7 +27364,12 @@
 	      ),
 	      React.createElement(RouteHandler, null),
 	      students,
-	      React.createElement(RightBar, { question: this.props.question, actionOne: this.viewPrompt, actionTwo: this.handleFinish, labelOne: 'view question', labelTwo: 'finished' })
+	      React.createElement(RightBar, { question: this.props.question,
+	        actionOne: this.viewPrompt,
+	        actionTwo: this.handleFinish,
+	        labelOne: 'view question',
+	        labelTwo: 'finished',
+	        show: this.state.showQuestion })
 	    );
 	  }
 	});
@@ -27370,7 +27428,7 @@
 	//below this import follow this syntax to add
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
-	var Header = __webpack_require__(202);
+	var Header = __webpack_require__(203);
 	var SignUp = __webpack_require__(217);
 
 	var Body = React.createClass({

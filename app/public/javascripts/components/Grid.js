@@ -20,7 +20,7 @@ var Grid = React.createClass({
       students: [],
       clickable: true,
       tileBig: false,
-      student_ids: []
+      showQuestion: true,
     }
   },
   componentDidMount: function(){
@@ -37,14 +37,11 @@ var Grid = React.createClass({
     })
   },
   clearStudentTile: function(data){
-    $('#'+data._id).find('#content').html(this.props.article.content);
-    $('#'+data._id).find('div').css("border-color", 'black')
+    //update state
   },
   updateStudentTile: function(data){
-    var textFromStudent = data.selection;
-    var borderColor = data.color;
-    $('#'+data._id).find('#content').html(textFromStudent)
-    $('#'+data._id).find('div').css("border-color", borderColor)
+    var student = this.findStudent(data.student);
+    debugger
   },
   handleTileClick: function(event){
 
@@ -59,16 +56,25 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
-    if (!!this.state.student_ids.indexOf(data.student._id)){
-      var student_ids = this.state.student_ids
-      var students = this.state.students;
-      student_ids.push(data.student._id)
-      students.push(data.student)
+    var student = this.findStudent(data.student);
+    if (student === null){
+      var newStudents = this.state.students.concat(data.student)
       this.setState({
-        students: students,
-        student_ids: student_ids
-      })
+        students: newStudents
+      });
     }
+  },
+  findStudent: function(studentObj){
+    var id = studentObj._id;
+    var match = null;
+
+    this.state.students.map(function(student){
+      if(id === student._id){
+        match = student
+      }
+    });
+
+    return(match)
   },
   viewPrompt: function(){
     socket.emit('viewPrompt', this.props.question)
@@ -90,7 +96,11 @@ var Grid = React.createClass({
       return (
         <div  >
           <li id={student._id} className="w20" onClick={that.handleTileClick}>
-            <StudentTile student={student} article={that.props.article}/>
+            <StudentTile student={student}
+                         article={that.props.article}
+                         start={student.start}
+                         end={student.end}
+                         color={student.color}/>
           </li>
         </div>
       )
@@ -100,7 +110,12 @@ var Grid = React.createClass({
         <h3>Teacher Dashboard</h3>
         <RouteHandler />
           {students}
-        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="view question" labelTwo="finished"/>
+        <RightBar question={this.props.question}
+                  actionOne={this.viewPrompt}
+                  actionTwo={this.handleFinish}
+                  labelOne="view question"
+                  labelTwo="finished"
+                  show={this.state.showQuestion}/>
       </div>
     );
   },

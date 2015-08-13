@@ -1,8 +1,8 @@
 var React = require("react");
+var Call = require('../call');
 var RightBar = require('./RightBar');
 var MainText = require('./MainText');
 var socket = io();
-
 var StudentView = React.createClass({
   getInitialState: function(){
     return {
@@ -11,6 +11,7 @@ var StudentView = React.createClass({
       klass: {},
       article: {content: "", author: "", title: ""},
       highlightOn: false,
+      showQuestion: false,
       activeLesson: {},
       selections: [],
       question: {prompt: "", green_start: null, green_end: null},
@@ -24,16 +25,17 @@ var StudentView = React.createClass({
       this.updatePrompt(data)
     }.bind(this))
     socket.on('finish', function(){
-      alert('Your teacher has ended the session.')
+      debugger
       this.saveAnswer();
+      this.showAnswer();
       this.setState({
-        highlightOn: false
+        highlightOn: false,
       });
     }.bind(this));
   },
   updatePrompt: function(data){
     this.setState({
-      question: data,
+      showQuestion: true,
       highlightOn: true
     })
   },
@@ -175,16 +177,20 @@ var StudentView = React.createClass({
     // var socket = io('/teacher')
     if (this.state.highlightOn){
       var correctColor = this.compareSelection(selection);
-      var selectedRange = selection.getRangeAt(0);
-      this.state.selections.push(selectedRange);
-      this.forceUpdate();
-
-      var highlightedText = $('#content').html()
+      var newSelections = [selection];
+      this.setState({
+        selections: newSelections
+      });
+    }
+  },
+  updateTeacherSocket: function(start, end){
+    if(this.state.selections.length > 0){
+      var correctColor = this.compareSelection(this.state.selections[0]);
       socket.emit('select', {
         student: this.state.student,
-        selection: highlightedText,
+        start: start,
+        end: end,
         color: correctColor,
-        _id: this.state.student._id
       })
     }
   },
@@ -234,8 +240,8 @@ var StudentView = React.createClass({
   },
   saveAnswer: function(){
     if(this.state.selections.length !== 0){
-      var start = selections[0].anchorOffset;
-      var stop = selections[0].focusOffset;
+      var start = this.state.selections[0].anchorOffset;
+      var stop = this.state.selections[0].focusOffset;
       var color = this.compareSelection(this.state.selections[0]);
       if(color == "green"){
         var correct = 2;
@@ -273,12 +279,31 @@ var StudentView = React.createClass({
     });
 
   },
+  showAnswer: function(){
+    var color = this.compareSelection(this.state.selections[0]);
+    if(color === "green"){
+      $('.highlight').addClass('cg');
+    } else if(color === "blue"){
+      $('.highlight').addClass('cb');
+    } else if(color === "red"){
+      $('.highlight').addClass('cr');
+    }
+  },
   render: function() {
     return (
-      <div className="container">
+      <div id="studentMain" className="container">
         <h1>Student View</h1>
-        <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
-        <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="clear" labelTwo="submit"/>
+        <MainText article={this.state.article}
+                  onSelect={this.handleSelect}
+                  selections={this.state.selections}
+                  updateTeacher={this.updateTeacherSocket}/>
+
+        <RightBar question={this.state.question}
+                  actionOne={this.handleClear}
+                  actionTwo={this.handleSubmit}
+                  labelOne="clear"
+                  labelTwo="submit"
+                  show={this.state.showQuestion}/>
       </div>
     );
   },
