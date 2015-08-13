@@ -20,7 +20,7 @@ var Grid = React.createClass({
       students: [],
       clickable: true,
       tileBig: false,
-      student_ids: []
+      showQuestion: true,
     }
   },
   componentDidMount: function(){
@@ -37,14 +37,18 @@ var Grid = React.createClass({
     })
   },
   clearStudentTile: function(data){
-    $('#'+data._id).find('#content').html(this.props.article.content);
-    $('#'+data._id).find('div').css("border-color", 'black')
+    var student =  this.findStudent(data.student);
+    student.start = null;
+    student.color = null;
+    student.end = null
+    this.forceUpdate();
   },
   updateStudentTile: function(data){
-    var textFromStudent = data.selection;
-    var borderColor = data.color;
-    $('#'+data._id).find('#content').html(textFromStudent)
-    $('#'+data._id).find('div').css("border-color", borderColor)
+    var student = this.findStudent(data.student);
+    student.start = data.start;
+    student.end = data.end;
+    student.color = data.color;
+    this.forceUpdate();
   },
   handleTileClick: function(event){
 
@@ -59,16 +63,25 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
-    if (!!this.state.student_ids.indexOf(data.student._id)){
-      var student_ids = this.state.student_ids
-      var students = this.state.students;
-      student_ids.push(data.student._id)
-      students.push(data.student)
+    var student = this.findStudent(data.student);
+    if (student === null){
+      var newStudents = this.state.students.concat(data.student)
       this.setState({
-        students: students,
-        student_ids: student_ids
-      })
+        students: newStudents
+      });
     }
+  },
+  findStudent: function(studentObj){
+    var id = studentObj._id;
+    var match = null;
+
+    this.state.students.map(function(student){
+      if(id === student._id){
+        match = student
+      }
+    });
+
+    return(match)
   },
   viewPrompt: function(){
     socket.emit('viewPrompt', this.props.question)
@@ -89,7 +102,12 @@ var Grid = React.createClass({
 
     var students = this.state.students.map(function(student){
       return (
-        <li id={student._id} className='col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px' onClick={that.handleTileClick}><StudentTile student={student} article={that.props.article}/></li>
+        <div>
+          <li id={student._id} className='col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px' onClick={that.handleTileClick}>
+            <StudentTile student={student}
+                         article={that.props.article} />
+          </li>
+        </div>
       )
     });
     return (
@@ -98,7 +116,13 @@ var Grid = React.createClass({
         <h4>Teacher Dashboard</h4>
         <RouteHandler />
           {students}
-        <RightBar question={this.props.question} actionOne={this.viewPrompt} actionTwo={this.handleFinish} labelOne="Display Question" labelTwo="Finish"/>
+        <RightBar question={this.props.question}
+                  actionOne={this.viewPrompt}
+                  actionTwo={this.handleFinish}
+                  labelOne="Display Question"
+                  labelTwo="Finish"
+                  show={this.state.showQuestion}/>
+
       </div>
     );
   },

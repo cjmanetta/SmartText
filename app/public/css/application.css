@@ -16,6 +16,10 @@ body {
 
 .bcy {
   background-color: #FEFC4F; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 
 .logo {
   position: relative;
@@ -71,9 +75,20 @@ body {
 
 .cntr {
   text-align: center; }
+<<<<<<< HEAD
 
 .w20 {
   width: 20%; }
+=======
+.st-mini-txt {
+  min-width: 80px;
+  padding-right: 10px;
+}
+
+.w20 {
+  width: 20%;
+}
+>>>>>>> master
 
 .w80 {
   width: 80%; }
@@ -142,8 +157,41 @@ body {
 .tal {
   text-align: left; }
 
-.b1pxsb {
-  border: 1px solid black; }
+.b1pxsr{
+  border: 1px solid red;
+}
+
+.b1pxsg{
+  border: 1px solid green;
+}
+
+.b1pxsb{
+  border: 1px solid blue;
+}
+
+.b1pxsbk{
+  border: 1px solid black;
+}
+
+.cg{
+  background-color: green;
+}
+
+.cb{
+  background-color: blue;
+}
+
+.cr{
+  background-color: red;
+}
+
+.fs8px{
+  font-size: 8px;
+}
+
+.fs10px{
+  font-size: 10px;
+}
 
 .fs8px {
   font-size: 8px; }
@@ -154,8 +202,14 @@ body {
 .highlight {
   background-color: yellow; }
 
+<<<<<<< HEAD
 .pt150px {
   padding-top: 150px; }
+=======
+.pt150px{
+  padding-top: 90px;
+}
+>>>>>>> master
 
 .scrol {
   overflow-y: scroll;
@@ -189,3 +243,39 @@ body {
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
   -webkit-font-smoothing: antialiased;
   font-weight: bold; }
+<<<<<<< HEAD
+=======
+
+.w80{
+  left: 0;
+}
+
+.bcb{
+  border: 5px solid black;
+}
+
+.w250px{
+  min-width: 250px;
+  width: 250px;
+}
+
+.cg{
+  background-color: green;
+}
+
+.cb{
+  background-color: blue;
+}
+
+.cr{
+  background-color: red;
+}
+
+.m-r10px{
+  z-index: 1;
+  background-color: white;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+
+>>>>>>> master
