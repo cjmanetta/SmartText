@@ -38,6 +38,7 @@
     "method-override": "^2.3.5",
     "mongoose": "^4.1.1",
     "mongoose-deep-populate": "^1.1.0",
+    "mongoose-unique-validator": "^0.4.1",
     "node-sass": "^3.2.0",
     "node-sass-middleware": "^0.9.0",
     "react": "^0.13.3",

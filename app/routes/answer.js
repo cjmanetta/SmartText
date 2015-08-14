@@ -25,23 +25,28 @@ router.route('/')
   var student_id = req.body._student_id;
   var question_id = req.body._question_id;
   var correct = req.body.correct;
+  var created_at = new Date;
 
   var answer = new Answer({
     _student_id: student_id,
     start: start,
     stop: stop,
     _question_id: question_id,
-    correct: correct
+    correct: correct,
+    created_at: created_at
   });
 
-  answer.save(function(err, answer){
-    if (err){
-      return console.error(err)
-    } else {
-      console.log("Answer that was posted:" + answer);
-      res.send({answer: answer})
-    }
-  });
+
+
+    answer.save(function(err, answer){
+      if (err){
+        return console.error(err)
+      } else {
+        console.log("Answer that was posted:" + answer);
+        res.send({answer: answer})
+      }
+    });
+
 })
 
 router.route('/question/:question_id')

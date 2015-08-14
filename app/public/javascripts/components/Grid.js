@@ -91,7 +91,8 @@ var Grid = React.createClass({
     socket.emit('finish');
     this.transitionTo('reviewPanel', {
                       id: this.props.teacher._id,
-                      lesson_id: this.props.activeLesson._id
+                      lesson_id: this.props.activeLesson._id,
+                      question_id: this.props.question._id
                     });
   },
   disableStudents: function(){

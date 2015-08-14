@@ -21,7 +21,7 @@ router.use(methodOverride(function(req, res){
 
 router.route('/:id')
 .get(function(req, res) {
-  Student.findById(req.params.id, function(err, student){
+  Student.findOne({_id: req.params.id}, function(err, student){
     console.log("Logged in student: " + student);
     if (err){
       return console.error(err);
