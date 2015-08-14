@@ -166,7 +166,7 @@ var TeacherView = React.createClass({
 
     return (
       <div className="container pt150px w80">
-        <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
+      <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
         <RouteHandler teacher={this.state.teacher}
                       update={this.handleUpdateTeacher}
                       activeLesson={this.state.activeLesson}

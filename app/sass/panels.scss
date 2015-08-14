@@ -1,23 +1,6 @@
 $xtra-lt-gray: #F7F5F5;
 $main-box-shadow: -3px 2px 11px 0px;
 
-.panelbtn {
-    background-image: none;
-
-    touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-
-  :active, :hover, :visited {
-    background-color: $blue;
-    background-image: none;
-    box-shadow: $main-box-shadow $xtra-lt-gray;
-  }
-  .selected {
-    border: 6px $blue solid;
-  }
-}
-
 .panel-default {
   .panel-heading{
     background-color: $xtra-lt-gray;

@@ -20,13 +20,13 @@ var StudentTile = React.createClass({
     var student = this.props.student
 
     if(student.color === "red"){
-      var colorClass = "b1pxsr"
+      var colorClass = "b4pxsr"
     } else if(student.color === "blue"){
-      var colorClass = "b1pxsb"
+      var colorClass = "b4pxsb"
     } else if(student.color === "green"){
-      var colorClass = "b1pxsg"
+      var colorClass = "b4pxsg"
     }  else {
-      var colorClass = "b1pxsbk"
+      var colorClass = "b2pxsbk"
     }
 
     if (this.props.student.start === undefined ){
@@ -55,8 +55,7 @@ var StudentTile = React.createClass({
                       </div>
     }
 
-    debugger
-    var classes = "bcb p15px fs10px scrol h350px w250px   " + colorClass;
+    var classes = "p15px fs10px scrol h350px w250px" + colorClass;
 
     return (
       <div id="clickable" className={classes} >

@@ -5,24 +5,28 @@
   Version:  1.0
 
 *********************************************************************/
-@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 
-$blue: #31cde8;
+$blue: #33a6cc;
 $yellow: #f4ef2f;
 $dark-gray: #4F4F4F;
 $md-gray: #7D7D7D;
 $lt-gray: #B2B1B2;
-$text-font: 'Libre Baskerville', serif;
 $default-font: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", sans-serif;
 $xtra-lt-gray: #F7F5F5;
 $main-box-shadow: -3px 2px 11px 0px;
 /******************************************************
   CUSTOM BTN VALUES
 ******************************************************/
-i {
-  margin-left: 12px;
-  font-size: 90%;
+.lg-glyph {
+  font-size: 200%;
   color: $blue;
+  margin-right: 5px;
+}
+
+i {
+  font-size: 100%;
+  color: $blue;
+  margin-right: 5px;
 }
 
 i:active, i:hover {
@@ -32,10 +36,13 @@ i:active, i:hover {
 .btn {
   padding: 14px 24px;
   border: 0 none;
-  font-weight: 700;
+  font-weight: 400;
+  text-shadow: none;
 }
 .btn:focus, .btn:active:focus, .btn.active:focus {
   outline: 0 none;
+  color: none;
+
 }
 
 /******************************************************
@@ -129,12 +136,12 @@ i:active, i:hover {
   padding: 12px 22px;
 }
 .btn-primary.outline {
-  border: 2px solid $dark-gray;
-  color: $dark-gray;
+  border: 2px solid #0099cc;
+  color: #0099cc;
 }
 .btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
-  color: #857F87;
-  border-color: #857F87;
+  color: #33a6cc;
+  border-color:#33a6cc;
 }
 .btn-primary.outline:active, .btn-primary.outline.active {
   border-color: #007299;
@@ -198,13 +205,13 @@ i:active, i:hover {
   GRADIENT BUTTONS
 ******************************************************/
 .btn-primary.gradient {
-  background: -moz-linear-gradient(top,  #857F87 50%, $dark-gray 50%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#857F87), color-stop(50%,$dark-gray)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  #857F87 50%,$dark-gray 50%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  #857F87 50%,$dark-gray 50%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  #857F87 50%,$dark-gray 50%); /* IE10+ */
-  background: linear-gradient(to bottom,  #857F87 50%,$dark-gray 50%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#857F87', endColorstr='$dark-gray',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(top,  #33a6cc 50%, #0099cc 50%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#33a6cc), color-stop(50%,#0099cc)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
+  background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
 }
 .btn-primary.gradient:hover, .btn-primary.gradient:focus, .btn-primary.gradient:active, .btn-primary.gradient.active, .open > .dropdown-toggle.btn-primary {
   background: -moz-linear-gradient(top,  #66b2cc 50%, #857F87 50%); /* FF3.6+ */
