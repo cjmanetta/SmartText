@@ -536,7 +536,7 @@ a .nav:hover {
   margin-bottom: 20px; }
 
 #lessonPanel #mainText {
-  max-height: 200px; }
+  max-height: 150px; }
 
 .panel-footer {
   border-top: none; }
@@ -779,12 +779,12 @@ body {
 
 .bcb {
   border: 5px solid;
-  border-radius: 4px;
+  border-radius: 3px;
   box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.075); }
 
 .bboot {
   border: 1px solid #ccc;
-  border-radius: 4px; }
+  border-radius: 3px; }
 
 .w250px {
   width: 250px; }
@@ -799,16 +799,20 @@ body {
   background-color: rgba(255, 10, 10, 0.7); }
 
 .b2pxsbk {
-  border: 2px solid #4F4F4F; }
+  border: 2px solid #4F4F4F;
+  border-radius: 3px; }
 
 .b4pxsb {
-  border: 4px solid #0bd8ff; }
+  border: 4px solid #0bd8ff;
+  border-radius: 3px; }
 
 .b4pxsg {
-  border: 4px solid #39FF14; }
+  border: 4px solid #39FF14;
+  border-radius: 3px; }
 
 .b4pxsr {
-  border: 4px solid rgba(255, 10, 10, 0.7); }
+  border: 4px solid rgba(255, 10, 10, 0.7);
+  border-radius: 3px; }
 
 li {
   list-style-type: none; }

@@ -17,7 +17,7 @@ var Header = React.createClass({
     if (teacher) {
       content = <p className="navbar-text navbar-left">{teacher.first_name} {teacher.last_name}</p>
       buttons = <div id="buttons">
-        <Link to="/" className="l-out btn btn-danger navbar-btn">Log Out</Link>
+        <Link to="/" className="l-out btn btn-danger btn-sm navbar-btn outline">Log Out</Link>
         <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} className="t-p btn btn-custom navbar-btn">Teacher Dashboard</Link>
         <Link to="studentPanel" params={{id: teacher._id }} className="s-p btn btn-custom navbar-btn">Students Panel</Link>
         <Link to="lessonPanel" params={{id: teacher._id }} className="l-p btn btn-custom navbar-btn">Lessons Panel</Link>

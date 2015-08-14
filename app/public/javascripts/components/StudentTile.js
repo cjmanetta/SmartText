@@ -55,7 +55,7 @@ var StudentTile = React.createClass({
                       </div>
     }
 
-    var classes = "p15px fs10px scrol h350px w250px" + colorClass;
+    var classes = "p15px fs10px scrol h350px w250px " + colorClass;
 
     return (
       <div id="clickable" className={classes} >

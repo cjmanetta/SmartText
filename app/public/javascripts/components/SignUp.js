@@ -123,6 +123,8 @@ var SignUp = React.createClass({
         <div className="col-xs-12 col-md-8 center-block">
           <div className="row">
             { authBox }
+          </div>
+          <div className="row">
             { authError }
           </div>
         </div>

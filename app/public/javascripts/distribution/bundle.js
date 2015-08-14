@@ -25692,7 +25692,7 @@
 	      );
 	    }
 
-	    var classes = "p15px fs10px scrol h350px w250px" + colorClass;
+	    var classes = "p15px fs10px scrol h350px w250px " + colorClass;
 
 	    return React.createElement(
 	      "div",
@@ -25863,7 +25863,7 @@
 	        { id: "buttons" },
 	        React.createElement(
 	          Link,
-	          { to: "/", className: "l-out btn btn-danger navbar-btn" },
+	          { to: "/", className: "l-out btn btn-danger btn-sm navbar-btn outline" },
 	          "Log Out"
 	        ),
 	        React.createElement(
@@ -28046,7 +28046,11 @@
 	        React.createElement(
 	          'div',
 	          { className: 'row' },
-	          authBox,
+	          authBox
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
 	          authError
 	        )
 	      )
