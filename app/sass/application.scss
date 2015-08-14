@@ -1,25 +1,38 @@
-@import url(https://fonts.googleapis.com/css?family=Libre+Baskerville);
 @import "buttons";
 @import "panels";
 
-$blue: #31cde8;
+$blue: #33a6cc;
 $yellow: #f4ef2f;
 $dark-gray: #4F4F4F;
 $md-gray: #7D7D7D;
 $lt-gray: #B2B1B2;
-$text-font: 'Libre Baskerville', serif;
 $default-font: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", sans-serif;
 $xtra-lt-gray: #F7F5F5;
 $main-box-shadow: -3px 2px 11px 0px;
-$border-radius: 4px;
+$border-radius: 3px;
 $border-boot: 1px solid #ccc;
 $inset-box-shadow: inset 0 3px 10px rgba(0,0,0,.075);
-
 
 nav {
   div {
     background-color: white;
     color: $dark-gray;
+  }
+}
+
+.center-block {
+  float: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nav {
+  a  {
+  color: $blue;
+  }
+  a &:hover {
+    background-color: $xtra-lt-gray;
   }
 }
 
@@ -30,10 +43,33 @@ nav {
   }
 }
 
+#lessonPanel {
+  #mainText {
+    max-height: 150px;
+  }
+}
+
+.panel-footer {
+      border-top: none;
+    }
+
+
+.custom-box {
+    background-color: $xtra-lt-gray;
+    box-shadow: $main-box-shadow $xtra-lt-gray;;
+    background-image: none;
+    border: $border-boot
+}
+
+.mar
+
 .mar3px{
   margin: 3px;
 }
 
+.lh8px {
+  line-height: 8px;
+}
 body {
   background-color: rbg(232, 246, 255);
   font-family: $default-font;
@@ -196,9 +232,9 @@ body {
   padding: 15px;
 }
 
-.plr1 {
-  padding-left: 1%;
-  padding-right: 1%;
+.plr12px {
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .db {
@@ -209,12 +245,20 @@ body {
   margin-top: 10%;
 }
 
+.mt5 {
+  margin-top: 5%;
+}
+
 .mbf20 {
   margin-bottom: 20px;
 }
 
 .mt20px{
   margin-top: 20px;
+}
+
+.mb5px{
+  margin-bottom: 5px;
 }
 
 .m10px{
@@ -278,6 +322,13 @@ body {
   text-align: left;
 }
 
+.mh500px {
+  min-height: 500px;
+}
+
+.mh300px {
+  max-height: 300px;
+}
 
 .fs8px{
   font-size: 8px;
@@ -285,6 +336,9 @@ body {
 
 .fs10px{
   font-size: 10px;
+}
+.fs18px{
+  font-size: 18px;
 }
 
 .highlight{
@@ -305,12 +359,16 @@ body {
   height: 350px;
 }
 
+.mh300px{
+  min-height: 300px;
+}
+
 .fs14px{
   font-size: 14px;
 }
 
 .bcb{
-  border: 5px solid black;
+  border: 5px solid;
   border-radius: $border-radius;
   box-shadow: $inset-box-shadow;
 }
@@ -324,26 +382,33 @@ body {
 }
 
 .cg{
-  background-color: green;
+  background-color: #39FF14;
 }
 
 .cb{
-  background-color: blue;
+  background-color: #0bd8ff;
 }
 
 .cr{
-  background-color: red;
+  background-color: hsla(0, 100%, 52%, 0.7);
 }
-.b1pxsbk{
-  border: 1px solid black;
+.b2pxsbk{
+  border: 2px solid $dark-gray;
+  border-radius: $border-radius;
 }
-.b1pxsb{
-  border: 1px solid blue;
+.b4pxsb{
+  border: 4px solid #0bd8ff;
+  border-radius: $border-radius;
 }
-.b1pxsg{
-  border: 1px solid green;
+.b4pxsg{
+  border: 4px solid #39FF14;
+  border-radius: $border-radius;
 }
-.b1pxsr{
-  border: 1px solid red;
+.b4pxsr{
+  border: 4px solid hsla(0, 100%, 52%, 0.7);
+  border-radius: $border-radius;
 }
 
+li {
+  list-style-type: none;
+}

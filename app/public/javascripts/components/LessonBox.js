@@ -33,7 +33,7 @@ var LessonBox = React.createClass({
           <i className="glyphicon glyphicon-trash"></i></a></span></p>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
-              <button type="button" className="btn btn-primary btn-xs raised" onClick={this.makeActive}>Make Active Lesson</button>
+              <button type="button" className="btn btn-primary btn-xs outline" onClick={this.makeActive}>Make Active Lesson</button>
           </div>
         </div>
       </div>

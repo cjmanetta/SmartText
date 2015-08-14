@@ -31,17 +31,23 @@ var KlassBox = React.createClass({
 
     if(this.state.display === "panel"){
       var content =
-        <div className="col-xs-4">
-          <h1>{this.props.klass.name}</h1>
-          <p>Pin: {this.props.klass.pin}</p>
-          <p>Grade: {this.props.klass.grade}</p>
-          <button className="btn btn-custom mar3px" onClick={this.editClick}>Edit</button>
-          <button className="btn btn-custom mar3px" onClick={this.deleteClick}>Delete</button>
+        <div className="col-xs-12 col-sm-4">
+          <div className="row">
+          <div className="panel panel-default panel-heading">
+            <h1>{this.props.klass.name}</h1>
+            <p className="lh8px">Pin: {this.props.klass.pin}</p>
+            <p>Grade: {this.props.klass.grade}</p>
+            <div className="panel-footer">
+              <a className="lg-glyph" onClick={this.editClick}><i className="glyphicon glyphicon-pencil"></i></a>
+              <a className="lg-glyph" onClick={this.deleteClick}><i className="glyphicon glyphicon-trash"></i></a>
+            </div>
+          </div>
+          </div>
         </div>
 
     } else if (this.state.display === "edit"){
       var path = "/teachers/"+ this.props.teacher._id +"/klasses/" + this.props.klass._id
-      var content = <div className="col-xs-4">
+      var content = <div className="col-xs-12 col-sm-4">
 
         <h3>{this.props.klass.name}</h3>
         <p>Pin: {this.props.klass.pin}</p>
@@ -71,7 +77,7 @@ var KlassBox = React.createClass({
                  className="form-control"
                  defaultValue={this.props.klass.pin} />
           </div>
-          <input type="submit" className="btn btn-custom" value="Update Class" />
+          <input type="submit" className="btn btn-primary btn-sm outline" value="Update Class" />
         </form>
       </div>
     }

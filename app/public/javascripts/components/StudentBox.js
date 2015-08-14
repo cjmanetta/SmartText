@@ -25,13 +25,15 @@ var StudentBox = React.createClass({
     if(this.state.display === "panel"){
       var content =
         <div className="col-xs-6 col-sm-4 col-md-2">
-          <div className="mt20px b1pxsb pad7px br10 h150px wf150px ml0px">
-            <p>
-              <span>{this.props.student.first_name} {this.props.student.last_initial}   </span>
-              <a className="mar3px imgtag" onClick={this.editClick}><i className="glyphicon glyphicon-pencil"></i></a>
-              <a className="mar3px" onClick={this.deleteClick}><i className="glyphicon glyphicon-trash"></i></a>
-            </p>
-            <p>Username: {this.props.student.username}</p>
+          <div className="h150px wf150px ml0px">
+            <div className="panel panel-default panel-heading">
+              <h4>{this.props.student.first_name} {this.props.student.last_initial}</h4>
+              <p>Username: {this.props.student.username}</p>
+            <div className="panel-footer">
+              <a onClick={this.editClick}><i className="glyphicon glyphicon-pencil"></i></a>
+              <a onClick={this.deleteClick}><i className="glyphicon glyphicon-trash"></i></a>
+            </div>
+            </div>
           </div>
         </div>
     } else if (this.state.display === "edit"){

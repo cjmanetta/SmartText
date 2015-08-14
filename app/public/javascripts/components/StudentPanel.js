@@ -101,7 +101,7 @@ var StudentPanel = React.createClass({
             <div className="form-group">
               <input className="form-control" id="pin" type="text" name="pin" placeholder="Pin Number ex:5748" />
             </div>
-            <input type="submit" className="btn btn-custom" value="Create Class" />
+            <input type="submit" className="btn btn-primary btn-sm outline" value="Create Class" />
           </form>
         </div>
     } else if (this.state.klassBox === "My Classes"){

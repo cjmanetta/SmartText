@@ -57,49 +57,46 @@ var SignUp = React.createClass({
   },
   render: function() {
     if(this.state.authBox === 'Teachers'){
-      var authBox = <div id="authBox">
-        <ul className="nav nav-pills">
+      var authBox = <div id="authBox" className="col-xs-12">
+        <ul className="nav nav-tabs mbf20">
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
         </ul>
-        <div className="row">
+        <form id="teacherLoginForm" className="col-sm-4" action="/teachers/login" method="post" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
+          </div>
+          <button type="submit" className="btn btn-primary outline">Log In</button>
+        </form>
 
-          <form id="teacherLoginForm" className="col-sm-4 col-md-4 col-lg-4" action="/teachers/login" method="post" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
-            </div>
-            <button type="submit" className="btn btn-custom">Log In</button>
-          </form>
-
-          <form id="signUp" className="col-sm-8 col-md-8 col-lg-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="first_name">First Name</label>
-              <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Suzy" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="last_name">Last Name</label>
-              <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Que" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
-            </div>
-            <button type="submit" className="btn btn-custom">Sign Up</button>
-          </form>
-        </div>
+        <form id="signUp" className="col-sm-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="first_name">First Name</label>
+            <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Suzy" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_name">Last Name</label>
+            <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Que" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
+          </div>
+          <button type="submit" className="btn btn-primary outline">Sign Up</button>
+        </form>
       </div>
     } else if(this.state.authBox === 'Students'){
-      var authBox = <div id="authBox">
-        <ul className="nav nav-pills">
+      var authBox = <div id="authBox" className="col-xs-12">
+        <ul className="nav nav-tabs mbf20">
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
           <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
         </ul>
@@ -112,7 +109,7 @@ var SignUp = React.createClass({
             <label htmlFor="pin">Pin</label>
             <input type="text" className="form-control" name="pin" id="pin" placeholder="1234" />
           </div>
-          <button type="submit" className="btn btn btn-custom">Log In</button>
+          <button type="submit" className="btn btn-primary outline">Log In</button>
         </form>
       </div>
     }
@@ -122,9 +119,15 @@ var SignUp = React.createClass({
       var authError = <div></div>
     }
     return (
-      <div>
-        { authBox }
-        { authError }
+      <div className="row">
+        <div className="col-xs-12 col-md-8 center-block">
+          <div className="row">
+            { authBox }
+          </div>
+          <div className="row">
+            { authError }
+          </div>
+        </div>
        </div>
     );
   }

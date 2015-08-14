@@ -111,7 +111,7 @@ getInitialState: function() {
                  + "/students"
     return (
       <div>
-        <div className="col-xs-8">
+        <div className="col-xs-12 col-sm-8">
           <h4>Add a Student to this Class</h4>
           <form id="newStudent" action={path} method="post" onSubmit={this.handleSubmit}>
             <div className="form-group">
@@ -123,12 +123,12 @@ getInitialState: function() {
             <div className="form-group">
               <input className="form-control" id="last_initial" type="text" name="last_initial" placeholder="Last Initial" />
             </div>
-            <input className="btn btn-custom" type="submit" value="Create Student" />
+            <input className="btn btn-primary btn-sm outline" type="submit" value="Create Student" />
           </form>
         </div>
-        <div id="studentsList row">
-          <div className="col-xs-12">
-            <div className="row bt1px mt20px">
+        <div id="studentsList" className="row">
+          <div className="col-xs-12 mt20px">
+            <div className="row">
             {students}
             </div>
           </div>

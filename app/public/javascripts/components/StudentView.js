@@ -200,7 +200,6 @@ var StudentView = React.createClass({
     }
   },
   compareSelection: function(start, end){
-    debugger
     var student_start = start;
     var student_end = end;
     var correct_start = parseInt(this.state.question.green_start, 10);
@@ -284,23 +283,29 @@ var StudentView = React.createClass({
   },
   render: function() {
     return (
-      <div id="studentMain" className="container">
-        <h1>Student View</h1>
-        <MainText article={this.state.article}
-                  onSelect={this.handleSelect}
-                  start={this.state.start}
-                  end={this.state.end}
-                  updateTeacher={this.updateTeacherSocket}/>
+      <div id="studentMain" className="container pt150px">
+        <Header student={this.state.student} />
+        <div className="row">
+          <div className="col-xs-12 col-sm-8">
+            <MainText article={this.state.article}
+                      onSelect={this.handleSelect}
+                      start={this.state.start}
+                      end={this.state.end}
+                      updateTeacher={this.updateTeacherSocket}/>
+          </div>
 
-        <RightBar question={this.state.question}
-                  actionOne={this.handleClear}
-                  actionTwo={this.handleSubmit}
-                  labelOne="Clear"
-                  labelTwo="Submit"
-                  show={this.state.showQuestion}
-                  showAnswer={this.state.showAnswer}
-                  teacher={this.state.teacher}
-                  article={this.state.article} />
+        <div className="col-xs-12 col-sm-4">
+          <RightBar question={this.state.question}
+                    actionOne={this.handleClear}
+                    actionTwo={this.handleSubmit}
+                    labelOne="Clear"
+                    labelTwo="Submit"
+                    show={this.state.showQuestion}
+                    showAnswer={this.state.showAnswer}
+                    teacher={this.state.teacher}
+                    article={this.state.article} />
+          </div>
+        </div>
       </div>
     );
   },
