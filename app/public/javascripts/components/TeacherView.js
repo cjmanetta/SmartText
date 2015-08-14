@@ -159,11 +159,14 @@ var TeacherView = React.createClass({
   handleGetActiveLesson: function(){
     this.getActiveLesson(this.state.teacher);
   },
+  handleUpdateAnswers: function(){
+    this.getAnswers(this.state.question._id)
+  },
   render: function() {
 
     return (
       <div className="container pt150px w80">
-        <Header teacher={this.state.teacher}/>
+        <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
         <RouteHandler teacher={this.state.teacher}
                       update={this.handleUpdateTeacher}
                       activeLesson={this.state.activeLesson}
@@ -174,7 +177,8 @@ var TeacherView = React.createClass({
                       lessons={this.state.lessons}
                       newLesson={this.newLesson}
                       getLessonsList={this.handleGetLessonsList}
-                      getActiveLesson={this.handleGetActiveLesson}/>
+                      getActiveLesson={this.handleGetActiveLesson}
+                      updateAnswers={this.handleUpdateAnswers}/>
       </div>
     );
   },

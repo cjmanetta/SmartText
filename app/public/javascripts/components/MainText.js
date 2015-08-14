@@ -18,37 +18,51 @@ var MainText = React.createClass({
   componentWillUnmount: function(){
     this.getDOMNode().removeEventListener('mouseup', this.handleMouseUp);
   },
+  getBeginning: function(start) {
+    var originalContent = this.props.article.content
+    var beginningText = originalContent.slice(0, start)
+    return beginningText
+  },
+  updateContent: function(start, end){
+    var originalContent = this.props.article.content
+    var highlightedText = originalContent.slice(start, end)
+    return highlightedText
+  },
+  getEnd: function(end) {
+    var originalContent = this.props.article.content
+    var endText = originalContent.slice(end, originalContent.length )
+    return endText
+  },
   componentDidUpdate: function(){
     this.getDOMNode().addEventListener('mouseup', this.handleMouseUp);
   },
-  getBeginning: function(selections) {
-    var originalContent = this.props.article.content
-    var beginningText = originalContent.slice(0,selections[0].startOffset)
-    return beginningText
-  },
-  updateContent: function(selections){
-    var originalContent = this.props.article.content
-    var highlightedText = originalContent.slice(selections[0].startOffset, selections[0].endOffset)
-    return highlightedText
-  },
-  getEnd: function(selections) {
-    var originalContent = this.props.article.content
-    var endText = originalContent.slice(selections[0].endOffset, originalContent.length )
-    return endText
+  updateTeacher: function(start, end){
+    if(this.props.updateTeacher){
+      this.props.updateTeacher(start, end);
+    }
   },
   render: function() {
-
-    var selections = this.props.selections
-
-    if (selections.length === 0 ){
+    if (!this.props.start){
       var content = this.props.article.content
-      var paragraph = <div><p id="content">{content}</p></div>
+      var paragraph = <div>
+                        <p id="content">
+                          {content}
+                        </p>
+                      </div>
     } else {
-      var paragraph = <div><p id="content">{this.getBeginning(selections)}<span className="highlight">{this.updateContent(selections)}</span >{this.getEnd(selections)}</p></div>
+      this.updateTeacher(this.props.start, this.props.end);
+      var paragraph = <div>
+                        <p id="content">
+                          {this.getBeginning(this.props.start)}
+                          <span className="highlight">
+                          {this.updateContent(this.props.start, this.props.end)}
+                          </span >
+                          {this.getEnd(this.props.end)}
+                        </p>
+                      </div>
     }
-
     return (
-      <div id="mainText" className="w60 p15px ml5 pr tp50px">
+      <div id="mainText" className="ml5 mr5 bboot fs10px scrol h350px w250px plr1">
         <h3 id="title">{this.props.article.title}</h3>
         <p id="author">{this.props.article.author}</p>
         {paragraph}

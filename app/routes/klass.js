@@ -58,6 +58,7 @@ router.route('/')
       } else {
         teacher.klasses.push(klass)
         console.log(teacher)
+        console.log('teachers klas: '+ klass)
 
         teacher.save(function(err, teacher){
           if (err){

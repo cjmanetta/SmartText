@@ -52,13 +52,13 @@ router.route('/')
     answers: answers
   })
 
-  Klass.findOne({_id: req.params.klass_id}, function(err, klass){
+  Klass.findById(req.params.klass_id, function(err, klass){
       if (err) {
         return console.error(err);
       } else {
         klass.students.push(student)
-
-        console.log(klass)
+        console.log('new student: '+student)
+        console.log('kladd: '+klass)
 
         klass.save(function(err, klass){
           if (err){
