@@ -278,7 +278,7 @@ var StudentView = React.createClass({
     return (
       <div>
         <Header student={this.state.student}/>
-        <div className="container">
+        <div className="container pr">
           <MainText article={this.state.article} onSelect={this.handleSelect} selections={this.state.selections}/>
           <RightBar question={this.state.question} actionOne={this.handleClear} actionTwo={this.handleSubmit} labelOne="Clear" labelTwo="Submit"/>
         </div>

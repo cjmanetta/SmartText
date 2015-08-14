@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -25429,7 +25428,7 @@
 	      React.createElement(Header, { student: this.state.student }),
 	      React.createElement(
 	        'div',
-	        { className: 'container' },
+	        { className: 'container pr' },
 	        React.createElement(MainText, { article: this.state.article, onSelect: this.handleSelect, selections: this.state.selections }),
 	        React.createElement(RightBar, { question: this.state.question, actionOne: this.handleClear, actionTwo: this.handleSubmit, labelOne: 'Clear', labelTwo: 'Submit' })
 	      )
@@ -25631,7 +25630,7 @@
 
 	    return React.createElement(
 	      'div',
-	      { id: 'mainText', className: 'w60 p15px ml5' },
+	      { id: 'mainText', className: 'w60 p15px ml5 pr tp50px' },
 	      React.createElement(
 	        'h3',
 	        { id: 'title' },
@@ -25897,7 +25896,7 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container pt150px" },
+	      { className: "container pt150px w80" },
 	      React.createElement(Header, { teacher: this.state.teacher }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
@@ -27291,7 +27290,7 @@
 	  handleTileClick: function handleTileClick(event) {
 
 	    if (event.target.id === "clickable" && this.state.clickable) {
-	      $(event.target).animate({ width: "900px", height: "600px", fontSize: "20px" }, 1000);
+	      $(event.target).animate({ position: "absolute", width: "900px", height: "600px", fontSize: "20px", backgroundColor: "white" }, 1000);
 	      this.state.clickable = false;
 	      $(event.target).attr('id', "clickedBig");
 	    } else if (event.target.id === "clickedBig") {
@@ -27328,22 +27327,20 @@
 	  render: function render() {
 
 	    var that = this;
+
 	    var students = this.state.students.map(function (student) {
 	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'li',
-	          { id: student._id, className: 'w20', onClick: that.handleTileClick },
-	          React.createElement(StudentTile, { student: student, article: that.props.article })
-	        )
+	        'li',
+	        { id: student._id, className: 'col-xs-6 col-sm-3 col-md-3 col-lg-2 w250px m-r10px', onClick: that.handleTileClick },
+	        React.createElement(StudentTile, { student: student, article: that.props.article })
 	      );
 	    });
 	    return React.createElement(
 	      'div',
-	      { className: 'container' },
+	      null,
+	      React.createElement(Header, { teacher: this.props.teacher }),
 	      React.createElement(
-	        'h3',
+	        'h4',
 	        null,
 	        'Teacher Dashboard'
 	      ),
@@ -27701,5 +27698,3 @@
 
 /***/ }
 /******/ ]);
-=======
->>>>>>> master
