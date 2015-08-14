@@ -25854,34 +25854,35 @@
 	      content = React.createElement(
 	        "p",
 	        { className: "navbar-text navbar-left" },
-	        teacher.first_name,
-	        " ",
-	        teacher.last_name
+	        teacher.first_name
 	      );
 	      buttons = React.createElement(
 	        "div",
-	        { id: "buttons" },
+	        { id: "buttons", className: "btn-group navbar-right" },
 	        React.createElement(
-	          Link,
-	          { to: "/", className: "l-out btn btn-danger btn-sm navbar-btn outline" },
-	          "Log Out"
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: "grid", disabled: this.props.activeLesson !== null, params: { id: teacher._id }, className: "t-p btn btn-custom navbar-btn" },
-	          "Teacher Dashboard"
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: "studentPanel", params: { id: teacher._id }, className: "s-p btn btn-custom navbar-btn" },
-	          "Students Panel"
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: "lessonPanel", params: { id: teacher._id }, className: "l-p btn btn-custom navbar-btn" },
-	          "Lessons Panel"
-	        ),
-	        React.createElement("span", { className: "clear" })
+	          "form",
+	          { className: "navbar-form form-inline" },
+	          React.createElement(
+	            Link,
+	            { to: "grid", disabled: this.props.activeLesson !== null, params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
+	            "Dashboard"
+	          ),
+	          React.createElement(
+	            Link,
+	            { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
+	            "Students"
+	          ),
+	          React.createElement(
+	            Link,
+	            { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
+	            "Lessons"
+	          ),
+	          React.createElement(
+	            Link,
+	            { to: "/", className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-danger sharp", role: "group" },
+	            "Log Out"
+	          )
+	        )
 	      );
 	      logo = React.createElement(
 	        Link,
