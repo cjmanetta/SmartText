@@ -57,11 +57,11 @@
 
 	var StudentView = __webpack_require__(197);
 	var TeacherView = __webpack_require__(204);
-	var StudentPanel = __webpack_require__(210);
+	var StudentPanel = __webpack_require__(209);
 	var LessonPanel = __webpack_require__(205);
-	var ReviewPanel = __webpack_require__(214);
-	var Grid = __webpack_require__(215);
-	var Home = __webpack_require__(216);
+	var ReviewPanel = __webpack_require__(213);
+	var Grid = __webpack_require__(214);
+	var Home = __webpack_require__(215);
 	var Header = __webpack_require__(203);
 	var Call = __webpack_require__(198);
 
@@ -26117,8 +26117,7 @@
 
 	var Call = __webpack_require__(198);
 
-	var LessonSelect = __webpack_require__(206);
-	var NewLesson = __webpack_require__(209);
+	var NewLesson = __webpack_require__(206);
 	var LessonBox = __webpack_require__(207);
 	var MainText = __webpack_require__(202);
 
@@ -26491,68 +26490,82 @@
 /* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
-	var LessonBox = __webpack_require__(207);
+	var Router = __webpack_require__(158);
+	var Call = __webpack_require__(198);
 
-	var LessonSelect = React.createClass({
-	  displayName: "LessonSelect",
+	var NewLesson = React.createClass({
+	  displayName: 'NewLesson',
 
+	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      lessons: [{ title: "Herman Melville biography", date: "08/09/2015" }, { title: "Walt Whitman biography", date: "08/10/2010" }]
+	      lessons: []
 	    };
 	  },
-	  handleSelection: function handleSelection(event) {
-	    var selection = $(event.target).text();
-	    $('#select-result').text(selection);
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    var action = $(event.target).attr('action');
+	    var method = $(event.target).attr('method');
+	    var title = $("#title").val();
+	    var date = $("#date").val();
+	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
+
+	    Call.call(action, method, data).then((function (serverData) {
+	      var newLessons = this.state.lessons.concat(serverData.lesson);
+	      this.setState({
+	        lessons: newLessons
+	      });
+	    }).bind(this))['catch'](function (serverData) {
+	      console.log(serverData);
+	    });
 	  },
 	  render: function render() {
-	    var index = 0;
-	    console.log(this);
-	    var self = this;
-
-	    var lessons = this.state.lessons.map((function (lesson) {
-	      var attributeId = "list-group-item_";
-	      attributeId += index;
-	      index += 1;
-	      return React.createElement(LessonBox, { lesson: lesson, teacher: this.props.teacher });
-	    }).bind(this));
-
+	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
 	    return React.createElement(
-	      "div",
-	      { className: "container" },
+	      'div',
+	      { className: 'row' },
 	      React.createElement(
-	        "p",
-	        { id: "feedback" },
-	        React.createElement(
-	          "span",
-	          null,
-	          "You have selected:"
-	        ),
-	        " ",
-	        React.createElement(
-	          "span",
-	          { id: "select-result" },
-	          "none"
-	        )
+	        'h1',
+	        null,
+	        'New Lesson'
 	      ),
 	      React.createElement(
-	        "ul",
-	        { className: "nav nav-pills nav-stacked" },
-	        lessons
+	        'form',
+	        { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'title' },
+	            'Lesson Title'
+	          ),
+	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'date' },
+	            'Lesson Date'
+	          ),
+	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'submit', className: 'btn btn-default' },
+	          'Submit'
+	        )
 	      )
 	    );
 	  }
 	});
 
-	module.exports = LessonSelect;
-
-	/*
-	  <li role="presentation" id={attributeId} onClick={this.handleSelection} key={lesson.id} data={lesson}><a className="lesson"><span className="l-title">{lesson.title}</span><span className="r-date">{lesson.date}</span><span>teacher={this.props.teacher }</span></a></li>
-	  )
-	*/
+	module.exports = NewLesson;
 
 /***/ },
 /* 207 */
@@ -26762,99 +26775,10 @@
 /* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	var React = __webpack_require__(2);
-	var Router = __webpack_require__(158);
-
-	var NewLesson = React.createClass({
-	  displayName: 'NewLesson',
-
-	  mixins: [Router.Navigation, Router.State],
-	  getInitialState: function getInitialState() {
-	    return {
-	      lessons: []
-	    };
-	  },
-	  handleSubmit: function handleSubmit(event) {
-	    var newLesson = this;
-	    event.preventDefault();
-	    var action = $(event.target).attr('action');
-	    var method = $(event.target).attr('method');
-	    // var data = $(event.target).serialize();
-	    var title = $("#title").val();
-	    var date = $("#date").val();
-	    var data = { title: title, date: date, teacher_id: this.props.teacher._id };
-
-	    $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json",
-	      success: function success(serverData) {
-	        var newLessons = newLesson.state.lessons.concat(serverData.lesson);
-	        newLesson.setState({
-	          lessons: newLessons
-	        });
-	      },
-	      error: function error(serverData) {
-	        console.log(serverData);
-	      }
-	    });
-	  },
-	  render: function render() {
-	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
-	    return React.createElement(
-	      'div',
-	      { className: 'row' },
-	      React.createElement(
-	        'h1',
-	        null,
-	        'New Lesson'
-	      ),
-	      React.createElement(
-	        'form',
-	        { id: 'newLesson', action: formAction, method: 'post', onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'title' },
-	            'Lesson Title'
-	          ),
-	          React.createElement('input', { type: 'text', className: 'form-control', name: 'title', id: 'title', placeholder: 'Lesson Title' })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'date' },
-	            'Lesson Date'
-	          ),
-	          React.createElement('input', { type: 'date', className: 'form-control', name: 'date', id: 'date', placeholder: 'MM/DD/YYYY' })
-	        ),
-	        React.createElement(
-	          'button',
-	          { type: 'submit', className: 'btn btn-default' },
-	          'Submit'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = NewLesson;
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var KlassBox = __webpack_require__(211);
+	var KlassBox = __webpack_require__(210);
 	var Call = __webpack_require__(198);
 
 	var StudentPanel = React.createClass({
@@ -27022,13 +26946,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 211 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentList = __webpack_require__(212);
+	var StudentList = __webpack_require__(211);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -27185,13 +27109,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 212 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentBox = __webpack_require__(213);
+	var StudentBox = __webpack_require__(212);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27342,7 +27266,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 213 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27473,7 +27397,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 214 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27630,7 +27554,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 215 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27784,7 +27708,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 216 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27794,7 +27718,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(203);
-	var SignUp = __webpack_require__(217);
+	var SignUp = __webpack_require__(216);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27813,14 +27737,16 @@
 	//<Header />
 
 /***/ },
-/* 217 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var AuthError = __webpack_require__(218);
+	var AuthError = __webpack_require__(217);
+	var Call = __webpack_require__(198);
+	var TeacherAuthentication = __webpack_require__(218);
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -27844,27 +27770,19 @@
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
 
-	    var request = $.ajax({
-	      url: action,
-	      method: method,
-	      data: data,
-	      dataType: "json"
-	    });
-
-	    request.done(function (serverData) {
-
+	    Call.call(action, method, data).then((function (serverData) {
+	      debugger;
 	      if (serverData.teacher === null || serverData.student === null) {
-	        signUp.setState({
+	        this.setState({
 	          error: true
 	        });
-	        signUp.transitionTo('/');
 	      } else if (serverData.student) {
-	        signUp.transitionTo('students', { id: serverData.student._id });
+	        this.transitionTo('students', { id: serverData.student._id });
 	      } else {
-	        signUp.transitionTo('teachers', { id: serverData.teacher._id });
+	        this.transitionTo('teachers', { id: serverData.teacher._id });
 	      }
-	    });
-	    request.fail(function (serverData) {
+	    }).bind(this))['catch'](function (serverData) {
+	      console.log('failed authentication');
 	      console.log(serverData);
 	    });
 	  },
@@ -27876,110 +27794,7 @@
 	  },
 	  render: function render() {
 	    if (this.state.authBox === 'Teachers') {
-	      var authBox = React.createElement(
-	        'div',
-	        { id: 'authBox', className: 'col-xs-12' },
-	        React.createElement(
-	          'ul',
-	          { className: 'nav nav-tabs mbf20' },
-	          React.createElement(
-	            'li',
-	            { role: 'presentation' },
-	            React.createElement(
-	              'a',
-	              { href: '#', onClick: this.handlePillClick },
-	              'Students'
-	            )
-	          ),
-	          React.createElement(
-	            'li',
-	            { role: 'presentation', className: 'active' },
-	            React.createElement(
-	              'a',
-	              { href: '#', onClick: this.handlePillClick },
-	              'Teachers'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'form',
-	          { id: 'teacherLoginForm', className: 'col-sm-4', action: '/teachers/login', method: 'post', onSubmit: this.handleSubmit },
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'username' },
-	              'Username'
-	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'password' },
-	              'Password'
-	            ),
-	            React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
-	          ),
-	          React.createElement(
-	            'button',
-	            { type: 'submit', className: 'btn btn-primary outline' },
-	            'Log In'
-	          )
-	        ),
-	        React.createElement(
-	          'form',
-	          { id: 'signUp', className: 'col-sm-8', action: '/teachers', method: 'post', onSubmit: this.handleSubmit },
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'first_name' },
-	              'First Name'
-	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'first_name', id: 'first_name', placeholder: 'Suzy' })
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'last_name' },
-	              'Last Name'
-	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'last_name', id: 'last_name', placeholder: 'Que' })
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'username' },
-	              'Username'
-	            ),
-	            React.createElement('input', { type: 'text', className: 'form-control', name: 'username', id: 'username', placeholder: 'SuzyQ86' })
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            React.createElement(
-	              'label',
-	              { htmlFor: 'password' },
-	              'Password'
-	            ),
-	            React.createElement('input', { type: 'password', className: 'form-control', name: 'password', id: 'password', placeholder: '*******' })
-	          ),
-	          React.createElement(
-	            'button',
-	            { type: 'submit', className: 'btn btn-primary outline' },
-	            'Sign Up'
-	          )
-	        )
-	      );
+	      var authBox = React.createElement(TeacherAuthentication, { pillClick: this.handlePillClick, submit: this.handleSubmit });
 	    } else if (this.state.authBox === 'Students') {
 	      var authBox = React.createElement(
 	        'div',
@@ -28066,7 +27881,7 @@
 	module.exports = SignUp;
 
 /***/ },
-/* 218 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28091,6 +27906,128 @@
 	});
 
 	module.exports = AuthError;
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(2);
+
+	var TeacherAuthentication = React.createClass({
+	  displayName: "TeacherAuthentication",
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { id: "authBox", className: "col-xs-12" },
+	      React.createElement(
+	        "ul",
+	        { className: "nav nav-tabs mbf20" },
+	        React.createElement(
+	          "li",
+	          { role: "presentation" },
+	          React.createElement(
+	            "a",
+	            { href: "#", onClick: this.props.pillClick },
+	            "Students"
+	          )
+	        ),
+	        React.createElement(
+	          "li",
+	          { role: "presentation", className: "active" },
+	          React.createElement(
+	            "a",
+	            { href: "#", onClick: this.props.pillClick },
+	            "Teachers"
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "form",
+	        { id: "teacherLoginForm", className: "col-sm-4", action: "/teachers/login", method: "post", onSubmit: this.submit },
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "username" },
+	            "Username"
+	          ),
+	          React.createElement("input", { type: "text", className: "form-control", name: "username", id: "username", placeholder: "SuzyQ86" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "password" },
+	            "Password"
+	          ),
+	          React.createElement("input", { type: "password", className: "form-control", name: "password", id: "password", placeholder: "*******" })
+	        ),
+	        React.createElement(
+	          "button",
+	          { type: "submit", className: "btn btn-primary outline" },
+	          "Log In"
+	        )
+	      ),
+	      React.createElement(
+	        "form",
+	        { id: "signUp", className: "col-sm-8", action: "/teachers", method: "post", onSubmit: this.props.submit },
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "first_name" },
+	            "First Name"
+	          ),
+	          React.createElement("input", { type: "text", className: "form-control", name: "first_name", id: "first_name", placeholder: "Suzy" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "last_name" },
+	            "Last Name"
+	          ),
+	          React.createElement("input", { type: "text", className: "form-control", name: "last_name", id: "last_name", placeholder: "Que" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "username" },
+	            "Username"
+	          ),
+	          React.createElement("input", { type: "text", className: "form-control", name: "username", id: "username", placeholder: "SuzyQ86" })
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "form-group" },
+	          React.createElement(
+	            "label",
+	            { htmlFor: "password" },
+	            "Password"
+	          ),
+	          React.createElement("input", { type: "password", className: "form-control", name: "password", id: "password", placeholder: "*******" })
+	        ),
+	        React.createElement(
+	          "button",
+	          { type: "submit", className: "btn btn-primary outline" },
+	          "Sign Up"
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = TeacherAuthentication;
 
 /***/ }
 /******/ ]);

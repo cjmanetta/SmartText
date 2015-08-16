@@ -1,6 +1,8 @@
 var React = require('react');
 var Router = require('react-router');
-var AuthError = require('./AuthError')
+var AuthError = require('./AuthError');
+var Call = require("../call");
+var TeacherAuthentication = require("./TeacherAuthentication");
 
 var SignUp = React.createClass({
   mixins: [
@@ -25,29 +27,24 @@ var SignUp = React.createClass({
     var pin = $(event.target).find('#pin').val()
     var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
 
-    var request = $.ajax({
-      url:      action,
-      method:   method,
-      data:     data,
-      dataType: "json"
-    });
+    Call.call(action, method, data)
+        .then(function(serverData){
+          debugger
+          if(serverData.teacher === null || serverData.student === null){
+            this.setState({
+              error: true
+            })
+          } else if (serverData.student) {
+            this.transitionTo('students', {id: serverData.student._id});
+          } else {
+            this.transitionTo('teachers', {id: serverData.teacher._id});
+          }
 
-    request.done(function(serverData){
-
-      if(serverData.teacher === null || serverData.student === null){
-        signUp.setState({
-          error: true
-        })
-        signUp.transitionTo('/')
-      } else if (serverData.student) {
-        signUp.transitionTo('students', {id: serverData.student._id});
-      } else {
-        signUp.transitionTo('teachers', {id: serverData.teacher._id});
-      }
-    })
-    request.fail(function(serverData){
-      console.log(serverData);
-    });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log('failed authentication');
+          console.log(serverData);
+        });
   },
   handlePillClick: function(event){
     event.preventDefault();
@@ -57,43 +54,7 @@ var SignUp = React.createClass({
   },
   render: function() {
     if(this.state.authBox === 'Teachers'){
-      var authBox = <div id="authBox" className="col-xs-12">
-        <ul className="nav nav-tabs mbf20">
-          <li role="presentation"><a href="#" onClick={ this.handlePillClick }>Students</a></li>
-          <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Teachers</a></li>
-        </ul>
-        <form id="teacherLoginForm" className="col-sm-4" action="/teachers/login" method="post" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
-          </div>
-          <button type="submit" className="btn btn-primary outline">Log In</button>
-        </form>
-
-        <form id="signUp" className="col-sm-8" action="/teachers" method="post" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="first_name">First Name</label>
-            <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Suzy" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="last_name">Last Name</label>
-            <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Que" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" className="form-control" name="password" id="password" placeholder="*******" />
-          </div>
-          <button type="submit" className="btn btn-primary outline">Sign Up</button>
-        </form>
-      </div>
+      var authBox = <TeacherAuthentication pillClick={this.handlePillClick} submit={this.handleSubmit} />
     } else if(this.state.authBox === 'Students'){
       var authBox = <div id="authBox" className="col-xs-12">
         <ul className="nav nav-tabs mbf20">
