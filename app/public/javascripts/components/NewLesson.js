@@ -1,6 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
-
+var Call = require('../call')
 
 var NewLesson = React.createClass({
   mixins: [
@@ -13,33 +13,23 @@ var NewLesson = React.createClass({
     }
   },
   handleSubmit: function(event){
-    var newLesson = this;
     event.preventDefault();
     var action = $(event.target).attr('action');
     var method = $(event.target).attr('method');
-    // var data = $(event.target).serialize();
     var title = $("#title").val();
     var date = $("#date").val();
     var data = {title: title, date: date, teacher_id: this.props.teacher._id}
 
-    $.ajax({
-      url: action,
-      method: method,
-      data: data,
-      dataType: "json",
-      success: function(serverData) {
-        var newLessons = newLesson.state.lessons.concat(serverData.lesson)
-        newLesson.setState({
-          lessons: newLessons
+    Call.call(action, method, data)
+        .then(function(serverData){
+          var newLessons = this.state.lessons.concat(serverData.lesson)
+          this.setState({
+            lessons: newLessons
+          });
+        }.bind(this))
+        .catch(function(serverData){
+          console.log(serverData);
         });
-
-      },
-      error: function(serverData) {
-        console.log(serverData);
-      }
-    });
-
-
   },
   render: function() {
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
