@@ -25303,7 +25303,7 @@
 	      this.setState({
 	        question: serverData.question
 	      });
-	      socket.emit('addStudent', { student: this.state.student });
+	      socket.emit('addStudent', { student: this.state.student, teacher_id: this.state.teacher._id });
 	    }).bind(this));
 
 	    request.fail(function (serverData) {
@@ -27665,31 +27665,34 @@
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    var that = this;
-	    socket.on('select', function (data) {
-	      that.updateStudentTile(data);
-	    });
-	    socket.on('addStudent', function (data) {
+	    socket.on('select', (function (data) {
+	      this.updateStudentTile(data);
+	    }).bind(this));
+	    socket.on('addStudent', (function (data) {
 	      console.log('made it into the socket');
-	      that.addStudent(data);
-	    });
-	    socket.on('studentClear', function (data) {
-	      that.clearStudentTile(data);
-	    });
+	      this.addStudent(data);
+	    }).bind(this));
+	    socket.on('studentClear', (function (data) {
+	      this.clearStudentTile(data);
+	    }).bind(this));
 	  },
 	  clearStudentTile: function clearStudentTile(data) {
 	    var student = this.findStudent(data.student);
-	    student.start = null;
-	    student.color = null;
-	    student.end = null;
-	    this.forceUpdate();
+	    if (student._teacher_id === this.state.teacher._id) {
+	      student.start = null;
+	      student.color = null;
+	      student.end = null;
+	      this.forceUpdate();
+	    }
 	  },
 	  updateStudentTile: function updateStudentTile(data) {
 	    var student = this.findStudent(data.student);
-	    student.start = data.start;
-	    student.end = data.end;
-	    student.color = data.color;
-	    this.forceUpdate();
+	    if (student._teacher_id === this.state.teacher._id) {
+	      student.start = data.start;
+	      student.end = data.end;
+	      student.color = data.color;
+	      this.forceUpdate();
+	    }
 	  },
 	  handleTileClick: function handleTileClick(event) {
 
@@ -27704,8 +27707,9 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
+	    debugger;
 	    var student = this.findStudent(data.student);
-	    if (student === null) {
+	    if (student === null && data.teacher_id === this.props.teacher._id) {
 	      var newStudents = this.state.students.concat(data.student);
 	      this.setState({
 	        students: newStudents

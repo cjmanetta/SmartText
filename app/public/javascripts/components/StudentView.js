@@ -154,7 +154,7 @@ var StudentView = React.createClass({
       this.setState({
         question: serverData.question
       })
-      socket.emit('addStudent', {student: this.state.student})
+      socket.emit('addStudent', {student: this.state.student, teacher_id: this.state.teacher._id})
     }.bind(this));
 
     request.fail(function(serverData){

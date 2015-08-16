@@ -67,8 +67,9 @@ var Grid = React.createClass({
     }
   },
   addStudent: function(data){
+    debugger
     var student = this.findStudent(data.student);
-    if (student === null && student._teacher_id === this.state.teacher._id){
+    if (student === null && data.teacher_id === this.props.teacher._id){
       var newStudents = this.state.students.concat(data.student)
       this.setState({
         students: newStudents
