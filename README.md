@@ -51,7 +51,7 @@ for individual classrooms, authentication needs to be increase for privacy
 of student data, and the data that is collected over time needs to be
 made available and accesible to teachers.
 
-##Some guidelinse for Contributing
+##Some guidelines for Contributing
 This project needs to increase it's reliablity, and so all pull requests
 needs to include an acceptable amount of testing. Please use standard
 javascript/jsx and not es6 syntax for the time being, and please
