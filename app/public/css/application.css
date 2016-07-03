@@ -515,9 +515,11 @@ i:active, i:hover {
   box-shadow: -3px 2px 11px 0px #F7F5F5;
   background-image: none; }
 
-nav div {
-  background-color: white;
-  color: #4F4F4F; }
+nav {
+  height: 100px; }
+  nav div {
+    background-color: white;
+    color: #4F4F4F; }
 
 .center-block {
   float: none;
@@ -565,7 +567,11 @@ body {
   position: relative;
   float: left;
   top: -18px;
-  left: -5px; }
+  left: -5px;
+  background: url("../images/st_logo_blue.svg") no-repeat;
+  width: 500px;
+  height: 100px;
+  background-color: none; }
 
 .tp50px {
   top: 70px; }

@@ -18,6 +18,7 @@ nav {
     background-color: white;
     color: $dark-gray;
   }
+  height: 100px;
 }
 
 .center-block {
@@ -85,6 +86,11 @@ body {
   float: left;
   top: -18px;
   left: -5px;
+  background: url("../images/st_logo_blue.svg") no-repeat;
+  width: 500px;
+  height: 100px;
+  background-color: none;
+
 }
 
 

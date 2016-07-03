@@ -26015,7 +26015,7 @@
 	      logo = React.createElement(
 	        Link,
 	        { to: "lessonPanel", className: "navbar-brand", params: { id: teacher._id } },
-	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	        React.createElement("div", { className: "logo" })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
@@ -26026,13 +26026,13 @@
 	      logo = React.createElement(
 	        Link,
 	        { to: "students", className: "navbar-brand", params: { id: student._id } },
-	        React.createElement("img", { src: "../../../images/smartext_final.png", className: "logo", alt: "SmartText" })
+	        React.createElement("div", { className: "logo" })
 	      );
 	    } else {
 	      logo = React.createElement(
 	        Link,
 	        { to: "/", className: "navbar-brand" },
-	        React.createElement("img", { src: "../../../images/smartext_final3.png", className: "logo", alt: "SmartText" })
+	        React.createElement("div", { className: "logo" })
 	      );
 	    }
 
