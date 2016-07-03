@@ -31,6 +31,8 @@ chrome-user-data
 *.sublime-workspace
 .idea
 *bundle.js
+app/public/javascripts/distribution/bundle.js
+app/public/css/application.css
 
 
 # Coveralls
