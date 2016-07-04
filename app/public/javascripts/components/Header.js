@@ -34,12 +34,18 @@ var Header = React.createClass({
     }
 
     return (
-      <nav className="navbar navbar-default navbar-fixed-top">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">{logo}</a>
-          {content}
-          {buttons}
+      <nav className="dashboard-nav">
+        <div className="logo-container">
+          <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
         </div>
+
+        <div class="dashboard-links">
+          <a class="active" href="#"></a>
+          <a href="#">STUDENTS</a>
+          <a href="#">LESSONS</a>
+          <a href="#">LOGOUT</a>
+        </div>
+
       </nav>
     )
   }

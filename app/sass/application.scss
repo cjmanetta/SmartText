@@ -1,5 +1,6 @@
 @import "buttons";
 @import "panels";
+@import "nav";
 
 $blue: #33a6cc;
 $yellow: #f4ef2f;
@@ -13,28 +14,11 @@ $border-radius: 3px;
 $border-boot: 1px solid #ccc;
 $inset-box-shadow: inset 0 3px 10px rgba(0,0,0,.075);
 
-nav {
-  div {
-    background-color: white;
-    color: $dark-gray;
-  }
-  height: 100px;
-}
-
 .center-block {
   float: none;
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
-
-.nav {
-  a  {
-  color: $blue;
-  }
-  a &:hover {
-    background-color: $xtra-lt-gray;
-  }
 }
 
 #rightBar{
@@ -62,8 +46,6 @@ nav {
     border: $border-boot
 }
 
-.mar
-
 .mar3px{
   margin: 3px;
 }
@@ -79,18 +61,6 @@ body {
 
 .bcy{
   background-color: $yellow;
-}
-
-.logo {
-  position: relative;
-  float: left;
-  top: -18px;
-  left: -5px;
-  background: url("../images/st_logo_blue.svg") no-repeat;
-  width: 500px;
-  height: 100px;
-  background-color: none;
-
 }
 
 

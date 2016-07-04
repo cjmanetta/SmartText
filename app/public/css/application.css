@@ -521,17 +521,19 @@ nav {
     background-color: white;
     color: #4F4F4F; }
 
+.logo {
+  position: relative;
+  top: -16px;
+  background: url("../images/st_logo_blue.svg") no-repeat;
+  width: 300px;
+  height: 100px;
+  background-color: none; }
+
 .center-block {
   float: none;
   display: block;
   margin-left: auto;
   margin-right: auto; }
-
-.nav a {
-  color: #33a6cc; }
-
-a .nav:hover {
-  background-color: #F7F5F5; }
 
 #rightBar .row {
   margin-top: 20px;
@@ -549,7 +551,6 @@ a .nav:hover {
   background-image: none;
   border: 1px solid #ccc; }
 
-.mar
 .mar3px {
   margin: 3px; }
 
@@ -562,16 +563,6 @@ body {
 
 .bcy {
   background-color: #f4ef2f; }
-
-.logo {
-  position: relative;
-  float: left;
-  top: -18px;
-  left: -5px;
-  background: url("../images/st_logo_blue.svg") no-repeat;
-  width: 500px;
-  height: 100px;
-  background-color: none; }
 
 .tp50px {
   top: 70px; }
