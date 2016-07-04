@@ -1,31 +1,52 @@
 var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
+
+// (function(){ 
+//   addLinkListener();
+// })();
+
+function addLinkListener() {
+  var links = document.querySelector('.dashboard')
+  links.addEventListener('click', handleLinkClick)
+}
+
+function handleLinkClick() {
+  var active = document.querySelector('.active')
+  active.classList.remove('active')
+  event.target.classList.add('active')
+}
+
 var Header = React.createClass({
 
   mixins: [
     Router.Navigation,
     Router.State,
   ],
+  handleNavClick: function(event){
+    var active = document.querySelector('.active')
+    active.classList.remove('active')
+    event.target.classList.add('active')
+  },
   render: function(){
     var teacher = this.props.teacher
     var student = this.props.student
-    var content = null
-    var buttons = null
+    var username = null
+    var dashboardLinks = null
     var logo = null
 
+    // addEventListener();
+
     if (teacher) {
-      content = <p className="navbar-text navbar-left">{teacher.first_name}</p>
-      buttons =
-        <div  id="buttons" className="btn-group navbar-right">
-          <form className="navbar-form form-inline">
-            <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} className="btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp" role="group">Dashboard</Link>
-            <Link to="studentPanel" params={{id: teacher._id }} className="btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp" role="group">Students</Link>
-            <Link to="lessonPanel" params={{id: teacher._id }} className="btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp" role="group">Lessons</Link>
-            <Link to="/" className="btn btn-xs btn-group btn-group-xs nabar-btn btn-danger sharp" role="group">Log Out</Link>
-            </form>
-        </div>
-      logo = <Link to='lessonPanel' className="navbar-brand" params={{id: teacher._id }}><div className="logo"></div></Link>
+      username = <p className="">{teacher.first_name}</p>
+      dashboardLinks =
+          <form className="dashboard-links">
+            <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">Dashboard</Link>
+            <Link to="studentPanel" params={{id: teacher._id }} className="" role="group" onClick={this.handleNavClick}>Students</Link>
+            <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">Lessons</Link>
+            <Link to="/" className="" role="group">Log Out</Link>
+          </form>
+      logo = <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
       logo = <Link to='students' className="navbar-brand" params={{id: student._id }}><div className="logo"></div></Link>
@@ -36,16 +57,11 @@ var Header = React.createClass({
     return (
       <nav className="dashboard-nav">
         <div className="logo-container">
-          <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
+          {logo}
+          {username}
         </div>
 
-        <div class="dashboard-links">
-          <a class="active" href="#"></a>
-          <a href="#">STUDENTS</a>
-          <a href="#">LESSONS</a>
-          <a href="#">LOGOUT</a>
-        </div>
-
+        {dashboardLinks}
       </nav>
     )
   }

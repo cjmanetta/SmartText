@@ -25958,7 +25958,7 @@
 /* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
@@ -25967,89 +25967,103 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
+	// (function(){
+	//   addLinkListener();
+	// })();
+
+	function addLinkListener() {
+	  var links = document.querySelector('.dashboard');
+	  links.addEventListener('click', handleLinkClick);
+	}
+
+	function handleLinkClick() {
+	  var active = document.querySelector('.active');
+	  active.classList.remove('active');
+	  event.target.classList.add('active');
+	}
+
 	var Header = React.createClass({
-	  displayName: "Header",
+	  displayName: 'Header',
 
 	  mixins: [Router.Navigation, Router.State],
+	  handleNavClick: function handleNavClick(event) {
+	    var active = document.querySelector('.active');
+	    active.classList.remove('active');
+	    event.target.classList.add('active');
+	  },
 	  render: function render() {
 	    var teacher = this.props.teacher;
 	    var student = this.props.student;
-	    var content = null;
-	    var buttons = null;
+	    var username = null;
+	    var dashboardLinks = null;
 	    var logo = null;
 
+	    // addEventListener();
+
 	    if (teacher) {
-	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	      username = React.createElement(
+	        'p',
+	        { className: '' },
 	        teacher.first_name
 	      );
-	      buttons = React.createElement(
-	        "div",
-	        { id: "buttons", className: "btn-group navbar-right" },
+	      dashboardLinks = React.createElement(
+	        'form',
+	        { className: 'dashboard-links' },
 	        React.createElement(
-	          "form",
-	          { className: "navbar-form form-inline" },
-	          React.createElement(
-	            Link,
-	            { to: "grid", disabled: this.props.activeLesson !== null, params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
-	            "Dashboard"
-	          ),
-	          React.createElement(
-	            Link,
-	            { to: "studentPanel", params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
-	            "Students"
-	          ),
-	          React.createElement(
-	            Link,
-	            { to: "lessonPanel", params: { id: teacher._id }, className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-primary sharp", role: "group" },
-	            "Lessons"
-	          ),
-	          React.createElement(
-	            Link,
-	            { to: "/", className: "btn btn-xs btn-group btn-group-xs nabar-btn btn-danger sharp", role: "group" },
-	            "Log Out"
-	          )
+	          Link,
+	          { to: 'grid', disabled: this.props.activeLesson !== null, params: { id: teacher._id }, onClick: this.handleNavClick, role: 'group' },
+	          'Dashboard'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'studentPanel', params: { id: teacher._id }, className: '', role: 'group', onClick: this.handleNavClick },
+	          'Students'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: 'lessonPanel', params: { id: teacher._id }, className: '', onClick: this.handleNavClick, role: 'group' },
+	          'Lessons'
+	        ),
+	        React.createElement(
+	          Link,
+	          { to: '/', className: '', role: 'group' },
+	          'Log Out'
 	        )
 	      );
 	      logo = React.createElement(
 	        Link,
-	        { to: "lessonPanel", className: "navbar-brand", params: { id: teacher._id } },
-	        React.createElement("div", { className: "logo" })
+	        { to: 'lessonPanel', className: '', params: { id: teacher._id } },
+	        React.createElement('div', { className: 'logo' })
 	      );
 	    } else if (student) {
 	      content = React.createElement(
-	        "p",
-	        { className: "navbar-text navbar-left" },
+	        'p',
+	        { className: 'navbar-text navbar-left' },
 	        student.first_name
 	      );
 	      logo = React.createElement(
 	        Link,
-	        { to: "students", className: "navbar-brand", params: { id: student._id } },
-	        React.createElement("div", { className: "logo" })
+	        { to: 'students', className: 'navbar-brand', params: { id: student._id } },
+	        React.createElement('div', { className: 'logo' })
 	      );
 	    } else {
 	      logo = React.createElement(
 	        Link,
-	        { to: "/", className: "navbar-brand" },
-	        React.createElement("div", { className: "logo" })
+	        { to: '/', className: 'navbar-brand' },
+	        React.createElement('div', { className: 'logo' })
 	      );
 	    }
 
 	    return React.createElement(
-	      "nav",
-	      { className: "navbar navbar-default navbar-fixed-top" },
+	      'nav',
+	      { className: 'dashboard-nav' },
 	      React.createElement(
-	        "div",
-	        { className: "container-fluid" },
-	        React.createElement(
-	          "a",
-	          { className: "navbar-brand", href: "#" },
-	          logo
-	        ),
-	        content,
-	        buttons
-	      )
+	        'div',
+	        { className: 'logo-container' },
+	        logo,
+	        username
+	      ),
+	      dashboardLinks
 	    );
 	  }
 	});
@@ -26210,20 +26224,24 @@
 
 	    return React.createElement(
 	      "div",
-	      { className: "container pt150px w80" },
+	      null,
 	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
-	      React.createElement(RouteHandler, { teacher: this.state.teacher,
-	        update: this.handleUpdateTeacher,
-	        activeLesson: this.state.activeLesson,
-	        activate: this.setActiveLesson,
-	        article: this.state.article,
-	        question: this.state.question,
-	        answers: this.state.answers,
-	        lessons: this.state.lessons,
-	        newLesson: this.newLesson,
-	        getLessonsList: this.handleGetLessonsList,
-	        getActiveLesson: this.handleGetActiveLesson,
-	        updateAnswers: this.handleUpdateAnswers })
+	      React.createElement(
+	        "div",
+	        { className: "container pt150px w80" },
+	        React.createElement(RouteHandler, { teacher: this.state.teacher,
+	          update: this.handleUpdateTeacher,
+	          activeLesson: this.state.activeLesson,
+	          activate: this.setActiveLesson,
+	          article: this.state.article,
+	          question: this.state.question,
+	          answers: this.state.answers,
+	          lessons: this.state.lessons,
+	          newLesson: this.newLesson,
+	          getLessonsList: this.handleGetLessonsList,
+	          getActiveLesson: this.handleGetActiveLesson,
+	          updateAnswers: this.handleUpdateAnswers })
+	      )
 	    );
 	  }
 	});

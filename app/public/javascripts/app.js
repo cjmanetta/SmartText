@@ -15,6 +15,8 @@ var Call = require('./call');
 
 //functions defined in the global scope to be used in many components
 
+
+
 //Routes for the react router
 var routes = (
   <Route handler={App}>

@@ -515,19 +515,52 @@ i:active, i:hover {
   box-shadow: -3px 2px 11px 0px #F7F5F5;
   background-image: none; }
 
-nav {
-  height: 100px; }
-  nav div {
-    background-color: white;
+.dashboard-nav {
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding-left: 10px; }
+  .dashboard-nav div {
     color: #4F4F4F; }
 
+.logo-container {
+  width: 25%; }
+
 .logo {
-  position: relative;
-  top: -16px;
   background: url("../images/st_logo_blue.svg") no-repeat;
-  width: 300px;
-  height: 100px;
-  background-color: none; }
+  width: 80%;
+  height: 50px; }
+
+.dashboard-links {
+  width: 75%;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch; }
+  .dashboard-links a {
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #4F4F4F;
+    transition: 500ms ease-in-out; }
+    .dashboard-links a:hover {
+      transform: translateY(5px);
+      transition: 500ms ease-in-out; }
+    .dashboard-links a:after {
+      transform: scaleY(0);
+      transition: 300ms ease-in-out;
+      transform-origin: bottom;
+      content: "";
+      height: 0px;
+      width: 87%;
+      box-shadow: 15px 0px 0px 15px white;
+      position: relative;
+      bottom: -36px; }
+  .dashboard-links a.active:after {
+    transform: scaleY(1); }
 
 .center-block {
   float: none;

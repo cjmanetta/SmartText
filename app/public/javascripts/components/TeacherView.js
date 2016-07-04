@@ -165,20 +165,22 @@ var TeacherView = React.createClass({
   render: function() {
 
     return (
-      <div className="container pt150px w80">
-      <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
-        <RouteHandler teacher={this.state.teacher}
-                      update={this.handleUpdateTeacher}
-                      activeLesson={this.state.activeLesson}
-                      activate={this.setActiveLesson}
-                      article={this.state.article}
-                      question={this.state.question}
-                      answers={this.state.answers}
-                      lessons={this.state.lessons}
-                      newLesson={this.newLesson}
-                      getLessonsList={this.handleGetLessonsList}
-                      getActiveLesson={this.handleGetActiveLesson}
-                      updateAnswers={this.handleUpdateAnswers}/>
+      <div>
+        <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
+        <div className="container pt150px w80">
+          <RouteHandler teacher={this.state.teacher}
+                        update={this.handleUpdateTeacher}
+                        activeLesson={this.state.activeLesson}
+                        activate={this.setActiveLesson}
+                        article={this.state.article}
+                        question={this.state.question}
+                        answers={this.state.answers}
+                        lessons={this.state.lessons}
+                        newLesson={this.newLesson}
+                        getLessonsList={this.handleGetLessonsList}
+                        getActiveLesson={this.handleGetActiveLesson}
+                        updateAnswers={this.handleUpdateAnswers}/>
+        </div>
       </div>
     );
   },
