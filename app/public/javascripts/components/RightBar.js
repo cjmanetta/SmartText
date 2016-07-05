@@ -23,7 +23,7 @@ var RightBar = React.createClass({
     }
 
     return (
-      <div id="rightBar" className="pf wf300px bcg r5 tal h100 p15px tp50px">
+      <div id="rightBar" className="sidebar-cheat">
         <div className="row">
           <div className="col-md-12">
             <QuestionBox prompt={ prompt }/>

@@ -25651,7 +25651,7 @@
 
 	    return React.createElement(
 	      "div",
-	      { id: "rightBar", className: "pf wf300px bcg r5 tal h100 p15px tp50px" },
+	      { id: "rightBar", className: "sidebar-cheat" },
 	      React.createElement(
 	        "div",
 	        { className: "row" },
@@ -25997,6 +25997,7 @@
 	    var username = null;
 	    var dashboardLinks = null;
 	    var logo = null;
+	    var logout = null;
 
 	    // addEventListener();
 
@@ -26023,11 +26024,15 @@
 	          Link,
 	          { to: 'lessonPanel', params: { id: teacher._id }, className: '', onClick: this.handleNavClick, role: 'group' },
 	          'Lessons'
-	        ),
+	        )
+	      );
+	      logout = React.createElement(
+	        'div',
+	        { className: 'logout-container' },
 	        React.createElement(
 	          Link,
-	          { to: '/', className: '', role: 'group' },
-	          'Log Out'
+	          { to: '/', className: 'btn btn-xs btn-warning outline', role: 'group' },
+	          'logout'
 	        )
 	      );
 	      logo = React.createElement(
@@ -26063,7 +26068,8 @@
 	        logo,
 	        username
 	      ),
-	      dashboardLinks
+	      dashboardLinks,
+	      logout
 	    );
 	  }
 	});
@@ -26226,22 +26232,18 @@
 	      "div",
 	      null,
 	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
-	      React.createElement(
-	        "div",
-	        { className: "container pt150px w80" },
-	        React.createElement(RouteHandler, { teacher: this.state.teacher,
-	          update: this.handleUpdateTeacher,
-	          activeLesson: this.state.activeLesson,
-	          activate: this.setActiveLesson,
-	          article: this.state.article,
-	          question: this.state.question,
-	          answers: this.state.answers,
-	          lessons: this.state.lessons,
-	          newLesson: this.newLesson,
-	          getLessonsList: this.handleGetLessonsList,
-	          getActiveLesson: this.handleGetActiveLesson,
-	          updateAnswers: this.handleUpdateAnswers })
-	      )
+	      React.createElement(RouteHandler, { teacher: this.state.teacher,
+	        update: this.handleUpdateTeacher,
+	        activeLesson: this.state.activeLesson,
+	        activate: this.setActiveLesson,
+	        article: this.state.article,
+	        question: this.state.question,
+	        answers: this.state.answers,
+	        lessons: this.state.lessons,
+	        newLesson: this.newLesson,
+	        getLessonsList: this.handleGetLessonsList,
+	        getActiveLesson: this.handleGetActiveLesson,
+	        updateAnswers: this.handleUpdateAnswers })
 	    );
 	  }
 	});
@@ -26620,11 +26622,16 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      { id: 'lessonPanel', className: 'row' },
+	      { className: 'wrapper' },
+	      React.createElement('div', { className: 'sidebar' }),
 	      React.createElement(
 	        'div',
-	        { className: 'pt1' },
-	        lessonPills
+	        { id: 'lessonPanel', className: 'row dashboard-container' },
+	        React.createElement(
+	          'div',
+	          { className: 'pt1' },
+	          lessonPills
+	        )
 	      )
 	    );
 	  }
@@ -27083,8 +27090,13 @@
 	    }
 	    return React.createElement(
 	      "div",
-	      null,
-	      klassBox
+	      { className: "wrapper" },
+	      React.createElement("div", { className: "sidebar" }),
+	      React.createElement(
+	        "div",
+	        { className: "dashboard-container" },
+	        klassBox
+	      )
 	    );
 	  }
 	});
@@ -27829,24 +27841,26 @@
 	    });
 	    return React.createElement(
 	      'div',
-	      null,
-	      React.createElement(Header, { teacher: this.props.teacher }),
+	      { className: 'wrapper' },
 	      React.createElement(
-	        'h4',
-	        null,
-	        'Teacher Dashboard'
+	        'div',
+	        { className: 'sidebar' },
+	        React.createElement(RightBar, { question: this.props.question,
+	          actionOne: this.viewPrompt,
+	          actionTwo: this.handleFinish,
+	          labelOne: 'Display Question',
+	          labelTwo: 'Finish',
+	          show: this.state.showQuestion,
+	          showAnswer: this.state.showAnswer,
+	          teacher: this.props.teacher,
+	          article: this.props.article })
 	      ),
-	      React.createElement(RouteHandler, null),
-	      students,
-	      React.createElement(RightBar, { question: this.props.question,
-	        actionOne: this.viewPrompt,
-	        actionTwo: this.handleFinish,
-	        labelOne: 'Display Question',
-	        labelTwo: 'Finish',
-	        show: this.state.showQuestion,
-	        showAnswer: this.state.showAnswer,
-	        teacher: this.props.teacher,
-	        article: this.props.article })
+	      React.createElement(
+	        'div',
+	        { className: 'dashboard-container container' },
+	        students,
+	        React.createElement(RouteHandler, null)
+	      )
 	    );
 	  }
 	});

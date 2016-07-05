@@ -247,9 +247,12 @@ var LessonPanel = React.createClass({
       </div>
     }
     return (
-      <div id="lessonPanel" className="row">
-        <div className="pt1">
-            {lessonPills}
+      <div className="wrapper">
+        <div className="sidebar"></div>
+        <div id="lessonPanel" className="row dashboard-container">
+          <div className="pt1">
+              {lessonPills}
+          </div>
         </div>
       </div>
     )

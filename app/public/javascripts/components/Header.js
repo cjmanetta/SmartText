@@ -34,6 +34,7 @@ var Header = React.createClass({
     var username = null
     var dashboardLinks = null
     var logo = null
+    var logout = null
 
     // addEventListener();
 
@@ -44,8 +45,10 @@ var Header = React.createClass({
             <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">Dashboard</Link>
             <Link to="studentPanel" params={{id: teacher._id }} className="" role="group" onClick={this.handleNavClick}>Students</Link>
             <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">Lessons</Link>
-            <Link to="/" className="" role="group">Log Out</Link>
           </form>
+      logout = <div className="logout-container">
+            <Link to="/" className="btn btn-xs btn-warning outline" role="group">logout</Link>
+          </div>
       logo = <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
@@ -60,8 +63,8 @@ var Header = React.createClass({
           {logo}
           {username}
         </div>
-
         {dashboardLinks}
+        {logout}
       </nav>
     )
   }

@@ -116,21 +116,22 @@ var Grid = React.createClass({
       )
     });
     return (
-      <div>
-        <Header teacher={this.props.teacher} />
-        <h4>Teacher Dashboard</h4>
-        <RouteHandler />
+      <div className="wrapper">
+        <div className="sidebar">
+          <RightBar question={this.props.question}
+                actionOne={this.viewPrompt}
+                actionTwo={this.handleFinish}
+                labelOne="Display Question"
+                labelTwo="Finish"
+                show={this.state.showQuestion}
+                showAnswer={this.state.showAnswer}
+                teacher={this.props.teacher}
+                article={this.props.article}/>
+        </div>
+        <div className="dashboard-container container">
           {students}
-        <RightBar question={this.props.question}
-                  actionOne={this.viewPrompt}
-                  actionTwo={this.handleFinish}
-                  labelOne="Display Question"
-                  labelTwo="Finish"
-                  show={this.state.showQuestion}
-                  showAnswer={this.state.showAnswer}
-                  teacher={this.props.teacher}
-                  article={this.props.article}/>
-
+          <RouteHandler />
+        </div>
       </div>
     );
   },

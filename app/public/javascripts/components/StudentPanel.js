@@ -115,8 +115,11 @@ var StudentPanel = React.createClass({
         </div>
     }
     return (
-      <div>
-        { klassBox }
+      <div className="wrapper">
+        <div className="sidebar"></div>
+        <div className="dashboard-container">
+          { klassBox }
+        </div>
       </div>
     )
   }
