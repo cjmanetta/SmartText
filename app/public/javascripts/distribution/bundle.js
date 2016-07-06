@@ -27886,9 +27886,13 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "main", className: "container pt150px" },
+	      null,
 	      React.createElement(Header, null),
-	      React.createElement(SignUp, null)
+	      React.createElement(
+	        "div",
+	        { id: "main", className: "container pt150px" },
+	        React.createElement(SignUp, null)
+	      )
 	    );
 	  }
 	});
@@ -27944,6 +27948,7 @@
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('failed authentication');
 	      console.log(serverData);
+	      debugger;
 	    });
 	  },
 	  handlePillClick: function handlePillClick(event) {

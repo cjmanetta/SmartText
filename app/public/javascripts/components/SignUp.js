@@ -44,6 +44,7 @@ var SignUp = React.createClass({
         .catch(function(serverData){
           console.log('failed authentication');
           console.log(serverData);
+          debugger
         });
   },
   handlePillClick: function(event){

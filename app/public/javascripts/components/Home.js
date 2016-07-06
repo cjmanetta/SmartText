@@ -9,9 +9,11 @@ var SignUp = require("./SignUp");
 var Body = React.createClass({
   render: function() {
     return (
+    	<div>
+      <Header />
       <div id="main" className="container pt150px">
-        <Header />
         <SignUp />
+      </div>
       </div>
     );
   },
