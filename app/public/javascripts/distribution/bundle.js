@@ -25559,7 +25559,7 @@
 	    return React.createElement(
 	      'div',
 	      { id: 'studentMain', className: 'container pt150px' },
-	      React.createElement(Header, { student: this.state.student }),
+	      React.createElement(Header, { username: this.state.student }),
 	      React.createElement(
 	        'div',
 	        { className: 'row' },

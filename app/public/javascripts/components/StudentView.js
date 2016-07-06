@@ -284,7 +284,7 @@ var StudentView = React.createClass({
   render: function() {
     return (
       <div id="studentMain" className="container pt150px">
-        <Header student={this.state.student} />
+        <Header username={this.state.student} />
         <div className="row">
           <div className="col-xs-12 col-sm-8">
             <MainText article={this.state.article}
