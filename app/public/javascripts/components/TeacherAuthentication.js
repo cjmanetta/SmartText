@@ -9,7 +9,7 @@ var TeacherAuthentication = React.createClass({
           <li role="presentation"><a href="#" onClick={ this.props.pillClick }>Students</a></li>
           <li role="presentation" className="active"><a href="#" onClick={ this.props.pillClick }>Teachers</a></li>
         </ul>
-        <form id="teacherLoginForm" className="col-sm-4" action="/teachers/login" method="post" onSubmit={this.submit}>
+        <form id="teacherLoginForm" className="col-sm-4" action="/teachers/login" method="post" onSubmit={this.props.submit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input type="text" className="form-control" name="username" id="username" placeholder="SuzyQ86" />
