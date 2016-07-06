@@ -27933,7 +27933,7 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
-
+	    console.log("in here");
 	    Call.call(action, method, data).then((function (serverData) {
 	      debugger;
 	      if (serverData.teacher === null || serverData.student === null) {
@@ -28111,7 +28111,7 @@
 	      ),
 	      React.createElement(
 	        "form",
-	        { id: "teacherLoginForm", className: "col-sm-4", action: "/teachers/login", method: "post", onSubmit: this.submit },
+	        { id: "teacherLoginForm", className: "col-sm-4", action: "/teachers/login", method: "post", onSubmit: this.props.submit },
 	        React.createElement(
 	          "div",
 	          { className: "form-group" },
