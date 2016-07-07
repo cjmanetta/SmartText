@@ -31,7 +31,7 @@ var Header = React.createClass({
             <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">Lessons</Link>
           </form>
       logout = <div className="logout-container">
-            <Link to="/" className="btn btn-xs btn-warning outline" role="group">logout</Link>
+            <Link to="/" className="btn btn-sm btn-warning outline" role="group">logout</Link>
           </div>
       logo = <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
     } else if (student) {

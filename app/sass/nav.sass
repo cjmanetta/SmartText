@@ -1,31 +1,29 @@
 $triangle: 15px
 $blank-border: $triangle solid rgba(0,0,0,0)
+$warning: #f26d6d
 
-=flexbox($direction, $align: "center", $justify: "center")
+=flexbox($dir: "row", $align: "center", $justify: "center")
   display: flex
-  flex-direction: #{$direction}
+  flex-direction: #{$dir}
   align-items: #{$align}
   justify-content: #{$justify}
 
 
 .dashboard-nav
+  +flexbox($justify: space-between)
   height: 100px
-  display: flex
-  justify-content: space-between
-  background:
-    color: $trans-gray
+  background-color: $trans-gray
   padding-left: 10px
   div
     color: $dark-gray
 
 .logo-container
-  +flexbox(column, initial, space-between)
+  +flexbox($dir: column, $align: initial, $justify: space-between)
   width: 25%
   h3
-    align-self: center
     position: relative
     top: -10px
-  // @media (min-width: 700px)
+    left: 30%
 
 
 .logo
@@ -72,4 +70,19 @@ $blank-border: $triangle solid rgba(0,0,0,0)
     color: $dark-gray
     &:after
       transform: translateY(-14px)
+
+.logout-container
+  width: 10%
+  .btn
+    background-color: white
+    color: $warning
+    border-color: $warning
+    &:hover
+      background-color: white
+      color: lighten($warning, 5%)
+      border-color: lighten($warning, 5%)
+    &:active
+      background-color: white
+      color: darken($warning, 20%)
+      border-color: darken($warning, 20%)
 

@@ -26014,7 +26014,7 @@
 	        { className: 'logout-container' },
 	        React.createElement(
 	          Link,
-	          { to: '/', className: 'btn btn-xs btn-warning outline', role: 'group' },
+	          { to: '/', className: 'btn btn-sm btn-warning outline', role: 'group' },
 	          'logout'
 	        )
 	      );
