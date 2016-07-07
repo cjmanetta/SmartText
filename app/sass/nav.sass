@@ -1,3 +1,13 @@
+$triangle: 15px
+$blank-border: $triangle solid rgba(0,0,0,0)
+
+=flexbox($direction, $align: "center", $justify: "center")
+  display: flex
+  flex-direction: #{$direction}
+  align-items: #{$align}
+  justify-content: #{$justify}
+
+
 .dashboard-nav
   height: 100px
   display: flex
@@ -9,13 +19,21 @@
     color: $dark-gray
 
 .logo-container
+  +flexbox(column, initial, space-between)
   width: 25%
+  h3
+    align-self: center
+    position: relative
+    top: -10px
+  // @media (min-width: 700px)
+
 
 .logo
   background: url("../images/st_logo_blue.svg") no-repeat
-  width: 80%
+  width: 100%
   height: 50px
 
+    
 
 
 .dashboard-links
@@ -24,35 +42,34 @@
   justify-content: space-around
   align-items: stretch
   a
+    color: $blue
     text-decoration: none
     width: 100%
     text-align: center
     display: flex
     flex-direction: column
     justify-content: center
-    color: $dark-gray
-    transition: 500ms ease-in-out
+    transition: color 500ms ease-in-out
+    padding-top: 25px
     &:hover
-      transform: translateY(2px)
-      transition: 500ms ease-in-out
-  //   &:after
-  //     transform: scaleY(0)
-  //     transition: 300ms ease-in-out
-  //     transform-origin: bottom
-  //     content: ""
-  //     height: 0px
-  //     width: 87%
-  //     box-shadow: 15px 0px 0px 15px white
-  //     position: relative
-  //     bottom: -36px
-  // a.active 
-  //   &:after   
-  //     transform: scaleY(1)
-  // .logout-container
-  //   display: flex
-  //   flex-direction: column
-  //   justify-content: center
-  //   // width: 100%
-  //   a
-  //     width: initial
+      color: $dark-gray 
+    &:after
+      width: 0px
+      height: 0px
+      content: ''
+      border:
+        right: $blank-border
+        left: $blank-border
+        bottom: $triangle solid white
+        top: $blank-border
+      position: relative
+      transition: transform 500ms ease-in-out
+      left: 42%
+      top: 26px
+
+
+  a.active
+    color: $dark-gray
+    &:after
+      transform: translateY(-14px)
 

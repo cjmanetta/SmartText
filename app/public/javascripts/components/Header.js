@@ -2,21 +2,6 @@ var React = require("react");
 var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
-// (function(){ 
-//   addLinkListener();
-// })();
-
-function addLinkListener() {
-  var links = document.querySelector('.dashboard')
-  links.addEventListener('click', handleLinkClick)
-}
-
-function handleLinkClick() {
-  var active = document.querySelector('.active')
-  active.classList.remove('active')
-  event.target.classList.add('active')
-}
-
 var Header = React.createClass({
 
   mixins: [
@@ -36,10 +21,9 @@ var Header = React.createClass({
     var logo = null
     var logout = null
 
-    // addEventListener();
 
     if (teacher) {
-      username = <p className="">{teacher.first_name}</p>
+      username = <h3 className="">{teacher.first_name}</h3>
       dashboardLinks =
           <form className="dashboard-links">
             <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">Dashboard</Link>
@@ -54,7 +38,7 @@ var Header = React.createClass({
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
       logo = <Link to='students' className="navbar-brand" params={{id: student._id }}><div className="logo"></div></Link>
     } else {
-      logo = <Link to='/' className="navbar-brand"><div className="logo"></div></Link>
+      logo = <Link to='/'><div className="logo"></div></Link>
     }
 
     return (

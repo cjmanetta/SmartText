@@ -25967,21 +25967,6 @@
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
 
-	// (function(){
-	//   addLinkListener();
-	// })();
-
-	function addLinkListener() {
-	  var links = document.querySelector('.dashboard');
-	  links.addEventListener('click', handleLinkClick);
-	}
-
-	function handleLinkClick() {
-	  var active = document.querySelector('.active');
-	  active.classList.remove('active');
-	  event.target.classList.add('active');
-	}
-
 	var Header = React.createClass({
 	  displayName: 'Header',
 
@@ -25999,11 +25984,9 @@
 	    var logo = null;
 	    var logout = null;
 
-	    // addEventListener();
-
 	    if (teacher) {
 	      username = React.createElement(
-	        'p',
+	        'h3',
 	        { className: '' },
 	        teacher.first_name
 	      );
@@ -26054,7 +26037,7 @@
 	    } else {
 	      logo = React.createElement(
 	        Link,
-	        { to: '/', className: 'navbar-brand' },
+	        { to: '/' },
 	        React.createElement('div', { className: 'logo' })
 	      );
 	    }
@@ -27898,7 +27881,6 @@
 	});
 
 	module.exports = Body;
-	//<Header />
 
 /***/ },
 /* 219 */
