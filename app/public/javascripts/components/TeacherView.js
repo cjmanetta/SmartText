@@ -3,6 +3,7 @@ var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler, Link } = Router;
 
 var Header = require("./Header");
+var TeacherHome = require("./TeacherHome");
 var LessonPanel = require("./LessonPanel");
 var Call = require('../call');
 
@@ -19,16 +20,19 @@ var TeacherView = React.createClass({
     }
   },
   componentDidMount: function() {
+    this.getTeacher();
+  },
+  getTeacher: function() {
     var action = '/teachers/' + this.props.params.id;
     var method = 'get';
 
     Call.call(action, method)
         .then(function(serverData){
-          this.getActiveLesson(serverData.teacher);
-          this.getLessonsList(serverData.teacher);
           this.setState({
             teacher: serverData.teacher
           });
+          this.getActiveLesson(this.state.teacher);
+          this.getLessonsList(this.state.teacher);
         }.bind(this))
         .catch(function(serverData){
           console.log('There was an error getting the teacher')
@@ -167,6 +171,7 @@ var TeacherView = React.createClass({
     return (
       <div>
         <Header teacher={this.state.teacher} activeLesson={this.state.activeLesson}/>
+        <TeacherHome teacher={this.state.teacher} />
           <RouteHandler teacher={this.state.teacher}
                         update={this.handleUpdateTeacher}
                         activeLesson={this.state.activeLesson}

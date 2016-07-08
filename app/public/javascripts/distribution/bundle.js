@@ -26014,8 +26014,8 @@
 	        { className: 'logout-container' },
 	        React.createElement(
 	          Link,
-	          { to: '/', className: 'btn btn-sm btn-warning outline', role: 'group' },
-	          'logout'
+	          { to: '/', className: '', role: 'group' },
+	          React.createElement('i', { className: 'glyphicon glyphicon-log-out' })
 	        )
 	      );
 	      logo = React.createElement(
@@ -26073,6 +26073,7 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(206);
+	var TeacherHome = __webpack_require__(222);
 	var LessonPanel = __webpack_require__(208);
 	var Call = __webpack_require__(201);
 
@@ -26090,15 +26091,18 @@
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
+	    this.getTeacher();
+	  },
+	  getTeacher: function getTeacher() {
 	    var action = '/teachers/' + this.props.params.id;
 	    var method = 'get';
 
 	    Call.call(action, method).then((function (serverData) {
-	      this.getActiveLesson(serverData.teacher);
-	      this.getLessonsList(serverData.teacher);
 	      this.setState({
 	        teacher: serverData.teacher
 	      });
+	      this.getActiveLesson(this.state.teacher);
+	      this.getLessonsList(this.state.teacher);
 	    }).bind(this))["catch"](function (serverData) {
 	      console.log('There was an error getting the teacher');
 	      console.log(serverData);
@@ -26215,6 +26219,7 @@
 	      "div",
 	      null,
 	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
+	      React.createElement(TeacherHome, { teacher: this.state.teacher }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -27772,7 +27777,6 @@
 	    }
 	  },
 	  addStudent: function addStudent(data) {
-	    debugger;
 	    var student = this.findStudent(data.student);
 	    if (student === null && data.teacher_id === this.props.teacher._id) {
 	      var newStudents = this.state.students.concat(data.student);
@@ -27917,7 +27921,6 @@
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
 	    console.log("in here");
 	    Call.call(action, method, data).then((function (serverData) {
-	      debugger;
 	      if (serverData.teacher === null || serverData.student === null) {
 	        this.setState({
 	          error: true
@@ -27930,7 +27933,6 @@
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('failed authentication');
 	      console.log(serverData);
-	      debugger;
 	    });
 	  },
 	  handlePillClick: function handlePillClick(event) {
@@ -28175,6 +28177,47 @@
 	});
 
 	module.exports = TeacherAuthentication;
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var TeacherHome = React.createClass({
+		displayName: "TeacherHome",
+
+		getKlassLength: function getKlassLength() {
+			if (this.props.teacher.klasses) {
+				return this.props.teacher.klasses.length;
+			} else {
+				return 0;
+			}
+		},
+
+		render: function render() {
+			var klasses = this.getKlassLength();
+
+			return React.createElement(
+				"div",
+				null,
+				this.props.teacher.first_name,
+				" teacher has ",
+				klasses,
+				" class"
+			);
+		}
+
+	});
+
+	module.exports = TeacherHome;
 
 /***/ }
 /******/ ]);

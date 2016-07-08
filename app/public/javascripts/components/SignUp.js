@@ -29,7 +29,6 @@ var SignUp = React.createClass({
     console.log("in here")
     Call.call(action, method, data)
         .then(function(serverData){
-          debugger
           if(serverData.teacher === null || serverData.student === null){
             this.setState({
               error: true
@@ -44,7 +43,6 @@ var SignUp = React.createClass({
         .catch(function(serverData){
           console.log('failed authentication');
           console.log(serverData);
-          debugger
         });
   },
   handlePillClick: function(event){

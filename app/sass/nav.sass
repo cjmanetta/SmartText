@@ -9,6 +9,7 @@ $warning: #f26d6d
   justify-content: #{$justify}
 
 
+
 .dashboard-nav
   +flexbox($justify: space-between)
   height: 100px
@@ -30,6 +31,9 @@ $warning: #f26d6d
   background: url("../images/st_logo_blue.svg") no-repeat
   width: 100%
   height: 50px
+  // @media (max-width: 480px)
+  //   width: 120px
+
 
     
 
@@ -73,6 +77,11 @@ $warning: #f26d6d
 
 .logout-container
   width: 10%
+  i
+    color: lighten($dark-gray, 10%)
+    font-size: 1.2em
+    &:hover
+      color: lighten($dark-gray, 20%)
   .btn
     background-color: white
     color: $warning

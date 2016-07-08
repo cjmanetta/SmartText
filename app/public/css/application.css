@@ -578,6 +578,11 @@ i:active, i:hover {
 
 .logout-container {
   width: 10%; }
+  .logout-container i {
+    color: dimgray;
+    font-size: 1.2em; }
+    .logout-container i:hover {
+      color: #828282; }
   .logout-container .btn {
     background-color: white;
     color: #f26d6d;
