@@ -16,9 +16,12 @@ var TeacherHome = React.createClass({
 		
 
 		return (
-			<div>
-				{this.props.teacher.first_name} teacher has {klasses} class
-			</div>
+			<div className="wrapper">
+        <div className="sidebar"></div>
+        <div className="dashboard-container">
+					{this.props.teacher.first_name} teacher has {klasses} class
+        </div>
+      </div>
 		);
 	}
 
