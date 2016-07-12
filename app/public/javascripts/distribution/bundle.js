@@ -57,11 +57,11 @@
 
 	var StudentView = __webpack_require__(200);
 	var TeacherView = __webpack_require__(207);
-	var StudentPanel = __webpack_require__(212);
-	var LessonPanel = __webpack_require__(208);
-	var ReviewPanel = __webpack_require__(216);
-	var Grid = __webpack_require__(217);
-	var Home = __webpack_require__(218);
+	var StudentPanel = __webpack_require__(213);
+	var LessonPanel = __webpack_require__(209);
+	var ReviewPanel = __webpack_require__(217);
+	var Grid = __webpack_require__(218);
+	var Home = __webpack_require__(219);
 	var Header = __webpack_require__(206);
 	var Call = __webpack_require__(201);
 
@@ -26073,8 +26073,8 @@
 	var Link = Router.Link;
 
 	var Header = __webpack_require__(206);
-	var TeacherHome = __webpack_require__(222);
-	var LessonPanel = __webpack_require__(208);
+	var TeacherHome = __webpack_require__(208);
+	var LessonPanel = __webpack_require__(209);
 	var Call = __webpack_require__(201);
 
 	var TeacherView = React.createClass({
@@ -26242,6 +26242,52 @@
 /* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	var React = __webpack_require__(2);
+	var Router = __webpack_require__(158);
+	var Route = Router.Route;
+	var DefaultRoute = Router.DefaultRoute;
+	var RouteHandler = Router.RouteHandler;
+	var Link = Router.Link;
+
+	var TeacherHome = React.createClass({
+		displayName: "TeacherHome",
+
+		getKlassLength: function getKlassLength() {
+			if (this.props.teacher.klasses) {
+				return this.props.teacher.klasses.length;
+			} else {
+				return 0;
+			}
+		},
+
+		render: function render() {
+			var klasses = this.getKlassLength();
+
+			return React.createElement(
+				"div",
+				{ className: "wrapper" },
+				React.createElement("div", { className: "sidebar" }),
+				React.createElement(
+					"div",
+					{ className: "dashboard-container" },
+					this.props.teacher.first_name,
+					" teacher has ",
+					klasses,
+					" class"
+				)
+			);
+		}
+
+	});
+
+	module.exports = TeacherHome;
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	var React = __webpack_require__(2);
@@ -26253,8 +26299,8 @@
 
 	var Call = __webpack_require__(201);
 
-	var NewLesson = __webpack_require__(209);
-	var LessonBox = __webpack_require__(210);
+	var NewLesson = __webpack_require__(210);
+	var LessonBox = __webpack_require__(211);
 	var MainText = __webpack_require__(205);
 
 	var LessonPanel = React.createClass({
@@ -26628,7 +26674,7 @@
 	module.exports = LessonPanel;
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26709,13 +26755,13 @@
 	module.exports = NewLesson;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var EditLesson = __webpack_require__(211);
+	var EditLesson = __webpack_require__(212);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26837,7 +26883,7 @@
 	module.exports = LessonBox;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26913,13 +26959,13 @@
 	module.exports = EditLesson;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(2);
-	var KlassBox = __webpack_require__(213);
+	var KlassBox = __webpack_require__(214);
 	var Call = __webpack_require__(201);
 
 	var StudentPanel = React.createClass({
@@ -27092,13 +27138,13 @@
 	module.exports = StudentPanel;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentList = __webpack_require__(214);
+	var StudentList = __webpack_require__(215);
 
 	var KlassBox = React.createClass({
 	  displayName: 'KlassBox',
@@ -27255,13 +27301,13 @@
 	module.exports = KlassBox;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var StudentBox = __webpack_require__(215);
+	var StudentBox = __webpack_require__(216);
 
 	var StudentList = React.createClass({
 	  displayName: 'StudentList',
@@ -27412,7 +27458,7 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27543,7 +27589,7 @@
 	module.exports = StudentBox;
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27700,7 +27746,7 @@
 	module.exports = ReviewPanel;
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27855,7 +27901,7 @@
 	module.exports = Grid;
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27865,7 +27911,7 @@
 	//a new component. Save it in this file with capital
 	//file names to show that it is a react file
 	var Header = __webpack_require__(206);
-	var SignUp = __webpack_require__(219);
+	var SignUp = __webpack_require__(220);
 
 	var Body = React.createClass({
 	  displayName: "Body",
@@ -27887,16 +27933,16 @@
 	module.exports = Body;
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var Router = __webpack_require__(158);
-	var AuthError = __webpack_require__(220);
+	var AuthError = __webpack_require__(221);
 	var Call = __webpack_require__(201);
-	var TeacherAuthentication = __webpack_require__(221);
+	var TeacherAuthentication = __webpack_require__(222);
 
 	var SignUp = React.createClass({
 	  displayName: 'SignUp',
@@ -28030,7 +28076,7 @@
 	module.exports = SignUp;
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28057,7 +28103,7 @@
 	module.exports = AuthError;
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28177,47 +28223,6 @@
 	});
 
 	module.exports = TeacherAuthentication;
-
-/***/ },
-/* 222 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(2);
-	var Router = __webpack_require__(158);
-	var Route = Router.Route;
-	var DefaultRoute = Router.DefaultRoute;
-	var RouteHandler = Router.RouteHandler;
-	var Link = Router.Link;
-
-	var TeacherHome = React.createClass({
-		displayName: "TeacherHome",
-
-		getKlassLength: function getKlassLength() {
-			if (this.props.teacher.klasses) {
-				return this.props.teacher.klasses.length;
-			} else {
-				return 0;
-			}
-		},
-
-		render: function render() {
-			var klasses = this.getKlassLength();
-
-			return React.createElement(
-				"div",
-				null,
-				this.props.teacher.first_name,
-				" teacher has ",
-				klasses,
-				" class"
-			);
-		}
-
-	});
-
-	module.exports = TeacherHome;
 
 /***/ }
 /******/ ]);
