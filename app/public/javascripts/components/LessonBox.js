@@ -28,7 +28,7 @@ var LessonBox = React.createClass({
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
           <div className="panel-heading">
-            <p className="panel-title">{ this.props.lesson.title }<span><a onClick={this.editClick}>
+            <p className="panel-title">{ this.props.lesson.title }   <span><a onClick={this.editClick}>
           <i className="glyphicon glyphicon-pencil"></i></a></span><span><a onClick={this.deleteClick}>
           <i className="glyphicon glyphicon-trash"></i></a></span></p>
             <p>{ this.props.lesson.date }</p>

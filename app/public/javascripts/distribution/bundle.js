@@ -57,6 +57,7 @@
 
 	var StudentView = __webpack_require__(200);
 	var TeacherView = __webpack_require__(207);
+	var TeacherHome = __webpack_require__(208);
 	var StudentPanel = __webpack_require__(213);
 	var LessonPanel = __webpack_require__(209);
 	var ReviewPanel = __webpack_require__(217);
@@ -76,6 +77,7 @@
 	  React.createElement(
 	    Route,
 	    { path: 'teachers/:id', name: 'teachers', handler: TeacherView },
+	    React.createElement(Route, { path: 'teacher-home', name: 'teacherHome', handler: TeacherHome }),
 	    React.createElement(Route, { path: 'student-panel', name: 'studentPanel', handler: StudentPanel }),
 	    React.createElement(Route, { path: 'lesson-panel', name: 'lessonPanel', handler: LessonPanel }),
 	    React.createElement(Route, { path: 'grid', name: 'grid', handler: Grid }),
@@ -26219,7 +26221,6 @@
 	      "div",
 	      null,
 	      React.createElement(Header, { teacher: this.state.teacher, activeLesson: this.state.activeLesson }),
-	      React.createElement(TeacherHome, { teacher: this.state.teacher }),
 	      React.createElement(RouteHandler, { teacher: this.state.teacher,
 	        update: this.handleUpdateTeacher,
 	        activeLesson: this.state.activeLesson,
@@ -26231,7 +26232,9 @@
 	        newLesson: this.newLesson,
 	        getLessonsList: this.handleGetLessonsList,
 	        getActiveLesson: this.handleGetActiveLesson,
-	        updateAnswers: this.handleUpdateAnswers })
+	        updateAnswers: this.handleUpdateAnswers,
+	        getArticle: this.getArticle
+	      })
 	    );
 	  }
 	});
@@ -26252,33 +26255,135 @@
 	var Link = Router.Link;
 
 	var TeacherHome = React.createClass({
-		displayName: "TeacherHome",
+	  displayName: "TeacherHome",
 
-		getKlassLength: function getKlassLength() {
-			if (this.props.teacher.klasses) {
-				return this.props.teacher.klasses.length;
-			} else {
-				return 0;
-			}
-		},
+	  mixins: [Router.Navigation, Router.State],
 
-		render: function render() {
-			var klasses = this.getKlassLength();
-
-			return React.createElement(
-				"div",
-				{ className: "wrapper" },
-				React.createElement("div", { className: "sidebar" }),
-				React.createElement(
-					"div",
-					{ className: "dashboard-container" },
-					this.props.teacher.first_name,
-					" teacher has ",
-					klasses,
-					" class"
-				)
-			);
-		}
+	  getPanelInfo: function getPanelInfo() {
+	    var klassPanel = this.refs.klassPanel;
+	    if (this.props.lessons[0]) {
+	      var lesson = this.props.lessons[0];
+	      var date = new Date(lesson.date);
+	      this.props.getArticle(lesson.article_id);
+	      var articleTitle = "";
+	      if (this.props.article) {
+	        articleTitle = this.props.article.title;
+	      }
+	      return React.createElement(
+	        "div",
+	        { className: "info" },
+	        React.createElement(
+	          "h4",
+	          null,
+	          lesson.title.toUpperCase()
+	        ),
+	        React.createElement(
+	          "p",
+	          { className: "date" },
+	          React.createElement(
+	            "small",
+	            null,
+	            date.getMonth() + 1,
+	            "/",
+	            date.getDay(),
+	            "/",
+	            date.getYear()
+	          )
+	        ),
+	        React.createElement(
+	          "p",
+	          { "class": "descript" },
+	          articleTitle
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        "div",
+	        { className: "info" },
+	        React.createElement(
+	          "h3",
+	          null,
+	          "CREATE A LESSON"
+	        )
+	      );
+	    }
+	  },
+	  render: function render() {
+	    var panelInfo = this.getPanelInfo();
+	    return React.createElement(
+	      "div",
+	      { className: "wrapper" },
+	      React.createElement("div", { className: "sidebar" }),
+	      React.createElement(
+	        "div",
+	        { className: "dashboard-container" },
+	        React.createElement(
+	          "div",
+	          { className: "panel-row" },
+	          React.createElement(
+	            Link,
+	            { className: "custom-panel", to: "lessonPanel", params: { id: this.props.teacher._id } },
+	            React.createElement(
+	              "div",
+	              { className: "label" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "LESSONS"
+	              )
+	            ),
+	            panelInfo
+	          ),
+	          React.createElement(
+	            Link,
+	            { id: "yellow", ref: "klassPanel", className: "custom-panel", to: "lessonPanel", params: { id: this.props.teacher._id } },
+	            React.createElement(
+	              "div",
+	              { className: "label" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "CLASSES"
+	              )
+	            ),
+	            panelInfo
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "panel-row" },
+	          React.createElement(
+	            Link,
+	            { className: "custom-panel", to: "lessonPanel", params: { id: this.props.teacher._id } },
+	            React.createElement(
+	              "div",
+	              { className: "label" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "LESSONS"
+	              )
+	            ),
+	            panelInfo
+	          ),
+	          React.createElement(
+	            Link,
+	            { className: "custom-panel", to: "teacherHome", params: { id: this.props.teacher._id } },
+	            React.createElement(
+	              "div",
+	              { className: "label" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "REPORTS"
+	              )
+	            ),
+	            panelInfo
+	          )
+	        )
+	      )
+	    );
+	  }
 
 	});
 
@@ -26799,6 +26904,7 @@
 	            'p',
 	            { className: 'panel-title' },
 	            this.props.lesson.title,
+	            '   ',
 	            React.createElement(
 	              'span',
 	              null,

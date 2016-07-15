@@ -1,0 +1,62 @@
+=colorshift($color, $info: $color)
+  background-color: $color
+  h4, h3
+  	color: $info
+
+.panel-row
+	@media (min-width: $small)
+		+flexbox($justify: space-around, $align: flex-start)
+
+
+.custom-panel
+	+flexbox($justify: space-around)
+	width: 375px
+	height: 100px
+	color: white
+	background-color: $blue
+	border-radius: 3px
+	cursor: pointer
+	margin-bottom: 50px
+	h3, h4, .label, .date
+		letter-spacing: 0.5px
+	p
+		color: $dark-gray
+	&:hover
+		text-decoration: none
+
+	.info, .label
+		transition: transform 600ms ease-in-out
+	&:hover .info
+		transform: translateX(10px)
+	&:hover .label
+		transform: translateX(5px)
+
+	.label
+		+flexbox
+		width: 33%
+
+	.info
+		+flexbox($dir: column, $justify: space-around, $align: flex-start)
+		width: 100%
+		height: 100%
+		border-radius: 0px 3px 3px 0px
+		padding-left: 18px
+
+
+		background: 
+			color: $lt-gray
+			size: 30%
+			position: 95% 54%
+			repeat: no-repeat
+			image: linear-gradient(210deg, $lt-gray 24%, transparent 24%), linear-gradient(330deg, $lt-gray 24%, transparent 24%), linear-gradient(to right, $lt-gray 62%, transparent 62%), linear-gradient(30deg, transparent 68%, $gray 68%, $gray 82%, transparent 82%), linear-gradient(-210deg, transparent 68%, $gray 68%, $gray 82%, transparent 82%)
+		h4 
+			color: $blue
+		h3, h4, p
+			margin-left: 7px
+		.date
+			margin-top: -10px
+		.descript
+			margin-top: -10px
+
+#yellow
+	+colorshift($logo-yellow, $dark-gray)

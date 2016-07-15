@@ -5,6 +5,7 @@ var { Route, DefaultRoute, RouteHandler, Link, State } = Router;
 
 var StudentView = require("./components/StudentView");
 var TeacherView = require("./components/TeacherView");
+var TeacherHome = require("./components/TeacherHome");
 var StudentPanel = require("./components/StudentPanel");
 var LessonPanel = require("./components/LessonPanel");
 var ReviewPanel = require("./components/ReviewPanel");
@@ -23,6 +24,7 @@ var routes = (
     <Route path="/"         name="home"     handler={Home} />
     <Route path="/students/:id" name="students" handler={StudentView}/>
     <Route path="teachers/:id" name="teachers" handler={TeacherView}>
+      <Route path="teacher-home" name="teacherHome" handler={TeacherHome}/>
       <Route path="student-panel" name="studentPanel" handler={StudentPanel}/>
       <Route path="lesson-panel" name="lessonPanel" handler={LessonPanel} />
       <Route path="grid" name="grid" handler={Grid} />
