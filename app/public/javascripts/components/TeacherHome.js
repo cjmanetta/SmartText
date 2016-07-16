@@ -9,7 +9,7 @@ var TeacherHome = React.createClass({
   ],
 
   getPanelInfo: function(){
-    var klassPanel = this.refs.klassPanel
+    var klassPanel = this.refs.klassPanelin
     if(this.props.lessons[0]) {
       var lesson = this.props.lessons[0]
       var date = new Date(lesson.date)
@@ -46,21 +46,23 @@ var TeacherHome = React.createClass({
             <div className="label">
               <h4>CLASSES</h4>
             </div>
-            {panelInfo}
+            <div className="info">
+              <h4>4th PERIOD</h4>
+              <p className="date"><small>11:30 - 12:30</small></p>
+              <p class="descript">10 STUDENTS</p>
+            </div>
           </Link>
         </div>
         <div className="panel-row">
-          <Link className="custom-panel" to="lessonPanel" params={{id: this.props.teacher._id }}>
-            <div className="label">
-              <h4>LESSONS</h4>
-            </div>
-            {panelInfo}
-          </Link>
-          <Link className="custom-panel" to="teacherHome" params={{id: this.props.teacher._id }}>
+          <Link id="green" className="custom-panel" to="teacherHome" params={{id: this.props.teacher._id }}>
             <div className="label">
               <h4>REPORTS</h4>
             </div>
-            {panelInfo}
+            <div className="info">
+              <h4>PREVIOUS LESSON</h4>
+              <p className="date"><small>15 STUDENTS on 11/1/16</small></p>
+              <p class="descript">ROMEO & JULIET</p>
+            </div>
           </Link>
         </div>
           

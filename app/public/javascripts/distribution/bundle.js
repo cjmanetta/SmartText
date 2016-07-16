@@ -25979,7 +25979,9 @@
 	    event.target.classList.add('active');
 	  },
 	  render: function render() {
+
 	    var teacher = this.props.teacher;
+	    var teacherName = "";
 	    var student = this.props.student;
 	    var username = null;
 	    var dashboardLinks = null;
@@ -25987,28 +25989,37 @@
 	    var logout = null;
 
 	    if (teacher) {
+	      var teacherName = "";
+	      if (teacher.first_name) {
+	        teacherName = teacher.first_name.toUpperCase();
+	      }
 	      username = React.createElement(
-	        'h3',
+	        'h4',
 	        { className: '' },
-	        teacher.first_name
+	        teacherName
 	      );
 	      dashboardLinks = React.createElement(
 	        'form',
 	        { className: 'dashboard-links' },
 	        React.createElement(
 	          Link,
+	          { to: 'teacherHome', disabled: this.props.activeLesson !== null, params: { id: teacher._id }, onClick: this.handleNavClick, role: 'group' },
+	          'HOME'
+	        ),
+	        React.createElement(
+	          Link,
 	          { to: 'grid', disabled: this.props.activeLesson !== null, params: { id: teacher._id }, onClick: this.handleNavClick, role: 'group' },
-	          'Dashboard'
+	          'LIVE LESSON'
 	        ),
 	        React.createElement(
 	          Link,
 	          { to: 'studentPanel', params: { id: teacher._id }, className: '', role: 'group', onClick: this.handleNavClick },
-	          'Students'
+	          'CLASSES'
 	        ),
 	        React.createElement(
 	          Link,
 	          { to: 'lessonPanel', params: { id: teacher._id }, className: '', onClick: this.handleNavClick, role: 'group' },
-	          'Lessons'
+	          'LESSONS'
 	        )
 	      );
 	      logout = React.createElement(
@@ -26260,7 +26271,7 @@
 	  mixins: [Router.Navigation, Router.State],
 
 	  getPanelInfo: function getPanelInfo() {
-	    var klassPanel = this.refs.klassPanel;
+	    var klassPanel = this.refs.klassPanelin;
 	    if (this.props.lessons[0]) {
 	      var lesson = this.props.lessons[0];
 	      var date = new Date(lesson.date);
@@ -26346,7 +26357,29 @@
 	                "CLASSES"
 	              )
 	            ),
-	            panelInfo
+	            React.createElement(
+	              "div",
+	              { className: "info" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "4th PERIOD"
+	              ),
+	              React.createElement(
+	                "p",
+	                { className: "date" },
+	                React.createElement(
+	                  "small",
+	                  null,
+	                  "11:30 - 12:30"
+	                )
+	              ),
+	              React.createElement(
+	                "p",
+	                { "class": "descript" },
+	                "10 STUDENTS"
+	              )
+	            )
 	          )
 	        ),
 	        React.createElement(
@@ -26354,21 +26387,7 @@
 	          { className: "panel-row" },
 	          React.createElement(
 	            Link,
-	            { className: "custom-panel", to: "lessonPanel", params: { id: this.props.teacher._id } },
-	            React.createElement(
-	              "div",
-	              { className: "label" },
-	              React.createElement(
-	                "h4",
-	                null,
-	                "LESSONS"
-	              )
-	            ),
-	            panelInfo
-	          ),
-	          React.createElement(
-	            Link,
-	            { className: "custom-panel", to: "teacherHome", params: { id: this.props.teacher._id } },
+	            { id: "green", className: "custom-panel", to: "teacherHome", params: { id: this.props.teacher._id } },
 	            React.createElement(
 	              "div",
 	              { className: "label" },
@@ -26378,7 +26397,29 @@
 	                "REPORTS"
 	              )
 	            ),
-	            panelInfo
+	            React.createElement(
+	              "div",
+	              { className: "info" },
+	              React.createElement(
+	                "h4",
+	                null,
+	                "PREVIOUS LESSON"
+	              ),
+	              React.createElement(
+	                "p",
+	                { className: "date" },
+	                React.createElement(
+	                  "small",
+	                  null,
+	                  "15 STUDENTS on 11/1/16"
+	                )
+	              ),
+	              React.createElement(
+	                "p",
+	                { "class": "descript" },
+	                "ROMEO & JULIET"
+	              )
+	            )
 	          )
 	        )
 	      )
@@ -28071,6 +28112,7 @@
 	    var password = $(event.target).find('#password').val();
 	    var pin = $(event.target).find('#pin').val();
 	    var data = { username: username, first_name: first_name, last_name: last_name, password: password, pin: pin };
+	    var path = 'teachers';
 	    console.log("in here");
 	    Call.call(action, method, data).then((function (serverData) {
 	      if (serverData.teacher === null || serverData.student === null) {

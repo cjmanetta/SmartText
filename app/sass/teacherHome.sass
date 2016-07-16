@@ -1,7 +1,8 @@
 =colorshift($color, $info: $color)
   background-color: $color
-  h4, h3
-  	color: $info
+  .info
+  	h4, h3
+  		color: $info
 
 .panel-row
 	@media (min-width: $small)
@@ -10,7 +11,7 @@
 
 .custom-panel
 	+flexbox($justify: space-around)
-	width: 375px
+	width: 350px
 	height: 100px
 	color: white
 	background-color: $blue
@@ -60,3 +61,6 @@
 
 #yellow
 	+colorshift($logo-yellow, $dark-gray)
+
+#green
+	+colorshift($green)

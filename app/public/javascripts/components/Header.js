@@ -14,7 +14,9 @@ var Header = React.createClass({
     event.target.classList.add('active')
   },
   render: function(){
+    
     var teacher = this.props.teacher
+    var teacherName = ""
     var student = this.props.student
     var username = null
     var dashboardLinks = null
@@ -23,12 +25,17 @@ var Header = React.createClass({
 
 
     if (teacher) {
-      username = <h3 className="">{teacher.first_name}</h3>
+      var teacherName = ""
+      if(teacher.first_name) {
+        teacherName = teacher.first_name.toUpperCase()
+      }
+      username = <h4 className="">{teacherName}</h4>
       dashboardLinks =
           <form className="dashboard-links">
-            <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">Dashboard</Link>
-            <Link to="studentPanel" params={{id: teacher._id }} className="" role="group" onClick={this.handleNavClick}>Students</Link>
-            <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">Lessons</Link>
+            <Link to="teacherHome" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">HOME</Link>
+            <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">LIVE LESSON</Link>
+            <Link to="studentPanel" params={{id: teacher._id }} className="" role="group" onClick={this.handleNavClick}>CLASSES</Link>
+            <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">LESSONS</Link>
           </form>
       logout = <div className="logout-container">
             <Link to="/" className="" role="group"><i className="glyphicon glyphicon-log-out"></i></Link>

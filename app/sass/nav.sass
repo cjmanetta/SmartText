@@ -9,7 +9,7 @@
 .logo-container
   +flexbox($dir: column, $align: initial, $justify: space-between)
   width: 25%
-  h3
+  h4
     position: relative
     top: -10px
     left: 30%
@@ -19,6 +19,7 @@
   background: url("../images/st_logo_blue.svg") no-repeat
   width: 100%
   height: 50px
+  margin-top: -15px
   // @media (max-width: 480px)
   //   width: 120px
 
@@ -32,7 +33,7 @@
   justify-content: space-around
   align-items: stretch
   a
-    color: $blue
+    color: $dark-gray
     text-decoration: none
     width: 100%
     text-align: center
@@ -42,7 +43,7 @@
     transition: color 500ms ease-in-out
     padding-top: 25px
     &:hover
-      color: $dark-gray 
+      color: $blue 
     &:after
       width: 0px
       height: 0px
@@ -59,7 +60,7 @@
 
 
   a.active
-    color: $dark-gray
+    color: $blue
     &:after
       transform: translateY(-14px)
 

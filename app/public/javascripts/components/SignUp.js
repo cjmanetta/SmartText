@@ -26,6 +26,7 @@ var SignUp = React.createClass({
     var password = $(event.target).find('#password').val()
     var pin = $(event.target).find('#pin').val()
     var data = {username: username, first_name: first_name, last_name: last_name, password: password, pin: pin}
+    var path = 'teachers'
     console.log("in here")
     Call.call(action, method, data)
         .then(function(serverData){

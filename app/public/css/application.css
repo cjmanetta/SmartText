@@ -819,7 +819,7 @@ i:active, i:hover {
   align-items: initial;
   justify-content: space-between;
   width: 25%; }
-  .logo-container h3 {
+  .logo-container h4 {
     position: relative;
     top: -10px;
     left: 30%; }
@@ -827,7 +827,8 @@ i:active, i:hover {
 .logo {
   background: url("../images/st_logo_blue.svg") no-repeat;
   width: 100%;
-  height: 50px; }
+  height: 50px;
+  margin-top: -15px; }
 
 .dashboard-links {
   width: 75%;
@@ -835,7 +836,7 @@ i:active, i:hover {
   justify-content: space-around;
   align-items: stretch; }
   .dashboard-links a {
-    color: #32a6cc;
+    color: #919191;
     text-decoration: none;
     width: 100%;
     text-align: center;
@@ -845,7 +846,7 @@ i:active, i:hover {
     transition: color 500ms ease-in-out;
     padding-top: 25px; }
     .dashboard-links a:hover {
-      color: #919191; }
+      color: #32a6cc; }
     .dashboard-links a:after {
       width: 0px;
       height: 0px;
@@ -859,7 +860,7 @@ i:active, i:hover {
       left: 42%;
       top: 26px; }
   .dashboard-links a.active {
-    color: #919191; }
+    color: #32a6cc; }
     .dashboard-links a.active:after {
       transform: translateY(-14px); }
 
@@ -892,7 +893,7 @@ i:active, i:hover {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  width: 20%;
+  width: 25%;
   background-color: rgba(0, 0, 0, 0.05);
   position: relative; }
 
@@ -916,7 +917,7 @@ i:active, i:hover {
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  width: 375px;
+  width: 350px;
   height: 100px;
   color: white;
   background-color: #32a6cc;
@@ -966,5 +967,10 @@ i:active, i:hover {
 
 #yellow {
   background-color: #ede94c; }
-  #yellow h4, #yellow h3 {
+  #yellow .info h4, #yellow .info h3 {
     color: #919191; }
+
+#green {
+  background-color: #74dc74; }
+  #green .info h4, #green .info h3 {
+    color: #74dc74; }
