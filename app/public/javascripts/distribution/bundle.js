@@ -28122,7 +28122,7 @@
 	      } else if (serverData.student) {
 	        this.transitionTo('students', { id: serverData.student._id });
 	      } else {
-	        this.transitionTo('teachers', { id: serverData.teacher._id });
+	        this.transitionTo('teacherHome', { id: serverData.teacher._id });
 	      }
 	    }).bind(this))['catch'](function (serverData) {
 	      console.log('failed authentication');
