@@ -9,7 +9,6 @@ var TeacherHome = React.createClass({
   ],
 
   getPanelInfo: function(){
-    var klassPanel = this.refs.klassPanelin
     if(this.props.lessons[0]) {
       var lesson = this.props.lessons[0]
       var date = new Date(lesson.date)
@@ -29,11 +28,20 @@ var TeacherHome = React.createClass({
       return <div className="info"><h3>CREATE A LESSON</h3></div>
     }
   },
+  getActiveLesson: function() {
+    if(this.props.activeLesson)
+    return (
+    <Link to="grid" params={{id: this.props.teacher._id }} role="group" className="live-lesson">GO TO LIVE LESSON<span className="glyphicon glyphicon-chevron-right"></span></Link>
+    )
+  },
 	render: function(){
-    var panelInfo = this.getPanelInfo()
+    var panelInfo = this.getPanelInfo() 
+    var activeLesson = this.getActiveLesson()
 		return (
 			<div className="wrapper">
-        <div className="sidebar"></div>
+        <div className="sidebar">
+          {activeLesson}
+        </div>
         <div className="dashboard-container">
         <div className="panel-row">
           <Link className="custom-panel" to="lessonPanel" params={{id: this.props.teacher._id }}>

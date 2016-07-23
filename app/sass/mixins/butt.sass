@@ -1,0 +1,16 @@
+=butt($bground: $blue, $color: white, $trans: translateY(2px))
+  color: $color
+  background-color: $bground
+  height: 40px
+  cursor: pointer
+  border-radius: 3px
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  transition: transform 600ms ease-in-out, opacity 300ms ease-in-out
+  text-transform: uppercase
+  &:hover
+  	color: $color
+  	transform: $trans
+  	opacity: 0.9

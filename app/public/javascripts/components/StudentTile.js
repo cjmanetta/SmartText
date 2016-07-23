@@ -20,11 +20,11 @@ var StudentTile = React.createClass({
     var student = this.props.student
 
     if(student.color === "red"){
-      var colorClass = "b4pxsr"
+      var colorClass = "pink"
     } else if(student.color === "blue"){
-      var colorClass = "b4pxsb"
+      var colorClass = "blue"
     } else if(student.color === "green"){
-      var colorClass = "b4pxsg"
+      var colorClass = "green"
     }  else {
       var colorClass = "b2pxsbk"
     }

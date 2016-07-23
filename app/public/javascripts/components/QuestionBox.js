@@ -3,15 +3,13 @@ var React = require("react");
 var QuestionBox = React.createClass({
   render: function() {
     return (
-      <div id="questionBox">
-        <div className="panel panel-warning">
-          <div className="panel-heading">
-            <h3 className="panel-title">Question:</h3>
+      <div id="questionBox" className="question-panel">
+          <div className="label">
+            <h4>QUESTION :</h4>
           </div>
-          <div className="panel-body">
+          <div className="info">
             <p>{this.props.prompt}</p>
           </div>
-        </div>
       </div>
     );
   },

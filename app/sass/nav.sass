@@ -1,47 +1,34 @@
 .dashboard-nav
-  +flexbox($justify: space-between)
+  +flexbox($justify: space-between, $align: stretch)
   height: 100px
   background-color: $trans-gray
   padding-left: 10px
   div
-    color: $dark-gray
+    color: $md-gray
 
 .logo-container
-  +flexbox($dir: column, $align: initial, $justify: space-between)
-  width: 25%
-  h4
-    position: relative
-    top: -10px
-    left: 30%
+  +flexbox($dir: column, $justify: space-between)
+  width: 30%
 
 
 .logo
-  background: url("../images/st_logo_blue.svg") no-repeat
+  background: url("../images/st_logo_blue.svg") no-repeat center
   width: 100%
   height: 50px
-  margin-top: -15px
-  // @media (max-width: 480px)
-  //   width: 120px
-
-
-    
 
 
 .dashboard-links
+  +flexbox($justify: space-around, $align: stretch)
   width: 75%
-  display: flex
-  justify-content: space-around
-  align-items: stretch
   a
-    color: $dark-gray
+    +flexbox($dir: column, $align: stretch)
+    color: $md-gray
     text-decoration: none
     width: 100%
+    position: relative
+    top: 13px
     text-align: center
-    display: flex
-    flex-direction: column
-    justify-content: center
-    transition: color 500ms ease-in-out
-    padding-top: 25px
+    transition: color 300ms ease-in-out
     &:hover
       color: $blue 
     &:after
@@ -55,8 +42,10 @@
         top: $blank-border
       position: relative
       transition: transform 500ms ease-in-out
-      left: 42%
+      left: 38%
       top: 26px
+      @media(min-width: 970px)
+        left: 42%
 
 
   a.active
@@ -65,22 +54,13 @@
       transform: translateY(-14px)
 
 .logout-container
+  +flexbox($dir: column)
   width: 10%
   i
-    color: lighten($dark-gray, 10%)
+    color: $md-gray
     font-size: 1.2em
+    transition: color 300ms ease-in-out
     &:hover
-      color: lighten($dark-gray, 20%)
-  .btn
-    background-color: white
-    color: $warning
-    border-color: $warning
-    &:hover
-      background-color: white
-      color: lighten($warning, 5%)
-      border-color: lighten($warning, 5%)
-    &:active
-      background-color: white
-      color: darken($warning, 20%)
-      border-color: darken($warning, 20%)
+      color: lighten($md-gray, 10%)
+
 

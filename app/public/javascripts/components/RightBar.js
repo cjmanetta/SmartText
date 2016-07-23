@@ -11,9 +11,9 @@ var RightBar = React.createClass({
     }
 
     if (this.props.labelOne === "Display Question"){
-      var buttonColor = "btn btnxl pr btn-success"
+      var buttonColor = "display"
     } else {
-      var buttonColor = "btn btnxl pr btn-primary"
+      var buttonColor = "finish"
     }
     if (this.props.showAnswer && this.props.teacher !== null && this.props.teacher._id !== 0 && this.props.article.content !== undefined && this.props.question.green_start !== undefined){
       var student = {start: this.props.question.green_start, end: this.props.question.green_end, first_name: this.props.teacher.first_name, last_initial: this.props.teacher.last_name}
@@ -23,31 +23,17 @@ var RightBar = React.createClass({
     }
 
     return (
-      <div id="rightBar" className="sidebar-cheat">
-        <div className="row">
-          <div className="col-md-12">
-            <QuestionBox prompt={ prompt }/>
-          </div>
-          <div className="col-md-12">
-            {answer}
-          </div>
-        </div>
-        <div className="pa b0 h30 btns">
-          <div className="row cntr">
-            <div className="col-md-12">
-              <button className={buttonColor} onClick={this.props.actionOne}>
-                {this.props.labelOne}
-              </button>
+      <div id="rightBar" className="question-bar">
+          <QuestionBox prompt={ prompt }/>
+          {answer}
+          <div className="btn-container">
+            <div className={buttonColor} onClick={this.props.actionOne}>
+                  {this.props.labelOne}
+            </div>
+            <div className="finish" onClick={this.props.actionTwo}>
+              {this.props.labelTwo}
             </div>
           </div>
-          <div className="row cntr">
-            <div className="col-md-12">
-              <button className="btn btn-danger btnxl pr" onClick={this.props.actionTwo}>
-                {this.props.labelTwo}
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     );
   },

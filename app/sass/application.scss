@@ -2,6 +2,7 @@
 @import 'variables';
 
 @import "mixins/flexbox";
+@import "mixins/butt";
 
 @import "original";
 @import "buttons";
@@ -9,3 +10,4 @@
 @import "nav";
 @import "dashboardContainer";
 @import "teacherHome";
+@import "sideBar";

@@ -1,0 +1,57 @@
+.sidebar
+	+flexbox($dir: column, $justify: flex-start)
+	height: 100vh
+	width: 30%
+	padding:
+		left: 20px
+		right: 20px
+	background-color: $trans-gray
+
+.question-bar
+	+flexbox($dir: column, $justify: space-between, $align: stretch)
+	height: 85%
+
+	#clickable
+		max-height: 350px	
+		background-color: white
+
+	.btn-container
+		margin-top: 20px
+		+flexbox($dir: column, $justify: space-around, $align: stretch)
+		height: 120px
+
+	.display
+		+butt($bground: $green)
+	.finish
+		+butt($bground: $pink)
+
+	.question-panel
+		+flexbox($dir: column, $align: stretch, $justify: space-around)
+		background-color: $logo-yellow
+		border-radius: 3px
+		margin-bottom: 20px
+
+		.label	
+			color: $dark-gray
+			align-self: flex-start
+			padding-left: 15px
+
+		.info
+			background-color: white
+			color: $md-gray
+			width: 100%
+			height: 100%
+			border-radius: 0px 0px 3px 3px
+			padding: 15px
+
+
+
+.live-lesson
+	+butt($bground: $pink, $trans: translateX(5px))
+	width: 145px
+	margin-top: 10px
+	flex-direction: row
+	.glyphicon
+		position: relative
+		top: -1px
+		margin-left: 2px	

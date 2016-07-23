@@ -29,18 +29,17 @@ var Header = React.createClass({
       if(teacher.first_name) {
         teacherName = teacher.first_name.toUpperCase()
       }
-      username = <h4 className="">{teacherName}</h4>
+      username = <h4 className="">{teacherName}'S CLASSROOM</h4>
       dashboardLinks =
           <form className="dashboard-links">
             <Link to="teacherHome" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">HOME</Link>
-            <Link to="grid" disabled={this.props.activeLesson !== null} params={{id: teacher._id }} onClick={this.handleNavClick} role="group">LIVE LESSON</Link>
             <Link to="studentPanel" params={{id: teacher._id }} className="" role="group" onClick={this.handleNavClick}>CLASSES</Link>
             <Link to="lessonPanel" params={{id: teacher._id }} className="" onClick={this.handleNavClick} role="group">LESSONS</Link>
           </form>
       logout = <div className="logout-container">
             <Link to="/" className="" role="group"><i className="glyphicon glyphicon-log-out"></i></Link>
           </div>
-      logo = <Link to='lessonPanel' className="" params={{id: teacher._id }}><div className="logo"></div></Link>
+      logo = <Link to='lessonPanel' className="logo" params={{id: teacher._id }}></Link>
     } else if (student) {
       content = <p className="navbar-text navbar-left">{student.first_name}</p>
       logo = <Link to='students' className="navbar-brand" params={{id: student._id }}><div className="logo"></div></Link>

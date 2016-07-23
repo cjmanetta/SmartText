@@ -25640,9 +25640,9 @@
 	    }
 
 	    if (this.props.labelOne === "Display Question") {
-	      var buttonColor = "btn btnxl pr btn-success";
+	      var buttonColor = "display";
 	    } else {
-	      var buttonColor = "btn btnxl pr btn-primary";
+	      var buttonColor = "finish";
 	    }
 	    if (this.props.showAnswer && this.props.teacher !== null && this.props.teacher._id !== 0 && this.props.article.content !== undefined && this.props.question.green_start !== undefined) {
 	      var student = { start: this.props.question.green_start, end: this.props.question.green_end, first_name: this.props.teacher.first_name, last_initial: this.props.teacher.last_name };
@@ -25653,49 +25653,21 @@
 
 	    return React.createElement(
 	      "div",
-	      { id: "rightBar", className: "sidebar-cheat" },
+	      { id: "rightBar", className: "question-bar" },
+	      React.createElement(QuestionBox, { prompt: prompt }),
+	      answer,
 	      React.createElement(
 	        "div",
-	        { className: "row" },
+	        { className: "btn-container" },
 	        React.createElement(
 	          "div",
-	          { className: "col-md-12" },
-	          React.createElement(QuestionBox, { prompt: prompt })
+	          { className: buttonColor, onClick: this.props.actionOne },
+	          this.props.labelOne
 	        ),
 	        React.createElement(
 	          "div",
-	          { className: "col-md-12" },
-	          answer
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "pa b0 h30 btns" },
-	        React.createElement(
-	          "div",
-	          { className: "row cntr" },
-	          React.createElement(
-	            "div",
-	            { className: "col-md-12" },
-	            React.createElement(
-	              "button",
-	              { className: buttonColor, onClick: this.props.actionOne },
-	              this.props.labelOne
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "row cntr" },
-	          React.createElement(
-	            "div",
-	            { className: "col-md-12" },
-	            React.createElement(
-	              "button",
-	              { className: "btn btn-danger btnxl pr", onClick: this.props.actionTwo },
-	              this.props.labelTwo
-	            )
-	          )
+	          { className: "finish", onClick: this.props.actionTwo },
+	          this.props.labelTwo
 	        )
 	      )
 	    );
@@ -25718,27 +25690,23 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { id: "questionBox" },
+	      { id: "questionBox", className: "question-panel" },
 	      React.createElement(
 	        "div",
-	        { className: "panel panel-warning" },
+	        { className: "label" },
 	        React.createElement(
-	          "div",
-	          { className: "panel-heading" },
-	          React.createElement(
-	            "h3",
-	            { className: "panel-title" },
-	            "Question:"
-	          )
-	        ),
+	          "h4",
+	          null,
+	          "QUESTION :"
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "info" },
 	        React.createElement(
-	          "div",
-	          { className: "panel-body" },
-	          React.createElement(
-	            "p",
-	            null,
-	            this.props.prompt
-	          )
+	          "p",
+	          null,
+	          this.props.prompt
 	        )
 	      )
 	    );
@@ -25777,11 +25745,11 @@
 	    var student = this.props.student;
 
 	    if (student.color === "red") {
-	      var colorClass = "b4pxsr";
+	      var colorClass = "pink";
 	    } else if (student.color === "blue") {
-	      var colorClass = "b4pxsb";
+	      var colorClass = "blue";
 	    } else if (student.color === "green") {
-	      var colorClass = "b4pxsg";
+	      var colorClass = "green";
 	    } else {
 	      var colorClass = "b2pxsbk";
 	    }
@@ -25996,7 +25964,8 @@
 	      username = React.createElement(
 	        'h4',
 	        { className: '' },
-	        teacherName
+	        teacherName,
+	        '\'S CLASSROOM'
 	      );
 	      dashboardLinks = React.createElement(
 	        'form',
@@ -26005,11 +25974,6 @@
 	          Link,
 	          { to: 'teacherHome', disabled: this.props.activeLesson !== null, params: { id: teacher._id }, onClick: this.handleNavClick, role: 'group' },
 	          'HOME'
-	        ),
-	        React.createElement(
-	          Link,
-	          { to: 'grid', disabled: this.props.activeLesson !== null, params: { id: teacher._id }, onClick: this.handleNavClick, role: 'group' },
-	          'LIVE LESSON'
 	        ),
 	        React.createElement(
 	          Link,
@@ -26031,11 +25995,7 @@
 	          React.createElement('i', { className: 'glyphicon glyphicon-log-out' })
 	        )
 	      );
-	      logo = React.createElement(
-	        Link,
-	        { to: 'lessonPanel', className: '', params: { id: teacher._id } },
-	        React.createElement('div', { className: 'logo' })
-	      );
+	      logo = React.createElement(Link, { to: 'lessonPanel', className: 'logo', params: { id: teacher._id } });
 	    } else if (student) {
 	      content = React.createElement(
 	        'p',
@@ -26271,7 +26231,6 @@
 	  mixins: [Router.Navigation, Router.State],
 
 	  getPanelInfo: function getPanelInfo() {
-	    var klassPanel = this.refs.klassPanelin;
 	    if (this.props.lessons[0]) {
 	      var lesson = this.props.lessons[0];
 	      var date = new Date(lesson.date);
@@ -26319,12 +26278,25 @@
 	      );
 	    }
 	  },
+	  getActiveLesson: function getActiveLesson() {
+	    if (this.props.activeLesson) return React.createElement(
+	      Link,
+	      { to: "grid", params: { id: this.props.teacher._id }, role: "group", className: "live-lesson" },
+	      "GO TO LIVE LESSON",
+	      React.createElement("span", { className: "glyphicon glyphicon-chevron-right" })
+	    );
+	  },
 	  render: function render() {
 	    var panelInfo = this.getPanelInfo();
+	    var activeLesson = this.getActiveLesson();
 	    return React.createElement(
 	      "div",
 	      { className: "wrapper" },
-	      React.createElement("div", { className: "sidebar" }),
+	      React.createElement(
+	        "div",
+	        { className: "sidebar" },
+	        activeLesson
+	      ),
 	      React.createElement(
 	        "div",
 	        { className: "dashboard-container" },
