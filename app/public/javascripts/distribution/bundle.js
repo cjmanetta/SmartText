@@ -26150,6 +26150,7 @@
 	    });
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
+	    debugger;
 	    var path = "/teachers/" + this.state.teacher._id + "/lessons/" + lesson_id + "/activate";
 	    Call.call(path, 'get').then((function (serverData) {
 	      this.setState({
@@ -26880,10 +26881,12 @@
 
 	var React = __webpack_require__(2);
 	var EditLesson = __webpack_require__(212);
+	var Router = __webpack_require__(158);
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
 
+	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
 	      display: 'panel'
@@ -26898,6 +26901,7 @@
 	    this.props['delete'](this.props.lesson._id);
 	  },
 	  makeActive: function makeActive() {
+	    // debugger
 	    this.props.activate(this.props.lesson._id);
 	  },
 	  handleSuccessfulUpdate: function handleSuccessfulUpdate() {
@@ -26948,7 +26952,7 @@
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-primary btn-xs outline', onClick: this.makeActive },
-	              'Make Active Lesson'
+	              'ACTIVATE LESSON'
 	            )
 	          )
 	        )

@@ -1,8 +1,13 @@
 var React = require('react');
 var EditLesson = require("./EditLesson");
+var Router = require('react-router');
 
 
 var LessonBox = React.createClass({
+  mixins: [
+    Router.Navigation,
+    Router.State,
+  ],
   getInitialState: function() {
     return {
       display: 'panel'
@@ -17,7 +22,8 @@ var LessonBox = React.createClass({
     this.props.delete(this.props.lesson._id);
   },
   makeActive: function(){
-    this.props.activate(this.props.lesson._id);
+    // debugger
+    this.props.activate(this.props.lesson._id)
   },
   handleSuccessfulUpdate: function(){
     this.setState({
@@ -33,7 +39,7 @@ var LessonBox = React.createClass({
           <i className="glyphicon glyphicon-trash"></i></a></span></p>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
-              <button type="button" className="btn btn-primary btn-xs outline" onClick={this.makeActive}>Make Active Lesson</button>
+              <button type="button" className="btn btn-primary btn-xs outline" onClick={this.makeActive}>ACTIVATE LESSON</button>
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@
   border: 4px solid; }
 
 .pink {
-  border-color: 4px solid rgba(243, 53, 152, 0.3); }
+  border-color: 4px solid rgba(255, 83, 119, 0.3); }
 
 .blue {
   border-color: 4px solid rgba(50, 166, 204, 0.3); }
@@ -1030,7 +1030,7 @@ i:active, i:hover {
       opacity: 0.9; }
   .question-bar .finish {
     color: white;
-    background-color: #f33598;
+    background-color: #ff5377;
     height: 40px;
     cursor: pointer;
     border-radius: 3px;
@@ -1066,7 +1066,7 @@ i:active, i:hover {
 
 .live-lesson {
   color: white;
-  background-color: #f33598;
+  background-color: #ff5377;
   height: 40px;
   cursor: pointer;
   border-radius: 3px;

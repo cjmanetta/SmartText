@@ -122,6 +122,7 @@ var TeacherView = React.createClass({
         });
   },
   setActiveLesson: function(lesson_id){
+    debugger
     var path = "/teachers/"
                  + this.state.teacher._id
                  + "/lessons/"
