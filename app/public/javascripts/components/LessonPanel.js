@@ -136,7 +136,6 @@ var LessonPanel = React.createClass({
   },
   setActiveLesson: function(lesson_id){
     this.props.activate(lesson_id);
-    this.transitionTo('grid', {id: this.props.teacher._id});
   },
   render: function(){
     if (this.state.article && this.state.answer) {
@@ -182,25 +181,23 @@ var LessonPanel = React.createClass({
 
     var lessons = this.props.lessons.map(
       function(lesson){
+        if(this.props.activeLesson._id === lesson._id) {
+          var active = true
+        } else {
+          var active = false
+        }
         return(
         <LessonBox lesson={lesson}
                    teacher={this.props.teacher }
                    delete={this.handleDeleteLesson}
                    activate={this.setActiveLesson}
-                   getLessonsList={this.props.getLessonsList}/>
+                   getLessonsList={this.props.getLessonsList}
+                   getActiveLesson={this.props.getActiveLesson}
+                   active={active}
+                  />
         )
       }.bind(this)
     );
-
-    if(this.props.activeLesson){
-      var activeLesson = <div className="panel panel-default">
-          <div className="panel-heading">
-              <h5 className="panel-title">{ this.props.activeLesson.title }</h5>
-              <p>{ this.props.activeLesson.date }</p>
-                <Link to="grid" params={{id: this.props.teacher._id }} className="btn btn-success outline">Go to Active Lesson <span className="glyphicon glyphicon-chevron-right"></span></Link>
-          </div>
-      </div>
-    }
 
     var formAction = '/teachers/' + this.props.teacher._id + '/lessons'
     if(this.state.lessonPills === 'Lessons'){
@@ -211,7 +208,6 @@ var LessonPanel = React.createClass({
           <li role="presentation" className="active"><a href="#" onClick={ this.handlePillClick }>Lessons</a></li>
         </ul>
         <div>
-          {activeLesson}
           {lessons}
         </div>
       </div>

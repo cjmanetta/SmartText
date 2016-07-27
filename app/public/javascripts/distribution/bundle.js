@@ -26053,6 +26053,7 @@
 	var TeacherView = React.createClass({
 	  displayName: "TeacherView",
 
+	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
 	      teacher: { _id: 0 },
@@ -26150,7 +26151,6 @@
 	    });
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
-	    debugger;
 	    var path = "/teachers/" + this.state.teacher._id + "/lessons/" + lesson_id + "/activate";
 	    Call.call(path, 'get').then((function (serverData) {
 	      this.setState({
@@ -26542,7 +26542,6 @@
 	  },
 	  setActiveLesson: function setActiveLesson(lesson_id) {
 	    this.props.activate(lesson_id);
-	    this.transitionTo('grid', { id: this.props.teacher._id });
 	  },
 	  render: function render() {
 	    if (this.state.article && this.state.answer) {
@@ -26633,39 +26632,20 @@
 	    }
 
 	    var lessons = this.props.lessons.map((function (lesson) {
+	      if (this.props.activeLesson._id === lesson._id) {
+	        var active = true;
+	      } else {
+	        var active = false;
+	      }
 	      return React.createElement(LessonBox, { lesson: lesson,
 	        teacher: this.props.teacher,
 	        'delete': this.handleDeleteLesson,
 	        activate: this.setActiveLesson,
-	        getLessonsList: this.props.getLessonsList });
+	        getLessonsList: this.props.getLessonsList,
+	        getActiveLesson: this.props.getActiveLesson,
+	        active: active
+	      });
 	    }).bind(this));
-
-	    if (this.props.activeLesson) {
-	      var activeLesson = React.createElement(
-	        'div',
-	        { className: 'panel panel-default' },
-	        React.createElement(
-	          'div',
-	          { className: 'panel-heading' },
-	          React.createElement(
-	            'h5',
-	            { className: 'panel-title' },
-	            this.props.activeLesson.title
-	          ),
-	          React.createElement(
-	            'p',
-	            null,
-	            this.props.activeLesson.date
-	          ),
-	          React.createElement(
-	            Link,
-	            { to: 'grid', params: { id: this.props.teacher._id }, className: 'btn btn-success outline' },
-	            'Go to Active Lesson ',
-	            React.createElement('span', { className: 'glyphicon glyphicon-chevron-right' })
-	          )
-	        )
-	      );
-	    }
 
 	    var formAction = '/teachers/' + this.props.teacher._id + '/lessons';
 	    if (this.state.lessonPills === 'Lessons') {
@@ -26697,7 +26677,6 @@
 	        React.createElement(
 	          'div',
 	          null,
-	          activeLesson,
 	          lessons
 	        )
 	      );
@@ -26882,6 +26861,7 @@
 	var React = __webpack_require__(2);
 	var EditLesson = __webpack_require__(212);
 	var Router = __webpack_require__(158);
+	var Link = Router.Link;
 
 	var LessonBox = React.createClass({
 	  displayName: 'LessonBox',
@@ -26889,7 +26869,8 @@
 	  mixins: [Router.Navigation, Router.State],
 	  getInitialState: function getInitialState() {
 	    return {
-	      display: 'panel'
+	      display: 'panel',
+	      active: this.props.active
 	    };
 	  },
 	  editClick: function editClick() {
@@ -26901,8 +26882,8 @@
 	    this.props['delete'](this.props.lesson._id);
 	  },
 	  makeActive: function makeActive() {
-	    // debugger
 	    this.props.activate(this.props.lesson._id);
+	    this.setState({ active: true });
 	  },
 	  handleSuccessfulUpdate: function handleSuccessfulUpdate() {
 	    this.setState({
@@ -26910,6 +26891,20 @@
 	    });
 	  },
 	  render: function render() {
+	    if (this.state.active === false) {
+	      var activeButton = React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn btn-primary btn-xs outline', onClick: this.makeActive },
+	        'ACTIVATE LESSON'
+	      );
+	    } else {
+	      var activeButton = React.createElement(
+	        Link,
+	        { to: 'grid', params: { id: this.props.teacher._id }, role: 'group', className: 'live-lesson' },
+	        'GO TO LIVE LESSON',
+	        React.createElement('span', { className: 'glyphicon glyphicon-chevron-right' })
+	      );
+	    }
 	    if (this.state.display === "panel") {
 	      var content = React.createElement(
 	        'div',
@@ -26949,11 +26944,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'btn-group' },
-	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'btn btn-primary btn-xs outline', onClick: this.makeActive },
-	              'ACTIVATE LESSON'
-	            )
+	            activeButton
 	          )
 	        )
 	      );

@@ -1,6 +1,8 @@
 var React = require('react');
 var EditLesson = require("./EditLesson");
 var Router = require('react-router');
+var { Link } = Router;
+
 
 
 var LessonBox = React.createClass({
@@ -10,7 +12,8 @@ var LessonBox = React.createClass({
   ],
   getInitialState: function() {
     return {
-      display: 'panel'
+      display: 'panel',
+      active: this.props.active
     };
   },
   editClick: function(){
@@ -22,8 +25,8 @@ var LessonBox = React.createClass({
     this.props.delete(this.props.lesson._id);
   },
   makeActive: function(){
-    // debugger
     this.props.activate(this.props.lesson._id)
+    this.setState({active: true})
   },
   handleSuccessfulUpdate: function(){
     this.setState({
@@ -31,6 +34,11 @@ var LessonBox = React.createClass({
     });
   },
   render: function() {
+    if(this.state.active === false) {
+      var activeButton = <button type="button" className="btn btn-primary btn-xs outline" onClick={this.makeActive}>ACTIVATE LESSON</button>
+    } else {
+      var activeButton = <Link to="grid" params={{id: this.props.teacher._id }} role="group" className="live-lesson">GO TO LIVE LESSON<span className="glyphicon glyphicon-chevron-right"></span></Link>
+    }
     if(this.state.display === "panel"){
       var content = <div className="panel panel-default">
           <div className="panel-heading">
@@ -39,7 +47,7 @@ var LessonBox = React.createClass({
           <i className="glyphicon glyphicon-trash"></i></a></span></p>
             <p>{ this.props.lesson.date }</p>
             <div className="btn-group">
-              <button type="button" className="btn btn-primary btn-xs outline" onClick={this.makeActive}>ACTIVATE LESSON</button>
+              {activeButton}
           </div>
         </div>
       </div>
